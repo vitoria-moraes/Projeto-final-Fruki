@@ -1,35 +1,33 @@
-package org.example.projetofinalfruki.infrastructure;
+package org.example.projetofinalfruki.infrastructure.db.supabase.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "dim_tabela_preco_limpa")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "tabela_preco")
 public class TabelaPrecoEntity {
 
     @Id
-    private Long id;
+    private String id; // Remova qualquer @GeneratedValue daqui
 
-    @Column(name = "cod_cliente")
-    private String codCliente;
+    private String codProduto;
+    private String nomeProduto;
+    private BigDecimal precoBase;
 
-    @Column(name = "cod_material")
-    private String codMaterial;
+    public TabelaPrecoEntity() {}
 
-    @Column(name = "desc_material")
-    private String descMaterial;
+    // Getters e Setters
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    @Column(name = "preco_tabela")
-    private BigDecimal precoTabela;
+    public String getCodProduto() { return codProduto; }
+    public void setCodProduto(String codProduto) { this.codProduto = codProduto; }
 
-    @Column(name = "cod_hierarquia")
-    private String codHierarquia;
+    public String getNomeProduto() { return nomeProduto; }
+    public void setNomeProduto(String nomeProduto) { this.nomeProduto = nomeProduto; }
 
-    @Column(name = "canal_distribuicao")
-    private String canalDistribuicao;
+    public BigDecimal getPrecoBase() { return precoBase; }
+    public void setPrecoBase(BigDecimal precoBase) { this.precoBase = precoBase; }
 }

@@ -1,10 +1,16 @@
-package org.example.projetofinalfruki.infrastructure;
+package org.example.projetofinalfruki.infrastructure.db.supabase.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "dim_cliente_limpa")
+@Table(name = "cliente")
 @Getter
 @Setter
 @NoArgsConstructor
