@@ -1,28 +1,31 @@
 package org.example.projetofinalfruki.application.controller;
 
-import org.example.projetofinalfruki.domain.model.Pedido;
+import org.example.projetofinalfruki.application.dtos.PedidoRequestDTO;
+import org.example.projetofinalfruki.application.dtos.PedidoResponseDTO;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/pedidos")
+@RequestMapping("/api/v1/pedidos")
 public class PedidoController {
 
     @PostMapping
-    public ResponseEntity<Pedido> criarPedido(@RequestBody Pedido pedidoRequest) {
-        String codigoGerado = "FRK-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+    public ResponseEntity<PedidoResponseDTO> criarPedido(@RequestBody @Valid PedidoRequestDTO request) {
+        String codigoGerado = "FRK-" + System.currentTimeMillis();
 
-        Pedido novoPedido = new Pedido(
+        PedidoResponseDTO response = new PedidoResponseDTO(
                 codigoGerado,
-                pedidoRequest.getCodCliente(),
-                pedidoRequest.getProduto(),
-                pedidoRequest.getQuantidade(),
-                pedidoRequest.getValorTotal() != null ? pedidoRequest.getValorTotal() : BigDecimal.ZERO
+                "CRIADO",
+                new BigDecimal("150.00"),
+                LocalDateTime.now(),
+                "Pedido recebido e registado com sucesso!"
         );
 
-        return ResponseEntity.ok(novoPedido);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

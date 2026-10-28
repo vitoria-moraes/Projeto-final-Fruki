@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${tituloPage}">Catálogo Fruki</title>
+    <!-- Tailwind CSS para um design moderno e limpo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+<!-- Header Fruki -->
+<header class="bg-blue-700 text-white py-6 shadow-md">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold tracking-wide">Fruki Bebidas - Portal B2B</h1>
+        <span class="bg-blue-800 text-xs px-3 py-1 rounded-full font-semibold">Atendimento Comercial</span>
+    </div>
+</header>
+
+<!-- Conteúdo do Catálogo -->
+<main class="container mx-auto px-4 py-8">
+    <h2 class="text-xl font-bold text-gray-700 mb-6 border-b pb-2">Produtos Disponíveis para Lojistas</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <!-- Loop de produtos renderizado pelo Thymeleaf -->
+        <div th:each="prod : ${produtos}" class="bg-white rounded-lg shadow hover:shadow-lg transition duration-200 p-5 flex flex-col justify-between">
+            <div>
+                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded" th:text="${prod.codigo}">FRK-01</span>
+                <h3 class="text-lg font-semibold mt-2 text-gray-900" th:text="${prod.nome}">Nome do Produto</h3>
+                <p class="text-sm text-gray-500 mt-1" th:text="${prod.descricao}">Descrição simples do produto.</p>
+            </div>
+            <div class="mt-4 pt-4 border-t flex justify-between items-center">
+                <span class="text-lg font-bold text-emerald-600" th:text="${prod.preco}">R$ 0,00</span>
+                <button onclick="alert('Produto adicionado ao pedido B2B com sucesso!')" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md transition cursor-pointer">
+                    Adicionar
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
