@@ -40,6 +40,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Driver JDBC do Databricks -->
+        <dependency>
+            <groupId>com.databricks</groupId>
+            <artifactId>databricks-jdbc</artifactId>
+            <version>2.6.36</version>
+        </dependency>
+
         <!-- Validação de Dados (Bean Validation / Jakarta) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

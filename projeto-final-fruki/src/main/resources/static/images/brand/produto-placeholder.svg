@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Produto Fruki">
+  <rect width="400" height="400" rx="32" fill="#f6f6f6"/>
+  <rect x="178" y="64" width="44" height="28" rx="6" fill="#006847"/>
+  <path d="M170 92h60v36l26 46v150c0 14-11 25-25 25h-62c-14 0-25-11-25-25V174l26-46z"
+        fill="#e3ebe7" stroke="#006847" stroke-width="7"/>
+  <rect x="158" y="232" width="84" height="64" rx="8" fill="#006847" opacity="0.16"/>
+  <text x="200" y="372" text-anchor="middle"
+        font-family="Segoe UI, Arial, Helvetica, sans-serif"
+        font-size="34" font-weight="700" fill="#006847">Fruki</text>
+</svg>
