@@ -37,7 +37,6 @@ spring:
     max-lifetime: 1500000          # menor que o timeout do pooler do Supabase
 
 # ---- SECUNDÁRIO: Databricks (SQL Warehouse) via JDBC -------------------------------------
-# ---- SECUNDÁRIO: Databricks (SQL Warehouse) via JDBC -------------------------------------
 databricks:
   datasource:
     # EnableArrow=0: o formato Arrow do driver exige --add-opens do JVM no Java 17+ e derruba a 1ª consulta
@@ -62,3 +61,9 @@ app:
   databricks:
     # tabela (catalog.schema.tabela) lida pelo RecomendacaoRepository
     recomendacao-table: fruki.gold.gold_recomendacao_b2b
+
+# ---- INTEGRAÇÃO OPENWEATHER -------------------------------------------------------------
+api:
+  weather:
+    key: 73ac8adeed9cb101d9af55a90ea98fe5
+    url: https://api.openweathermap.org/data/2.5

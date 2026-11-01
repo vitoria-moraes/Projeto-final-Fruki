@@ -1,4 +1,4 @@
-package org.example.projetofinalfruki.application.dto;
+package org.example.projetofinalfruki.application.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

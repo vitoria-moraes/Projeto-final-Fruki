@@ -3,6 +3,7 @@ package org.example.projetofinalfruki.infrastructure.external.weather;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 
@@ -19,7 +20,13 @@ public class OpenWeatherService {
 
     public double obterTemperaturaAtual(String cidade) {
         try {
-            String url = String.format("%s/weather?q=%s,BR&units=metric&appid=%s", apiUrl, cidade, apiKey);
+            // UriComponentsBuilder trata acentos e espaços automaticamente (ex: Capão da Canoa -> Cap%C3%A3o)
+            String url = UriComponentsBuilder.fromHttpUrl(apiUrl + "/weather")
+                    .queryParam("q", cidade + ",BR")
+                    .queryParam("units", "metric")
+                    .queryParam("appid", apiKey)
+                    .toUriString();
+
             Map<String, Object> resposta = restTemplate.getForObject(url, Map.class);
 
             if (resposta != null && resposta.containsKey("main")) {
@@ -29,8 +36,8 @@ public class OpenWeatherService {
                 }
             }
         } catch (Exception e) {
-            // Fallback silencioso para 25.0°C quando a API estiver sem chave ou fora do ar
+            System.err.println("Erro ao obter clima para " + cidade + ": " + e.getMessage());
         }
-        return 25.0;
+        return 25.0; // Fallback seguro
     }
 }
