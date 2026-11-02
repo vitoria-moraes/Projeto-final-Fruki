@@ -1,579 +1,484 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="h-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fruki Bebidas - Portal B2B & Inteligência Analítica</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Font Awesome Icons -->
+    <title>Pede Fruki | Catálogo B2B de Bebidas</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        fruki: {
-                            green: '#00a84f',
-                            darkGreen: '#046a33',
-                            deepGreen: '#013e1c',
-                            lightGreen: '#e6f7ed',
-                            accent: '#facc15',
-                            leaf: '#ffffff'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Textura de fundo riscada característica da marca Fruki */
-        .bg-fruki-texture {
-            background-color: #00a84f;
-            background-image:
-                    radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0),
-                    linear-gradient(135deg, rgba(255,255,255,0.05) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.05) 75%, transparent 75%, transparent);
-            background-size: 30px 30px, 60px 60px;
+        :root {
+            --fruki-green-dark: #004D26;
+            --fruki-green: #006633;
+            --fruki-green-light: #7ACC00;
+            --fruki-orange: #FF6600;
+            --fruki-red: #E31B23;
         }
 
-        /* Máscara de Folha Fruki em SVG */
-        .fruki-leaf-shape {
-            border-radius: 0% 100% 0% 100% / 0% 100% 0% 100%;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F4F6F8;
+            color: #212529;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .fruki-leaf-reverse {
-            border-radius: 100% 0% 100% 0% / 100% 0% 100% 0%;
+        /* Navbar Customizada */
+        .navbar-fruki {
+            background-color: var(--fruki-green-dark);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        /* Glassmorphic Cards */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+        .badge-regiao {
+            background-color: rgba(122, 204, 0, 0.15);
+            color: var(--fruki-green-light);
+            border: 1px solid rgba(122, 204, 0, 0.3);
+            border-radius: 50rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
         }
 
-        /* Pop-up do WhatsApp Animation */
-        @keyframes float-bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
+        /* Banner Principal */
+        .hero-banner {
+            background: linear-gradient(135deg, var(--fruki-green) 0%, #00331A 100%);
+            border-radius: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 102, 51, 0.2);
         }
 
-        .animate-float {
-            animation: float-bounce 3s ease-in-out infinite;
+        .hero-banner::after {
+            content: "\f7a6";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: -20px;
+            bottom: -30px;
+            font-size: 14rem;
+            opacity: 0.06;
+            color: white;
+            pointer-events: none;
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
+        /* Cards de Produtos */
+        .card-produto {
+            border: none;
+            border-radius: 16px;
+            background: #ffffff;
+            transition: all 0.25s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+
+        .card-produto:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
         }
-        ::-webkit-scrollbar-thumb {
-            background: #00a84f;
-            border-radius: 4px;
+
+        .card-img-container {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+            background-color: #FAFAFA;
+            border-radius: 16px 16px 0 0;
+            position: relative;
+        }
+
+        .card-img-container img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .card-produto:hover .card-img-container img {
+            transform: scale(1.06);
+        }
+
+        .badge-destaque {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background-color: var(--fruki-orange);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50rem;
+            box-shadow: 0 2px 6px rgba(255, 102, 0, 0.3);
+            z-index: 2;
+        }
+
+        /* Botões */
+        .btn-fruki {
+            background-color: var(--fruki-green);
+            color: white;
+            font-weight: 600;
+            border-radius: 12px;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            transition: all 0.2s;
+        }
+
+        .btn-fruki:hover {
+            background-color: var(--fruki-green-dark);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 77, 38, 0.3);
+        }
+
+        .btn-carrinho-float {
+            background-color: var(--fruki-green-light);
+            color: var(--fruki-green-dark);
+            font-weight: 700;
+            border-radius: 12px;
+            padding: 0.6rem 1.25rem;
+            border: none;
+            position: relative;
+            transition: transform 0.15s ease;
+        }
+
+        .btn-carrinho-float:active {
+            transform: scale(0.96);
+        }
+
+        .badge-cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--fruki-red);
+            color: white;
+            border-radius: 50rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        /* Categorias Filtros */
+        .btn-categoria {
+            border-radius: 50rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.5rem 1.25rem;
+            border: 1px solid #E0E0E0;
+            background-color: white;
+            color: #495057;
+            transition: all 0.2s;
+        }
+
+        .btn-categoria.active, .btn-categoria:hover {
+            background-color: var(--fruki-green);
+            color: white;
+            border-color: var(--fruki-green);
+            box-shadow: 0 4px 10px rgba(0, 102, 51, 0.2);
+        }
+
+        /* Offcanvas / Carrinho Drawer */
+        .offcanvas-header {
+            background-color: var(--fruki-green-dark);
+            color: white;
+        }
+
+        .offcanvas-footer {
+            background-color: #F8F9FA;
+            border-top: 1px solid #E9ECEF;
+            padding: 1.25rem;
+        }
+
+        /* Rodapé */
+        .footer-fruki {
+            background-color: #0B1911;
+            color: #A0AEC0;
+            margin-top: auto;
+            padding-top: 3rem;
+            padding-bottom: 2rem;
+            border-top: 3px solid var(--fruki-green-light);
+        }
+
+        .footer-fruki h5 {
+            color: white;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col antialiased">
+<body>
 
-<!-- TOP HEADER NAVBAR -->
-<header class="bg-fruki-darkGreen text-white sticky top-0 z-40 shadow-lg border-b border-green-600">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-20">
-
-            <!-- Brand Logo & Leaf Element -->
-            <div class="flex items-center space-x-3">
-                <div class="w-12 h-12 bg-white fruki-leaf-shape flex items-center justify-center shadow-md border-2 border-fruki-green">
-                    <i class="fa-solid fa-leaf text-fruki-green text-2xl"></i>
-                </div>
-                <div>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-2xl font-extrabold tracking-wider text-white">FRUKI</span>
-                        <span class="text-xs bg-fruki-accent text-fruki-deepGreen font-black px-2 py-0.5 rounded-full uppercase tracking-widest">B2B</span>
-                    </div>
-                    <p class="text-xs text-green-200 font-medium">Portal de Vendas & Inteligência do Lojista</p>
-                </div>
+<!-- NAVBAR INSTITUCIONAL -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-fruki sticky-top py-3">
+    <div class="container">
+        <!-- Logótipo SVG Customizado Pede Fruki -->
+        <a class="navbar-brand d-flex align-items-center gap-3" href="#">
+            <div class="bg-white p-2 rounded-3 shadow-sm d-flex align-items-center justify-content-center">
+                <svg width="110" height="35" viewBox="0 0 140 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <text x="0" y="20" font-family="'Inter', sans-serif" font-weight="800" font-size="16" fill="#006633">PEDE</text>
+                    <text x="0" y="38" font-family="'Inter', sans-serif" font-weight="800" font-size="16" fill="#E31B23">FRUKI</text>
+                    <circle cx="125" cy="15" r="4" fill="#7ACC00"/>
+                    <circle cx="135" cy="22" r="3" fill="#7ACC00"/>
+                    <path d="M115 28L122 24" stroke="#7ACC00" stroke-width="2" stroke-linecap="round"/>
+                </svg>
             </div>
-
-            <!-- Client Selector (Datasource Simulator) -->
-            <div class="hidden md:flex items-center bg-fruki-deepGreen/60 backdrop-blur px-4 py-2 rounded-2xl border border-green-500/30">
-                <i class="fa-solid fa-store text-fruki-accent mr-3"></i>
-                <div class="text-xs mr-3">
-                    <p class="text-green-300 font-semibold">Lojista Autenticado:</p>
-                    <select id="selectCliente" onchange="trocarCliente(this.value)" class="bg-transparent text-white font-bold text-sm focus:outline-none cursor-pointer">
-                        <option value="41" class="bg-fruki-darkGreen text-white">Cliente #41 - Mercado Central (Porto Alegre)</option>
-                        <option value="48" class="bg-fruki-darkGreen text-white">Cliente #48 - Super Litoral (Capão da Canoa)</option>
-                        <option value="81" class="bg-fruki-darkGreen text-white">Cliente #81 - Conveniência Serra (Gramado)</option>
-                        <option value="112" class="bg-fruki-darkGreen text-white">Cliente #112 - Distribuidora Vale (Lajeado)</option>
-                    </select>
-                </div>
-                <span id="badgeDatasource" class="text-[10px] bg-green-500/20 text-green-200 border border-green-400/40 px-2 py-1 rounded-lg">
-                        <i class="fa-solid fa-database text-xs mr-1"></i> Databricks Gold
-                    </span>
+            <div>
+                <span class="d-none d-sm-block text-uppercase text-white-50 fs-7 fw-bold tracking-wider">Portal B2B Oficial</span>
+                <span class="fs-5 fw-bold text-white">Pede Fruki</span>
             </div>
+        </a>
 
-            <!-- Actions: Cart Button & Mobile Menu Toggle -->
-            <div class="flex items-center space-x-4">
-                <button onclick="toggleCarrinho()" class="relative bg-fruki-green hover:bg-green-600 text-white p-3 rounded-2xl transition duration-200 shadow-md flex items-center space-x-2">
-                    <i class="fa-solid fa-cart-shopping text-lg"></i>
-                    <span class="font-bold text-sm hidden sm:inline">Meu Pedido</span>
-                    <span id="cartCount" class="absolute -top-2 -right-2 bg-fruki-accent text-fruki-deepGreen font-extrabold text-xs w-6 h-6 rounded-full flex items-center justify-center border-2 border-fruki-darkGreen">0</span>
-                </button>
+        <!-- Informações do Cliente & Região -->
+        <div class="d-none d-md-flex align-items-center gap-3">
+            <div class="badge-regiao d-flex align-items-center gap-2">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>Região: <strong class="text-white">Porto Alegre - RS</strong></span>
+            </div>
+            <div class="badge-regiao d-flex align-items-center gap-2">
+                <i class="fa-solid fa-user-check"></i>
+                <span>Lojista: <strong class="text-white">Vitória</strong></span>
             </div>
         </div>
+
+        <!-- Botão de Acesso ao Carrinho -->
+        <button class="btn-carrinho-float shadow" type="button" data-bs-toggle="offcanvas" data-bs-target="#carrinhoDrawer">
+            <i class="fa-solid fa-cart-shopping me-1"></i>
+            <span class="d-none d-sm-inline">Meu Pedido</span>
+            <span id="badge-total-itens" class="badge-cart-count">0</span>
+        </button>
     </div>
-</header>
+</nav>
 
-<!-- HERO SECTION WITH BRAND TEXTURE & SAZONAL INTELLIGENCE -->
-<section class="bg-fruki-texture text-white relative overflow-hidden py-8 px-4 sm:px-6 lg:px-8 shadow-inner">
-    <!-- Visual Leaf Element Decorator -->
-    <div class="absolute -right-16 -bottom-16 w-80 h-80 bg-white/10 fruki-leaf-shape blur-xl pointer-events-none"></div>
-    <div class="absolute left-1/3 top-0 w-64 h-64 bg-green-300/10 fruki-leaf-reverse blur-2xl pointer-events-none"></div>
+<!-- CONTEÚDO PRINCIPAL -->
+<main class="container my-4 my-md-5">
 
-    <div class="max-w-7xl mx-auto relative z-10">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+    <!-- BANNER DE BOAS-VINDAS E DESTAQUE B2B -->
+    <section class="hero-banner p-4 p-md-5 mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <span class="badge bg-warning text-dark font-weight-bold mb-3 px-3 py-2 rounded-pill text-uppercase">Abastecimento Direto de Fábrica</span>
+                <h1 class="display-5 fw-extrabold mb-3">No seu negócio, tempo é tudo.</h1>
+                <p class="fs-5 text-white-50 mb-4">Monte seu pedido com as tabelas de preços exclusivas da sua região e envie direto ao atendimento Fruki via WhatsApp.</p>
+                <a href="#secao-catalogo" class="btn btn-light btn-lg font-weight-bold text-success rounded-3 px-4 shadow-sm">
+                    <i class="fa-solid fa-arrow-down me-2"></i> Explora o Portfólio
+                </a>
+            </div>
+        </div>
+    </section>
 
-            <!-- Left Title & Mission -->
-            <div class="lg:col-span-2 space-y-3">
-                <div class="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-green-100 border border-white/20">
-                    <i class="fa-solid fa-wand-magic-sparkles text-fruki-accent"></i>
-                    <span>Recomendações B2B em Tempo Real</span>
-                </div>
-                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
-                    Um mundo mais gentil tem <span class="text-fruki-accent underline decoration-white/30">outro sabor.</span>
-                </h1>
-                <p class="text-green-100 text-sm sm:text-base max-w-2xl font-normal leading-relaxed">
-                    Abasteça seu estabelecimento com base na inteligência preditiva do Databricks. Antecipe a demanda do final de semana e garanta as melhores margens de lucro!
-                </p>
+    <!-- SEÇÃO DE RECOMENDAÇÕES DA ESTAÇÃO -->
+    <section class="mb-5">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h2 class="h3 fw-bold text-dark mb-1">
+                    <i class="fa-solid fa-star text-warning me-2"></i>Recomendações da Estação
+                </h2>
+                <p class="text-muted small mb-0">Produtos de altíssimo giro no Rio Grande do Sul e Santa Catarina.</p>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4" id="container-recomendacoes">
+            <!-- Injetado dinamicamente via JS -->
+        </div>
+    </section>
+
+    <!-- SEÇÃO DO CATÁLOGO COMPLETO -->
+    <section id="secao-catalogo" class="pt-3">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
+            <div>
+                <h2 class="h3 fw-bold text-dark mb-1">
+                    <i class="fa-solid fa-boxes-stacked text-success me-2"></i>Portfólio Completo de Bebidas
+                </h2>
+                <p class="text-muted small mb-0">Selecione uma categoria para filtrar o catálogo de atacado.</p>
             </div>
 
-            <!-- Right Widget: API Clima & Calendário (Sazonalidade) -->
-            <div class="glass-card rounded-3xl p-5 text-gray-800 shadow-2xl relative overflow-hidden border-2 border-white/50">
-                <div class="flex justify-between items-start mb-3">
-                    <div class="flex items-center space-x-2">
-                        <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold">
-                            <i class="fa-solid fa-sun text-lg"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-xs font-extrabold uppercase tracking-wider text-gray-500">Motor de Sazonalidade</h4>
-                            <p id="climaCidade" class="text-sm font-bold text-gray-900">Porto Alegre, RS • 31°C</p>
-                        </div>
-                    </div>
-                    <span class="text-[10px] bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded-full">Alta Demanda</span>
-                </div>
-
-                <!-- Event Badges -->
-                <div class="space-y-2 text-xs">
-                    <div class="bg-green-50 rounded-xl p-2.5 border border-green-200 flex items-center justify-between">
-                            <span class="font-medium text-green-900 flex items-center">
-                                <i class="fa-solid fa-futbol text-green-600 mr-2"></i> Rodada do Brasileirão
-                            </span>
-                        <span class="font-bold text-green-700">+35% Guaraná 2L</span>
-                    </div>
-                    <div class="bg-blue-50 rounded-xl p-2.5 border border-blue-200 flex items-center justify-between">
-                            <span class="font-medium text-blue-900 flex items-center">
-                                <i class="fa-solid fa-temperature-arrow-up text-blue-600 mr-2"></i> Onda de Calor
-                            </span>
-                        <span class="font-bold text-blue-700">+50% Água da Pedra</span>
-                    </div>
-                </div>
-
-                <div class="mt-3 pt-2 border-t border-gray-100 text-[11px] text-gray-500 flex justify-between items-center">
-                    <span>Atualizado via Supabase & Databricks</span>
-                    <span class="text-fruki-darkGreen font-bold"><i class="fa-solid fa-check-double"></i> Dados Sincronizados</span>
-                </div>
+            <!-- FILTROS POR CATEGORIA -->
+            <div class="d-flex flex-wrap gap-2" id="filtros-categoria">
+                <button onclick="filtrarProdutos('todos')" class="btn-categoria active">Todos</button>
+                <button onclick="filtrarProdutos('Refrigerantes')" class="btn-categoria">Refrigerantes</button>
+                <button onclick="filtrarProdutos('Energéticos')" class="btn-categoria">Energéticos</button>
+                <button onclick="filtrarProdutos('Águas')" class="btn-categoria">Águas</button>
+                <button onclick="filtrarProdutos('Cervejas')" class="btn-categoria">Cervejas</button>
+                <button onclick="filtrarProdutos('Refrescos')" class="btn-categoria">Refrescos</button>
+                <button onclick="filtrarProdutos('Sucos')" class="btn-categoria">Sucos</button>
             </div>
-
-        </div>
-    </div>
-</section>
-
-<!-- MAIN CONTENT AREA -->
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
-
-    <!-- CONTROL BAR: FILTERS & CATEGORIES -->
-    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
-        <div>
-            <h2 class="text-2xl font-black text-gray-900 flex items-center">
-                Catálogo Completo B2B
-                <span class="ml-3 text-xs bg-fruki-lightGreen text-fruki-darkGreen border border-fruki-green/30 font-bold px-3 py-1 rounded-full">
-                        Preços de Atacado
-                    </span>
-            </h2>
-            <p class="text-xs text-gray-500">Selecione os itens para montar sua carga de reposição com desconto automático.</p>
         </div>
 
-        <!-- Categories Buttons -->
-        <div class="flex flex-wrap gap-2">
-            <button onclick="filtrarCategoria('todos')" class="btn-categoria active bg-fruki-darkGreen text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm">Todos os Produtos</button>
-            <button onclick="filtrarCategoria('refrigerantes')" class="btn-categoria bg-white text-gray-700 hover:bg-gray-100 text-xs font-semibold px-4 py-2 rounded-xl border border-gray-200 transition">Refrigerantes</button>
-            <button onclick="filtrarCategoria('aguas')" class="btn-categoria bg-white text-gray-700 hover:bg-gray-100 text-xs font-semibold px-4 py-2 rounded-xl border border-gray-200 transition">Água da Pedra</button>
-            <button onclick="filtrarCategoria('energeticos')" class="btn-categoria bg-white text-gray-700 hover:bg-gray-100 text-xs font-semibold px-4 py-2 rounded-xl border border-gray-200 transition">Energéticos Elev</button>
-            <button onclick="filtrarCategoria('sucos')" class="btn-categoria bg-white text-gray-700 hover:bg-gray-100 text-xs font-semibold px-4 py-2 rounded-xl border border-gray-200 transition">Sucos & Frukito</button>
+        <!-- GRELHA DE PRODUTOS -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4" id="grelha-produtos">
+            <!-- Injetado dinamicamente via JS -->
         </div>
-    </div>
+    </section>
 
-    <!-- PRODUCTS GRID (DYNAMICALLY POPULATED) -->
-    <div id="gridProdutos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <!-- Loading Spinner State -->
-        <div class="col-span-full text-center py-16">
-            <i class="fa-solid fa-circle-notch fa-spin text-4xl text-fruki-green mb-3"></i>
-            <p class="text-sm text-gray-500 font-medium">Carregando catálogo com inteligência analítica do Databricks...</p>
-        </div>
-    </div>
 </main>
 
-<!-- WHATSAPP FLOATING WIDGET / NOTIFICATION SIMULATOR -->
-<div id="whatsappPopup" class="fixed bottom-6 right-6 z-50 max-w-sm w-full bg-white rounded-3xl shadow-2xl border-2 border-green-500 overflow-hidden transform transition-all duration-300 translate-y-0 animate-float hidden md:block">
-    <!-- WhatsApp Header -->
-    <div class="bg-[#075e54] text-white p-3.5 flex justify-between items-center">
-        <div class="flex items-center space-x-3">
-            <div class="relative">
-                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-fruki-green font-bold text-xl shadow-md">
-                    <i class="fa-brands fa-whatsapp text-2xl text-[#25d366]"></i>
-                </div>
-                <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-[#075e54] rounded-full"></span>
-            </div>
-            <div>
-                <h4 class="font-bold text-xs tracking-wide">Fruki Inteligência B2B</h4>
-                <p class="text-[10px] text-green-200">Notificação Inteligente • Agora</p>
-            </div>
-        </div>
-        <button onclick="fecharWhatsapp()" class="text-white/70 hover:text-white text-sm p-1">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
+<!-- DRAWER LATERAL DO CARRINHO B2B -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="carrinhoDrawer" aria-labelledby="carrinhoDrawerLabel">
+    <div class="offcanvas-header py-3">
+        <h5 class="offcanvas-title fw-bold d-flex align-items-center gap-2" id="carrinhoDrawerLabel">
+            <i class="fa-solid fa-cart-flatbed text-warning"></i> Resumo do Pedido B2B
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
     </div>
 
-    <!-- WhatsApp Body Message -->
-    <div class="p-4 bg-[#ece5dd] text-gray-800 text-xs space-y-3 relative">
-        <!-- Message Bubble -->
-        <div class="bg-white p-3.5 rounded-2xl rounded-tl-none shadow-sm space-y-2 border border-gray-200">
-            <div class="flex items-center justify-between text-[10px] text-gray-400 font-semibold">
-                <span><i class="fa-solid fa-robot text-fruki-green"></i> Recomendador Automático</span>
-                <span id="horaAtualMsg">21:58</span>
-            </div>
-            <p class="leading-relaxed text-gray-700">
-                <strong class="text-fruki-darkGreen">Olá Lojista!</strong> ☀️ A previsão indica <strong>31°C neste fim de semana</strong> combinada com a rodada do futebol!
-            </p>
-            <p class="text-gray-600">
-                Seu estoque de <span class="bg-yellow-100 font-bold px-1 rounded">Guaraná Fruki 2L</span> pode acabar antes de domingo. Recomendamos reforçar o pedido agora!
-            </p>
+    <div class="offcanvas-body" id="itens-carrinho-container">
+        <div class="text-center text-muted py-5">
+            <i class="fa-solid fa-basket-shopping fs-1 mb-3 text-black-50"></i>
+            <p>Seu carrinho está vazio no momento.</p>
         </div>
+    </div>
 
-        <!-- CTA Button inside WhatsApp -->
-        <button onclick="aplicarRecomendacaoWhatsapp()" class="w-full bg-[#25d366] hover:bg-[#1ebd59] text-white font-bold py-2.5 rounded-xl shadow-md flex items-center justify-center space-x-2 transition text-xs">
-            <i class="fa-solid fa-bolt text-yellow-200"></i>
-            <span>Ver Ofertas Recomendadas</span>
+    <div class="offcanvas-footer">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="text-muted">Tabela Regional:</span>
+            <span class="fw-bold text-dark">TABELA_VIP_RS</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="fs-5 fw-bold text-dark">Total Estimado:</span>
+            <span class="fs-4 fw-extrabold text-success" id="total-carrinho-valor">R$ 0,00</span>
+        </div>
+        <button onclick="enviarPedidoWhatsApp()" id="btn-finalizar-whatsapp" disabled class="btn btn-success btn-lg w-100 font-weight-bold d-flex align-items-center justify-content-center gap-2 py-3 shadow">
+            <i class="fa-brands fa-whatsapp fs-4"></i>
+            <span>Enviar Pedido via WhatsApp</span>
         </button>
     </div>
 </div>
 
-<!-- CART SIDEBAR DRAWER -->
-<div id="cartDrawer" class="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm transition-opacity opacity-0 pointer-events-none duration-300">
-    <div class="fixed right-0 top-0 bottom-0 max-w-md w-full bg-white shadow-2xl flex flex-col justify-between transform translate-x-full transition-transform duration-300" id="cartContent">
-
-        <!-- Cart Header -->
-        <div class="p-6 bg-fruki-darkGreen text-white flex justify-between items-center shadow-md">
-            <div class="flex items-center space-x-3">
-                <i class="fa-solid fa-boxes-packing text-2xl text-fruki-accent"></i>
-                <div>
-                    <h3 class="font-extrabold text-lg">Resumo do Pedido B2B</h3>
-                    <p class="text-xs text-green-200">Fruki Bebidas - Direto da Fábrica</p>
-                </div>
+<!-- RODAPÉ INSTITUCIONAL DA FRUKI S.A. -->
+<footer class="footer-fruki">
+    <div class="container">
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <h5 class="text-success"><i class="fa-solid fa-building me-2"></i>Fruki Bebidas S.A.</h5>
+                <p class="small leading-relaxed mb-2">Tradição, inovação e paixão por produzir as bebidas preferidas dos gaúchos e catarinenses.</p>
+                <p class="small text-white-50">CNPJ: <strong>87.315.099/0001-07</strong></p>
             </div>
-            <button onclick="toggleCarrinho()" class="text-white/80 hover:text-white p-2 text-xl">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-
-        <!-- Cart Items List -->
-        <div id="cartItemList" class="p-6 overflow-y-auto flex-grow space-y-4">
-            <div class="text-center py-12 text-gray-400">
-                <i class="fa-solid fa-basket-shopping text-4xl mb-2 text-gray-300"></i>
-                <p class="text-sm">Seu carrinho de compras B2B está vazio.</p>
+            <div class="col-md-4">
+                <h5><i class="fa-solid fa-headset me-2"></i>Atendimento ao Cliente</h5>
+                <ul class="list-unstyled small space-y-2">
+                    <li class="mb-2"><i class="fa-solid fa-phone text-success me-2"></i><strong>0800 703 9910</strong></li>
+                    <li class="mb-2"><i class="fa-solid fa-envelope text-success me-2"></i>contato@fruki.com.br</li>
+                    <li class="mb-2"><i class="fa-solid fa-clock text-success me-2"></i>Segunda a Sexta, das 9h às 12h e das 13h às 17h</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5><i class="fa-solid fa-wine-bottle me-2"></i>Marcas do Portfólio</h5>
+                <p class="small text-white-50">Refrigerantes Fruki • Energético Elev • Água da Pedra • Cervejaria Bellavista • Refrescos Frukito • Sucos COM/TEM</p>
             </div>
         </div>
-
-        <!-- Cart Footer Summary & Checkout -->
-        <div class="p-6 bg-gray-50 border-t border-gray-200 space-y-4">
-            <div class="space-y-1 text-xs text-gray-600">
-                <div class="flex justify-between">
-                    <span>Subtotal da Carga:</span>
-                    <span id="cartSubtotal" class="font-bold text-gray-800">R$ 0,00</span>
-                </div>
-                <div class="flex justify-between">
-                    <span>Desconto B2B Inteligente:</span>
-                    <span id="cartDesconto" class="font-bold text-green-600">R$ 0,00</span>
-                </div>
-                <div class="flex justify-between text-sm font-black text-gray-900 pt-2 border-t border-gray-200">
-                    <span>Total Final:</span>
-                    <span id="cartTotal" class="text-lg text-fruki-darkGreen">R$ 0,00</span>
-                </div>
-            </div>
-
-            <button onclick="finalizarPedido()" class="w-full bg-fruki-green hover:bg-green-600 text-white font-extrabold py-3.5 rounded-2xl shadow-lg flex items-center justify-center space-x-2 transition">
-                <i class="fa-solid fa-check-circle"></i>
-                <span>Enviar Pedido para Faturamento</span>
-            </button>
+        <hr class="border-secondary my-4">
+        <div class="text-center small text-white-50">
+            &copy; 2026 Fruki Bebidas S.A. Todos os direitos reservados. Ecossistema B2B Pede Fruki.
         </div>
-
-    </div>
-</div>
-
-<!-- FOOTER -->
-<footer class="bg-fruki-deepGreen text-green-200 py-8 px-4 sm:px-6 lg:px-8 border-t-4 border-fruki-green mt-12">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
-        <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 bg-white fruki-leaf-shape flex items-center justify-center">
-                <i class="fa-solid fa-leaf text-fruki-green text-sm"></i>
-            </div>
-            <div>
-                <p class="font-bold text-white text-sm">Fruki Bebidas S.A.</p>
-                <p class="text-green-300">Integrado ao Databricks Gold & Supabase PostgreSQL</p>
-            </div>
-        </div>
-        <p>© 2026 Fruki Bebidas. Todos os direitos reservados. Projeto B2B Analytics.</p>
     </div>
 </footer>
 
-<!-- JAVASCRIPT LOGIC & DATABRICKS DATA INTEGRATION -->
+<!-- Bootstrap 5 Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- LÓGICA DO CATÁLOGO E CARRINHO -->
 <script>
-    // MOCK DATABASE & DATABRICKS RECOMMENDATION SCORES
-    const CATALOGO_PRODUTOS = [
-        {
-            id: 1,
-            codItem: "1",
-            nome: "Guaraná Fruki 2 Litros",
-            categoria: "refrigerantes",
-            preco: 6.89,
-            imagem: "https://placehold.co/400x400/00a84f/ffffff?text=Guaran%C3%A1+Fruki+2L",
-            descricao: "O sabor inconfundível do Guaraná Fruki em embalagem pet 2L.",
-            scoreDefault: 11094370,
-            destaque: true
-        },
-        {
-            id: 13,
-            codItem: "13",
-            nome: "Água da Pedra Sem Gás 500ml",
-            categoria: "aguas",
-            preco: 1.85,
-            imagem: "https://placehold.co/400x400/0284c7/ffffff?text=%C3%81gua+da+Pedra+500ml",
-            descricao: "Água mineral natural com leveza e pureza única da serra.",
-            scoreDefault: 16921186,
-            destaque: true
-        },
-        {
-            id: 35,
-            codItem: "35",
-            nome: "Energético Elev Energy Drink 2L",
-            categoria: "energeticos",
-            preco: 11.90,
-            imagem: "https://placehold.co/400x400/7c3aed/ffffff?text=Elev+Energy+2L",
-            descricao: "Energia máxima para o seu dia com sabor refrescante.",
-            scoreDefault: 14475934,
-            destaque: true
-        },
-        {
-            id: 3,
-            codItem: "3",
-            nome: "Fruki Guaraná Zero 2 Litros",
-            categoria: "refrigerantes",
-            preco: 6.89,
-            imagem: "https://placehold.co/400x400/046a33/ffffff?text=Guaran%C3%A1+Zero+2L",
-            descricao: "Zero açúcares e zero calorias com o mesmo sabor original.",
-            scoreDefault: 14345907,
-            destaque: false
-        },
-        {
-            id: 5,
-            codItem: "5",
-            nome: "Suco Fruki Laranja 1 Litro",
-            categoria: "sucos",
-            preco: 7.49,
-            imagem: "https://placehold.co/400x400/ea580c/ffffff?text=Suco+Fruki+Laranja",
-            descricao: "Suco 100% fruta, sem adição de conservantes artificiais.",
-            scoreDefault: 13419376,
-            destaque: false
-        },
-        {
-            id: 36,
-            codItem: "36",
-            nome: "Frukito Frutas Sabor Maçã 500ml",
-            categoria: "sucos",
-            preco: 3.29,
-            imagem: "https://placehold.co/400x400/dc2626/ffffff?text=Frukito+Ma%C3%A7%C3%A3",
-            descricao: "Bebida leve e saborosa com sabor natural de fruta.",
-            scoreDefault: 12936709,
-            destaque: false
-        },
-        {
-            id: 23,
-            codItem: "23",
-            nome: "Fruki Cola 2 Litros",
-            categoria: "refrigerantes",
-            preco: 6.59,
-            imagem: "https://placehold.co/400x400/18181b/ffffff?text=Fruki+Cola+2L",
-            descricao: "Sabor marcante e borbulhante para acompanhar qualquer refeição.",
-            scoreDefault: 12195781,
-            destaque: false
-        },
-        {
-            id: 65,
-            codItem: "65",
-            nome: "Água da Pedra Com Gás 500ml",
-            categoria: "aguas",
-            preco: 1.95,
-            imagem: "https://placehold.co/400x400/0369a1/ffffff?text=%C3%81gua+da+Pedra+G%C3%A1s",
-            descricao: "Gás na medida certa para refrescar com elegância.",
-            scoreDefault: 12122287,
-            destaque: false
-        }
+    // Banco de Dados Mock do Portfólio Fruki S.A.
+    const produtosFruki = [
+        { id: 1, nome: "Fruki Guaraná 2L", categoria: "Refrigerantes", preco: 7.49, descricao: "Fardo com 6 unidades PET 2 Litros.", imagem: "https://fruki.com.br/wp-content/uploads/2021/05/fruki-guarana-2l.png", recomendado: false },
+        { id: 2, nome: "Fruki Guaraná com Bergamota 2L", categoria: "Refrigerantes", preco: 7.99, descricao: "Edição limitada tradicional gaúcha com suco natural.", imagem: "https://fruki.com.br/wp-content/uploads/2022/10/fruki-berga.png", recomendado: true, badge: "Mais Vendido RS" },
+        { id: 3, nome: "Fruki Guaraná Zero 2L", categoria: "Refrigerantes", preco: 7.49, descricao: "Sabor autêntico sem adição de açúcares.", imagem: "https://fruki.com.br/wp-content/uploads/2021/05/fruki-guarana-zero-2l.png", recomendado: false },
+        { id: 4, nome: "Fruki Laranja 2L", categoria: "Refrigerantes", preco: 7.29, descricao: "Refrescante e com intenso sabor natural.", imagem: "https://fruki.com.br/wp-content/uploads/2021/05/fruki-laranja-2l.png", recomendado: false },
+        { id: 5, nome: "Elev Energy Drink 473ml", categoria: "Energéticos", preco: 5.99, descricao: "Energia pura com taurina e cafeína.", imagem: "https://fruki.com.br/wp-content/uploads/2022/05/elev-original.png", recomendado: true, badge: "Alta Margem PDV" },
+        { id: 6, nome: "Elev Energy Drink Zero 269ml", categoria: "Energéticos", preco: 4.49, descricao: "Versão sem açúcar em lata compacta.", imagem: "https://fruki.com.br/wp-content/uploads/2022/05/elev-zero.png", recomendado: false },
+        { id: 7, nome: "Água da Pedra Sem Gás 500ml (c/ 12)", categoria: "Águas", preco: 22.90, descricao: "Fardo c/ 12 garrafas. Líder Top of Mind.", imagem: "https://fruki.com.br/wp-content/uploads/2021/05/agua-da-pedra.png", recomendado: true, badge: "Essencial Giro Rápido" },
+        { id: 8, nome: "Água da Pedra Com Gás 500ml (c/ 12)", categoria: "Águas", preco: 23.90, descricao: "Fardo c/ 12 garrafas com leve gasificação.", imagem: "https://fruki.com.br/wp-content/uploads/2021/05/agua-da-pedra-com-gas.png", recomendado: false },
+        { id: 9, nome: "Cerveja Bellavista Premium Lager 473ml", categoria: "Cervejas", preco: 5.90, descricao: "Cerveja puro malte leve e refrescante.", imagem: "https://fruki.com.br/wp-content/uploads/2021/05/bellavista-lager.png", recomendado: false },
+        { id: 10, nome: "Refresco Frukito Uva 2L", categoria: "Refrescos", preco: 5.49, descricao: "Refresco sabor uva enriquecido com vitaminas.", imagem: "https://fruki.com.br/wp-content/uploads/2021/05/frukito-uva.png", recomendado: false },
+        { id: 11, nome: "Suco COM/TEM Laranja 1L", categoria: "Sucos", preco: 12.90, descricao: "Suco 100% integral sem conservantes.", imagem: "https://fruki.com.br/wp-content/uploads/2021/05/comtem-laranja.png", recomendado: false },
+        { id: 12, nome: "Fruki Citrus Lata 350ml (c/ 12)", categoria: "Refrigerantes", preco: 32.90, descricao: "Pack com 12 latas sabor Citrus equilibrado.", imagem: "https://fruki.com.br/wp-content/uploads/2021/05/fruki-citrus.png", recomendado: false }
     ];
 
-    // DATABRICKS CLIENT RECOMMENDATION MAP (SIMULATION/FALLBACK)
-    const RECOMENDACOES_CLIENTES = {
-        "41": [
-            { codItem: "13", score: 16921186, qtdComprada: 4682, valorGasto: 107096.12 },
-            { codItem: "35", score: 14475934, qtdComprada: 3580, valorGasto: 102666.20 },
-            { codItem: "3",  score: 14345907, qtdComprada: 4018, valorGasto: 91375.21 },
-            { codItem: "1",  score: 10941994, qtdComprada: 4057, valorGasto: 67128.80 }
-        ],
-        "48": [
-            { codItem: "13", score: 18900000, qtdComprada: 5200, valorGasto: 120000.00 },
-            { codItem: "65", score: 15400000, qtdComprada: 4100, valorGasto: 98000.00 }
-        ],
-        "81": [
-            { codItem: "35", score: 17500000, qtdComprada: 3900, valorGasto: 110000.00 },
-            { codItem: "1",  score: 16200000, qtdComprada: 4800, valorGasto: 89000.00 }
-        ]
-    };
-
     let carrinho = [];
-    let clienteAtualId = "41";
 
-    // INITIALIZATION
-    document.addEventListener("DOMContentLoaded", () => {
-        carregarCatalogo();
-        atualizarHoraWhatsapp();
-    });
+    // Renderiza os cards de recomendação
+    function renderizarRecomendacoes() {
+        const container = document.getElementById('container-recomendacoes');
+        const recomendados = produtosFruki.filter(p => p.recomendado);
 
-    // WHATSAPP TIME UPDATER FUNCTION
-    function atualizarHoraWhatsapp() {
-        const agora = new Date();
-        const hs = String(agora.getHours()).padStart(2, '0');
-        const ms = String(agora.getMinutes()).padStart(2, '0');
-        const elem = document.getElementById("horaAtualMsg");
-        if (elem) {
-            elem.innerText = `${hs}:${ms}`;
-        }
-    }
-
-    // FETCH DATA (WITH SPRING BOOT / DATABRICKS API FALLBACK)
-    async function carregarCatalogo() {
-        const grid = document.getElementById("gridProdutos");
-        let dadosRecomendacao = RECOMENDACOES_CLIENTES[clienteAtualId] || [];
-
-        try {
-            // Tenta consumir a API Spring Boot real se estiver online
-            const response = await fetch(`http://localhost:8080/api/v1/recomendacoes/${clienteAtualId}`);
-            if (response.ok) {
-                const jsonApi = await response.json();
-                if (jsonApi.length > 0) {
-                    dadosRecomendacao = jsonApi.map(item => ({
-                        codItem: String(item.codItem),
-                        score: item.scoreRecomendacao,
-                        qtdComprada: item.totalQuantidadeComprada,
-                        valorGasto: item.valorTotalGasto
-                    }));
-                    document.getElementById("badgeDatasource").innerHTML = `<i class="fa-solid fa-circle-check text-green-400 mr-1"></i> API Spring Boot Online`;
-                }
-            }
-        } catch (e) {
-            // Mantém o mock analítico silenciosamente se o servidor não responder
-        }
-
-        renderizarProdutos(dadosRecomendacao);
-    }
-
-    // RENDER PRODUCTS GRID
-    function renderizarProdutos(recomendacoes, categoriaFiltro = 'todos') {
-        const grid = document.getElementById("gridProdutos");
-        grid.innerHTML = "";
-
-        const produtosFiltrados = CATALOGO_PRODUTOS.filter(p =>
-            categoriaFiltro === 'todos' || p.categoria === categoriaFiltro
-        );
-
-        produtosFiltrados.forEach(prod => {
-            // Cruzar com os dados analíticos do Databricks
-            const infoAnalitica = recomendacoes.find(r => r.codItem === prod.codItem);
-            const scoreExibicao = infoAnalitica ? infoAnalitica.score : prod.scoreDefault;
-            const ehRecomendado = infoAnalitica || prod.destaque;
-
-            const cardHtml = `
-                    <div class="glass-card rounded-3xl p-5 flex flex-col justify-between shadow-lg hover:shadow-xl transition duration-300 border border-gray-200 relative group overflow-hidden">
-
-                        ${ehRecomendado ? `
-                            <div class="absolute top-3 right-3 z-10 bg-fruki-green text-white text-[10px] font-black px-3 py-1 rounded-full shadow-md flex items-center space-x-1">
-                                <i class="fa-solid fa-star text-fruki-accent"></i>
-                                <span>RECOMENDADO DATABRICKS</span>
-                            </div>
-                        ` : ''}
-
-                        <div>
-                            <!-- Product Image -->
-                            <div class="relative w-full h-44 rounded-2xl overflow-hidden bg-gray-100 mb-4 flex items-center justify-center border border-gray-100">
-                                <img src="${prod.imagem}" alt="${prod.nome}" class="object-cover w-full h-full group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/400x400/00a84f/ffffff?text=Fruki+Bebidas'">
-                            </div>
-
-                            <!-- Title & Category -->
-                            <span class="text-[10px] uppercase font-bold tracking-widest text-fruki-darkGreen bg-green-50 px-2 py-0.5 rounded-md">
-                                Código #${prod.codItem}
-                            </span>
-                            <h3 class="font-extrabold text-base text-gray-900 mt-1">${prod.nome}</h3>
-                            <p class="text-xs text-gray-500 mt-1 line-clamp-2">${prod.descricao}</p>
+        container.innerHTML = recomendados.map(p => `
+                <div class="col">
+                    <div class="card card-produto h-100 shadow-sm border-0">
+                        <div class="card-img-container">
+                            <span class="badge-destaque">${p.badge}</span>
+                            <img src="${p.imagem}" alt="${p.nome}" onerror="this.src='https://placehold.co/200x200/006633/ffffff?text=Fruki+Bebidas'">
                         </div>
-
-                        <div class="mt-4 pt-3 border-t border-gray-100 space-y-3">
-                            <!-- Analytics Score Tag -->
-                            <div class="bg-gray-50 rounded-xl p-2 flex justify-between items-center text-[11px]">
-                                <span class="text-gray-500 font-medium">Score Inteligência:</span>
-                                <span class="font-extrabold text-fruki-darkGreen">${Math.round(scoreExibicao / 1000).toLocaleString('pt-BR')}k pts</span>
+                        <div class="card-body p-4 d-flex flex-column justify-between">
+                            <div>
+                                <span class="badge bg-light text-success fw-bold mb-2">${p.categoria}</span>
+                                <h5 class="fw-bold text-dark mb-1">${p.nome}</h5>
+                                <p class="text-muted small mb-3">${p.descricao}</p>
                             </div>
-
-                            <!-- Price & Add Button -->
-                            <div class="flex items-center justify-between">
+                            <div class="d-flex align-items-center justify-content-between pt-3 border-top">
                                 <div>
-                                    <span class="text-[10px] text-gray-400 font-semibold block">Caixa C/ 12 un</span>
-                                    <span class="text-lg font-black text-gray-900">R$ ${(prod.preco * 12).toFixed(2).replace('.', ',')}</span>
+                                    <span class="text-muted fs-7 block">Preço B2B</span>
+                                    <span class="fs-5 fw-extrabold text-success">R$ ${p.preco.toFixed(2).replace('.', ',')}</span>
                                 </div>
-                                <button onclick="adicionarAoCarrinho(${prod.id})" class="bg-fruki-darkGreen hover:bg-fruki-green text-white font-bold p-3 rounded-2xl transition shadow-md flex items-center space-x-2">
-                                    <i class="fa-solid fa-cart-plus"></i>
-                                    <span class="text-xs">Adicionar</span>
+                                <button onclick="adicionarAoCarrinho(${p.id})" class="btn btn-fruki d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span>Adicionar</span>
                                 </button>
                             </div>
                         </div>
-
                     </div>
-                `;
-            grid.innerHTML += cardHtml;
-        });
+                </div>
+            `).join('');
     }
 
-    // CART LOGIC
-    function adicionarAoCarrinho(produtoId) {
-        const produto = CATALOGO_PRODUTOS.find(p => p.id === produtoId);
-        const itemExistente = carrinho.find(item => item.id === produtoId);
+    // Renderiza o catálogo completo com filtros
+    function renderizarCatalogo(categoriaFiltro = 'todos') {
+        const grelha = document.getElementById('grelha-produtos');
+        const produtosFiltrados = categoriaFiltro === 'todos'
+            ? produtosFruki
+            : produtosFruki.filter(p => p.categoria === categoriaFiltro);
+
+        grelha.innerHTML = produtosFiltrados.map(p => `
+                <div class="col">
+                    <div class="card card-produto h-100 shadow-sm">
+                        <div class="card-img-container">
+                            <img src="${p.imagem}" alt="${p.nome}" onerror="this.src='https://placehold.co/200x200/006633/ffffff?text=Fruki'">
+                        </div>
+                        <div class="card-body p-3 d-flex flex-column justify-between">
+                            <div>
+                                <span class="badge bg-secondary-subtle text-secondary mb-2 fs-7">${p.categoria}</span>
+                                <h6 class="fw-bold text-dark mb-1">${p.nome}</h6>
+                                <p class="text-muted small mb-3 text-truncate">${p.descricao}</p>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                                <span class="fs-6 fw-bold text-success">R$ ${p.preco.toFixed(2).replace('.', ',')}</span>
+                                <button onclick="adicionarAoCarrinho(${p.id})" class="btn btn-sm btn-fruki">
+                                    <i class="fa-solid fa-cart-plus me-1"></i> Pedir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    // Filtra por Categoria
+    function filtrarProdutos(categoria) {
+        document.querySelectorAll('#filtros-categoria .btn-categoria').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        renderizarCatalogo(categoria);
+    }
+
+    // Adiciona Item ao Carrinho
+    function adicionarAoCarrinho(id) {
+        const produto = produtosFruki.find(p => p.id === id);
+        const itemExistente = carrinho.find(item => item.id === id);
 
         if (itemExistente) {
             itemExistente.quantidade += 1;
@@ -581,130 +486,100 @@
             carrinho.push({ ...produto, quantidade: 1 });
         }
 
-        atualizarCarrinhoUI();
-        toggleCarrinho(true); // Abre o drawer
+        atualizarCarrinhoDrawer();
     }
 
-    function alterarQuantidade(produtoId, delta) {
-        const item = carrinho.find(i => i.id === produtoId);
-        if (!item) return;
-
-        item.quantidade += delta;
-        if (item.quantidade <= 0) {
-            carrinho = carrinho.filter(i => i.id !== produtoId);
+    // Altera Quantidade no Carrinho
+    function alterarQuantidade(id, delta) {
+        const item = carrinho.find(i => i.id === id);
+        if (item) {
+            item.quantidade += delta;
+            if (item.quantidade <= 0) {
+                carrinho = carrinho.filter(i => i.id !== id);
+            }
         }
-        atualizarCarrinhoUI();
+        atualizarCarrinhoDrawer();
     }
 
-    function atualizarCarrinhoUI() {
-        const listContainer = document.getElementById("cartItemList");
-        const countBadge = document.getElementById("cartCount");
-        const subtotalElem = document.getElementById("cartSubtotal");
-        const descontoElem = document.getElementById("cartDesconto");
-        const totalElem = document.getElementById("cartTotal");
+    // Atualiza a View do Drawer e Totais
+    function atualizarCarrinhoDrawer() {
+        const container = document.getElementById('itens-carrinho-container');
+        const totalValorEl = document.getElementById('total-carrinho-valor');
+        const badgeTotalItens = document.getElementById('badge-total-itens');
+        const btnFinalizar = document.getElementById('btn-finalizar-whatsapp');
 
-        const totalItens = carrinho.reduce((sum, item) => sum + item.quantidade, 0);
-        countBadge.innerText = totalItens;
+        const totalItens = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
+        badgeTotalItens.innerText = totalItens;
 
         if (carrinho.length === 0) {
-            listContainer.innerHTML = `
-                    <div class="text-center py-12 text-gray-400">
-                        <i class="fa-solid fa-basket-shopping text-4xl mb-2 text-gray-300"></i>
-                        <p class="text-sm">Seu carrinho de compras B2B está vazio.</p>
+            container.innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <i class="fa-solid fa-basket-shopping fs-1 mb-3 text-black-50"></i>
+                        <p>Seu carrinho está vazio no momento.</p>
                     </div>
                 `;
-            subtotalElem.innerText = "R$ 0,00";
-            descontoElem.innerText = "R$ 0,00";
-            totalElem.innerText = "R$ 0,00";
+            totalValorEl.innerText = "R$ 0,00";
+            btnFinalizar.disabled = true;
             return;
         }
 
-        let subtotal = 0;
-        listContainer.innerHTML = "";
-
-        carrinho.forEach(item => {
-            const precoCaixa = item.preco * 12;
-            const itemTotal = precoCaixa * item.quantidade;
-            subtotal += itemTotal;
-
-            listContainer.innerHTML += `
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-2xl border border-gray-200">
-                        <div class="flex items-center space-x-3">
-                            <img src="${item.imagem}" class="w-12 h-12 rounded-xl object-cover border border-gray-200">
+        let totalGeral = 0;
+        container.innerHTML = carrinho.map(item => {
+            const subtotal = item.preco * item.quantidade;
+            totalGeral += subtotal;
+            return `
+                    <div class="d-flex align-items-center justify-content-between py-3 border-bottom">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="${item.imagem}" alt="${item.nome}" style="width: 45px; height: 45px; object-fit: contain;">
                             <div>
-                                <h4 class="font-extrabold text-xs text-gray-900">${item.nome}</h4>
-                                <span class="text-[10px] text-gray-500">Caixa 12x • R$ ${precoCaixa.toFixed(2).replace('.', ',')}</span>
+                                <h6 class="fw-bold text-dark mb-0 fs-7">${item.nome}</h6>
+                                <span class="text-muted small">R$ ${item.preco.toFixed(2).replace('.', ',')} un.</span>
                             </div>
                         </div>
-
-                        <div class="flex items-center space-x-2">
-                            <button onclick="alterarQuantidade(${item.id}, -1)" class="w-7 h-7 bg-white border rounded-lg text-gray-600 font-bold hover:bg-gray-100 flex items-center justify-center">-</button>
-                            <span class="text-xs font-bold w-4 text-center">${item.quantidade}</span>
-                            <button onclick="alterarQuantidade(${item.id}, 1)" class="w-7 h-7 bg-fruki-darkGreen text-white rounded-lg font-bold hover:bg-fruki-green flex items-center justify-center">+</button>
+                        <div class="d-flex align-items-center gap-2">
+                            <button onclick="alterarQuantidade(${item.id}, -1)" class="btn btn-sm btn-light border px-2 py-0 font-weight-bold">-</button>
+                            <span class="fw-bold px-1">${item.quantidade}</span>
+                            <button onclick="alterarQuantidade(${item.id}, 1)" class="btn btn-sm btn-light border px-2 py-0 font-weight-bold">+</button>
                         </div>
                     </div>
                 `;
-        });
+        }).join('');
 
-        // Desconto B2B simulado (5% se valor > R$ 500)
-        const desconto = subtotal > 500 ? subtotal * 0.05 : 0;
-        const totalFinal = subtotal - desconto;
-
-        subtotalElem.innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
-        descontoElem.innerText = `- R$ ${desconto.toFixed(2).replace('.', ',')}`;
-        totalElem.innerText = `R$ ${totalFinal.toFixed(2).replace('.', ',')}`;
+        totalValorEl.innerText = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+        btnFinalizar.disabled = false;
     }
 
-    function toggleCarrinho(forceOpen = false) {
-        const drawer = document.getElementById("cartDrawer");
-        const content = document.getElementById("cartContent");
-
-        if (forceOpen || drawer.classList.contains("pointer-events-none")) {
-            drawer.classList.remove("pointer-events-none", "opacity-0");
-            content.classList.remove("translate-x-full");
-        } else {
-            drawer.classList.add("opacity-0", "pointer-events-none");
-            content.classList.add("translate-x-full");
-        }
-    }
-
-    function finalizarPedido() {
+    // Simula o Envio do Pedido via WhatsApp
+    function enviarPedidoWhatsApp() {
         if (carrinho.length === 0) return;
-        alert("🚀 Pedido B2B enviado com sucesso! A equipe comercial da Fruki entrará em contato para liberar o faturamento.");
-        carrinho = [];
-        atualizarCarrinhoUI();
-        toggleCarrinho();
-    }
 
-    // CATEGORY FILTERING
-    function filtrarCategoria(cat) {
-        document.querySelectorAll('.btn-categoria').forEach(btn => {
-            btn.classList.remove('bg-fruki-darkGreen', 'text-white');
-            btn.classList.add('bg-white', 'text-gray-700');
+        let mensagem = `🛒 *NOVO PEDIDO B2B - PEDE FRUKI*\n`;
+        mensagem += `👤 Lojista: *Vitória*\n`;
+        mensagem += `📍 Região: *Porto Alegre - RS*\n`;
+        mensagem += `🏷️ Tabela: *TABELA_VIP_RS*\n\n`;
+        mensagem += `*Itens do Pedido:*\n`;
+
+        let totalGeral = 0;
+        carrinho.forEach(item => {
+            const subtotal = item.preco * item.quantidade;
+            totalGeral += subtotal;
+            mensagem += `• ${item.quantidade}x ${item.nome} - R$ ${subtotal.toFixed(2).replace('.', ',')}\n`;
         });
-        event.target.classList.add('bg-fruki-darkGreen', 'text-white');
-        event.target.classList.remove('bg-white', 'text-gray-700');
 
-        carregarCatalogo();
+        mensagem += `\n💰 *Total Estimado: R$ ${totalGeral.toFixed(2).replace('.', ',')}*\n`;
+        mensagem += `_Enviado via Catálogo Web Seguro Pede Fruki._`;
+
+        const telefoneAtendimento = "5551988887777";
+        const url = `https://api.whatsapp.com/send?phone=${telefoneAtendimento}&text=${encodeURIComponent(mensagem)}`;
+
+        window.open(url, '_blank');
     }
 
-    // CLIENT SWITCHER
-    function trocarCliente(novoId) {
-        clienteAtualId = novoId;
-        carregarCatalogo();
-    }
-
-    // WHATSAPP POPUP ACTIONS
-    function fecharWhatsapp() {
-        document.getElementById("whatsappPopup").classList.add("hidden");
-    }
-
-    function aplicarRecomendacaoWhatsapp() {
-        // Adiciona automaticamente Guaraná Fruki 2L e Água da Pedra ao carrinho
-        adicionarAoCarrinho(1);
-        adicionarAoCarrinho(13);
-        fecharWhatsapp();
-    }
+    // Inicialização ao carregar a página
+    window.onload = function() {
+        renderizarRecomendacoes();
+        renderizarCatalogo('todos');
+    };
 </script>
 </body>
 </html>

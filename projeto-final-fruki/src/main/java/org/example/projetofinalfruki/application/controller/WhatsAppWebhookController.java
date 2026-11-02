@@ -1,7 +1,12 @@
 package org.example.projetofinalfruki.application.controller;
 
 import org.example.projetofinalfruki.application.dtos.WhatsAppMessageDTO;
-import org.example.projetofinalfruki.infrastructure.security.JwtService;
+import org.example.projetofinalfruki.domain.service.WhatsAppService;
+import org.example.projetofinalfruki.infrastructure.messaging.whatsapp.WhatsAppBotService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,44 +14,43 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/webhook")
 public class WhatsAppWebhookController {
 
-    private final JwtService jwtService;
+    private static final Logger log = LoggerFactory.getLogger(WhatsAppWebhookController.class);
+    private static final String OK = "Webhook da Evolution API processado com sucesso!";
 
-    public WhatsAppWebhookController(JwtService jwtService) {
-        this.jwtService = jwtService;
+    private final WhatsAppBotService botService;
+    private final WhatsAppService whatsAppService;
+    private final String webhookToken;
+
+    public WhatsAppWebhookController(WhatsAppBotService botService,
+                                     WhatsAppService whatsAppService,
+                                     @Value("${evolution.webhook-token:}") String webhookToken) {
+        this.botService = botService;
+        this.whatsAppService = whatsAppService;
+        this.webhookToken = webhookToken;
     }
 
+    /** Configure na Evolution API o header X-Webhook-Token com o mesmo valor de evolution.webhook-token. */
     @PostMapping("/whatsapp")
-    public ResponseEntity<String> receberMensagemWhatsApp(@RequestBody WhatsAppMessageDTO payload) {
-        try {
-            if (payload != null && payload.getData() != null) {
-                String remetente = payload.getData().getRemoteJid();
-                String nomeCliente = payload.getData().getPushName();
-                String textoMensagem = payload.getData().getMessage() != null ?
-                        payload.getData().getMessage().getConversation() : "";
-
-                System.out.println("📩 Mensagem recebida de " + nomeCliente + " (" + remetente + "): " + textoMensagem);
-
-                // Exemplo: Se o cliente pedir o catálogo, geramos o token JWT seguro com os dados dele
-                if (textoMensagem != null && textoMensagem.toLowerCase().contains("catalogo")) {
-                    // Simulamos a região e tabela de preço associadas ao lojista
-                    String regiao = "Porto Alegre - RS";
-                    String tabelaPreco = "TABELA_VIP_RS";
-
-                    // Gera o token JWT com validade de 2 horas
-                    String tokenJwt = jwtService.gerarTokenCatalogo(remetente, nomeCliente, regiao, tabelaPreco);
-
-                    // Monta o link seguro para enviar de volta no WhatsApp
-                    String linkSeguro = "https://pedefruki.com.br/catalogo?token=" + tokenJwt;
-
-                    System.out.println("🔗 Link seguro gerado para o cliente: " + linkSeguro);
-
-                    // Aqui entraria o envio da mensagem de volta pela Evolution API do WhatsApp
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Erro ao processar webhook: " + e.getMessage());
+    public ResponseEntity<String> receber(@RequestBody WhatsAppMessageDTO payload,
+                                          @RequestHeader(value = "X-Webhook-Token", required = false) String token) {
+        if (!webhookToken.isBlank() && !webhookToken.equals(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token do webhook inválido.");
         }
+        try {
+            var data = payload != null ? payload.getData() : null;
+            if (data == null || data.getKey() == null || data.getKey().isFromMe()) return ResponseEntity.ok(OK);
 
-        return ResponseEntity.ok("Webhook da Evolution API processado com sucesso!");
+            String jid = data.getKey().getRemoteJid();
+            String texto = data.extrairTexto();
+            if (jid == null || jid.endsWith("@g.us") || texto.isBlank()) return ResponseEntity.ok(OK);
+
+            String telefone = jid.split("@")[0];
+            String resposta = botService.processarMensagemRecebida(telefone, texto);
+            whatsAppService.enviarMensagem(telefone, resposta);
+        } catch (Exception e) {
+            // Sempre 200: erro de negócio não pode virar retentativa infinita do webhook
+            log.error("Erro ao processar webhook", e);
+        }
+        return ResponseEntity.ok(OK);
     }
 }
