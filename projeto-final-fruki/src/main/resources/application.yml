@@ -49,7 +49,7 @@ databricks:
 
 app:
   databricks:
-    recomendacao-table: fruki.gold.gold_recomendacao_b2b
+    recomendacao-table: ${DATABRICKS_RECOMENDACAO_TABLE:fruki.gold.gold_recomendacao_b2b}
   catalogo:
     base-url: ${CATALOGO_BASE_URL:http://localhost:8080}
 
