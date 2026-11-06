@@ -24,6 +24,8 @@ export function canonicalCategory(value = '') {
 }
 
 function formatSize(text) {
+  const encodedDecimal = String(text).match(/(\d+)[_-](\d+)\s*l\b/i);
+  if (encodedDecimal) return `${encodedDecimal[1]},${encodedDecimal[2]} L`;
   const match = text.match(/(?:^|\s)(\d+(?:[., ]\d+)?)\s*(ml|l)\b/i);
   if (!match) return '';
   const amount = match[1].replace(/\s/g, ',').replace('.', ',');
@@ -31,9 +33,10 @@ function formatSize(text) {
 }
 
 export function formatProductName(value = '', family = '') {
+  const source = String(value);
   const raw = String(value).replace(/[_-]+/g, ' ').replace(/\.[^.]+$/, '').trim();
   const key = plain(`${family} ${raw}`);
-  const size = formatSize(raw) || formatSize(key);
+  const size = formatSize(source) || formatSize(raw) || formatSize(key);
   const suffix = size ? ` ${size}` : '';
 
   if (/agua/.test(key)) {
@@ -45,9 +48,11 @@ export function formatProductName(value = '', family = '') {
     const style = /ipa/.test(key) ? 'IPA' : /pilsen/.test(key) ? 'Pilsen' : /lager/.test(key) ? 'Lager' : '';
     return `Cerveja Bellavista${style ? ` ${style}` : ''}${suffix}`;
   }
-  if (/guarana/.test(key)) return `Refrigerante Fruki Guaraná${suffix}`;
+  if (/elev|energet|energy/.test(key)) { const flavor = /coco|acai/.test(key) ? 'Coco com A\u00e7ai' : /frutas tropicais/.test(key) ? 'Frutas Tropicais' : /guarana.*maracuja|maracuja.*guarana/.test(key) ? 'Guaran\u00e1 com Maracuj\u00e1' : /maca verde/.test(key) ? 'Ma\u00e7\u00e3 Verde' : /morango.*melancia|melancia.*morango/.test(key) ? 'Morango com Melancia' : /pink limonade|pink lemonade/.test(key) ? 'Pink Lemonade' : /zero/.test(key) ? 'Zero' : /original/.test(key) ? 'Original' : ''; return 'Energ\u00e9tico Elev' + (flavor ? ' ' + flavor : '') + suffix; }
+  if (/guarana/.test(key)) return 'Refrigerante Fruki Guaran\u00e1' + (/zero/.test(key) ? ' Zero' : '') + suffix;
   if (/cola/.test(key)) return `Refrigerante Fruki Cola${suffix}`;
-  if (/elev|energet|energy/.test(key)) return `Energético Elev${/zero/.test(key) ? ' Zero' : ''}${suffix}`;
+  if (/frukito.*uva|uva.*frukito/.test(key)) return 'Refresco Frukito Uva' + suffix;
+  if (/com tem/.test(key)) return 'Suco COM/TEM Laranja' + suffix;
   if (/citrus|frukito/.test(key)) return `Refresco Fruki Citrus${suffix}`;
   if (/tonica/.test(key)) return `Água Tônica Fruki${/zero/.test(key) ? ' Zero' : ''}${suffix}`;
   if (/suco/.test(key)) return `Suco Fruki${suffix}`;

@@ -130,6 +130,7 @@ public class FeriadoService {
                 new FeriadoDTO(LocalDate.of(ano, 10, 12), "Nossa Senhora Aparecida", "NATIONAL", "BR", "Todas"),
                 new FeriadoDTO(LocalDate.of(ano, 11, 2), "Finados", "NATIONAL", "BR", "Todas"),
                 new FeriadoDTO(LocalDate.of(ano, 11, 15), "Proclamação da República", "NATIONAL", "BR", "Todas"),
+                new FeriadoDTO(LocalDate.of(ano, 11, 20), "Dia da Consci\u00eancia Negra", "NATIONAL", "BR", "Todas"),
                 new FeriadoDTO(LocalDate.of(ano, 12, 25), "Natal", "NATIONAL", "BR", "Todas")
         );
     }

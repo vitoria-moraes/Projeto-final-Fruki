@@ -23,22 +23,38 @@ import java.util.Map;
 @Service
 public class MockPedeFrukiService {
 
+    private final FeriadoService feriadoService;
+
+    public MockPedeFrukiService() { this(new FeriadoService()); }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public MockPedeFrukiService(FeriadoService feriadoService) { this.feriadoService = feriadoService; }
+
     private static final List<ProdutoDTO> PRODUTOS_DEMO = List.of(
-            new ProdutoDTO("MOCK-GUARANA-2L", "Refrigerante Fruki Guaraná 2 L", "Refrigerantes", new BigDecimal("8.99")),
-            new ProdutoDTO("MOCK-AGUA-500", "Água Mineral Fruki com gás 500 ml", "Águas", new BigDecimal("3.49")),
-            new ProdutoDTO("MOCK-ELEV-473", "Energético Elev Maçã Verde 473 ml", "Energéticos", new BigDecimal("9.90")),
-            new ProdutoDTO("MOCK-BELLAVISTA-350", "Cerveja Bellavista Pilsen 350 ml", "Cervejas", new BigDecimal("5.49")),
-            new ProdutoDTO("MOCK-CITRUS-1L", "Refresco Fruki Citrus 1 L", "Refrescos", new BigDecimal("6.79"))
+            new ProdutoDTO("MOCK-GUARANA-2L", "Fruki Guarana 2L", "Refrigerantes", new BigDecimal("7.49")),
+            new ProdutoDTO("MOCK-AGUA-PEDRA-500", "Agua da Pedra 500ml", "Aguas", new BigDecimal("2.29")),
+            new ProdutoDTO("MOCK-ELEV-473", "Elev Energy Drink 473ml", "Energeticos", new BigDecimal("5.99")),
+            new ProdutoDTO("MOCK-BELLAVISTA-473", "Cerveja Bellavista Pilsen 473ml", "Cervejas", new BigDecimal("5.90")),
+            new ProdutoDTO("MOCK-SUCO-COMTEM-1L", "Suco COM/TEM Laranja 1L", "Sucos", new BigDecimal("12.90")),
+            new ProdutoDTO("MOCK-COLA-2L", "Fruki Cola 2L", "Refrigerantes", new BigDecimal("7.29")),
+            new ProdutoDTO("MOCK-GUARANA-ZERO-2L", "Fruki Guarana Zero 2L", "Refrigerantes", new BigDecimal("7.49")),
+            new ProdutoDTO("MOCK-AGUA-PEDRA-GAS-500", "Agua da Pedra com Gas 500ml", "Aguas", new BigDecimal("2.49")),
+            new ProdutoDTO("MOCK-TONICA-350", "Tonica Fruki 350ml", "Tonicas", new BigDecimal("3.49")),
+            new ProdutoDTO("MOCK-FRUKITO-UVA-2L", "Refresco Frukito Uva 2L", "Refrescos", new BigDecimal("5.49"))
     );
+
+    public List<ProdutoDTO> produtosDemo(int limite) {
+        return PRODUTOS_DEMO.subList(0, Math.min(Math.max(limite, 1), PRODUTOS_DEMO.size()));
+    }
 
     public List<HistoricoCompraDTO> historico(int limite) {
         LocalDateTime agora = LocalDateTime.now();
         List<HistoricoCompraDTO> demo = List.of(
-                new HistoricoCompraDTO(-1L, agora.minusDays(7), new BigDecimal("186.40"), "DEMONSTRAÇÃO",
+                new HistoricoCompraDTO(-1L, agora.minusDays(7), new BigDecimal("186.40"), "Pedido concluído",
                         "12x Refrigerante Fruki Guaraná 2 L · 8x Água Mineral Fruki 500 ml", true),
-                new HistoricoCompraDTO(-2L, agora.minusDays(21), new BigDecimal("124.80"), "DEMONSTRAÇÃO",
+                new HistoricoCompraDTO(-2L, agora.minusDays(21), new BigDecimal("124.80"), "Pedido concluído",
                         "8x Refrigerante Fruki Guaraná 2 L · 8x Energético Elev 473 ml", true),
-                new HistoricoCompraDTO(-3L, agora.minusDays(35), new BigDecimal("98.70"), "DEMONSTRAÇÃO",
+                new HistoricoCompraDTO(-3L, agora.minusDays(35), new BigDecimal("98.70"), "Pedido concluído",
                         "10x Água Mineral Fruki com gás 500 ml · 6x Bellavista Pilsen 350 ml", true)
         );
         return demo.subList(0, Math.min(Math.max(limite, 1), demo.size()));
@@ -80,9 +96,12 @@ public class MockPedeFrukiService {
     public ContextoDTO contexto(String cidade, String uf) {
         LocalDate hoje = LocalDate.now();
         Estacao estacao = Estacao.de(hoje);
+        List<FeriadoDTO> proximos = feriadoService.proximos(cidade, 30);
+        FeriadoDTO proximo = proximos.isEmpty() ? null : proximos.get(0);
         return new ContextoDTO(cidade == null ? "Porto Alegre" : cidade, uf == null ? "RS" : uf,
-                hoje, estacao, estacao.getDescricao(), 21.0, "DEMONSTRAÇÃO", false,
-                "Contexto demonstrativo · Sazonalidade: " + estacao.getDescricao(), List.<FeriadoDTO>of());
+                hoje, estacao, estacao.getDescricao(), 21.0, "DEMONSTRAÇÃO", proximo != null,
+                "Contexto demonstrativo · Sazonalidade: " + estacao.getDescricao()
+                        + (proximo == null ? "" : " · Próximo feriado: " + proximo.name()), proximos);
     }
 
     private ItemRecomendadoDTO item(ProdutoDTO produto, int posicao, double score, boolean demo) {

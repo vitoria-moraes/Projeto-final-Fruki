@@ -1,9 +1,11 @@
 package org.example.projetofinalfruki.application.controller;
 
 import org.example.projetofinalfruki.infrastructure.messaging.whatsapp.WhatsAppBotService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +31,8 @@ public class WhatsAppMockController {
         respostaMap.put("paraTelefone", telefone != null ? telefone : "");
         respostaMap.put("resposta", respostaBot != null ? respostaBot : "");
 
-        return ResponseEntity.ok(respostaMap);
+        return ResponseEntity.ok()
+                .contentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                .body(respostaMap);
     }
 }

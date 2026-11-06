@@ -3,80 +3,78 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Simulador WhatsApp · Pede Fruki</title>
+  <meta name="theme-color" content="#08743e">
+  <title>WhatsApp · Pede Fruki</title>
   <style>
-    :root{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#173328;background:#08743e;font-synthesis:none;text-rendering:optimizeLegibility}*{box-sizing:border-box}body{margin:0;min-height:100vh;isolation:isolate;position:relative;background:linear-gradient(125deg,#08743e,#075d35 52%,#0a7944)}body:before{content:"";position:fixed;z-index:-1;inset:-25%;pointer-events:none;opacity:.27;filter:blur(1px);background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.018 .035' numOctaves='2' seed='8'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='16'/%3E%3C/filter%3E%3Cg filter='url(%23w)' fill='none' stroke='%23004327' stroke-opacity='.8' stroke-width='2'%3E%3Cpath d='M0 30H180M0 75H180M0 120H180M0 165H180M30 0V180M75 0V180M120 0V180M165 0V180'/%3E%3C/g%3E%3C/svg%3E");background-size:240px 240px;animation:grid-drift 46s linear infinite}button,select,input{font:inherit}.layout{width:min(1160px,calc(100% - 32px));margin:32px auto;display:grid;grid-template-columns:minmax(260px,.85fr) minmax(370px,1fr);gap:30px;align-items:center}.intro{padding:28px;border:1px solid #ffffff30;border-radius:28px;background:#f5fbf2;box-shadow:0 24px 60px #003d2538}.intro .eyebrow{font-size:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:850;color:#087342}.intro h1{font-size:clamp(34px,5vw,55px);line-height:1.03;letter-spacing:-.045em;margin:12px 0;color:#06452b}.intro p{font-size:17px;line-height:1.65;color:#344f40;max-width:490px}.form{display:grid;gap:12px;margin:24px 0}.form label{font-size:14px;font-weight:800;color:#244e37}.form select,.form input{width:100%;border:1px solid #9eb9a8;background:#fff;border-radius:12px;padding:13px 14px;color:#173328;font-size:16px}.run{border:0;border-radius:12px;background:#087342;color:white;padding:14px 18px;font-weight:850;font-size:16px;box-shadow:0 10px 24px #08734230;cursor:pointer;transition:.2s}.run:hover{background:#055b34;transform:translateY(-1px)}.hint{font-size:14px;line-height:1.5;color:#3d5849}.phone-stage{justify-self:center;width:min(100%,440px);filter:drop-shadow(0 28px 38px #00281770)}.iphone{position:relative;width:100%;aspect-ratio:2180/4310}.iphone-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}.iphone-screen{position:absolute;left:6.2%;right:6.2%;top:8%;bottom:4.5%;border-radius:10%/4%;overflow:hidden;background:#f1eee5;display:flex;flex-direction:column}.status-bar{height:44px;flex:none;background:#08745a;color:#fff;padding:8px 21px 0;font-size:12px;font-weight:800;display:flex;justify-content:space-between}.chat-head{display:flex;align-items:center;gap:11px;background:#08745a;color:white;padding:8px 16px 13px}.avatar{width:40px;height:40px;border-radius:50%;background:#fff;display:grid;place-items:center;overflow:hidden;flex:none}.avatar img{width:88%;height:88%;object-fit:contain}.chat-name{font-weight:850;font-size:16px}.chat-status{font-size:13px;opacity:.92;margin-top:2px}.chat{flex:1;padding:16px 12px;overflow:auto;background-color:#ece8dc;background-image:radial-gradient(#cbd3c2 .7px,transparent .7px);background-size:14px 14px}.stamp{text-align:center;font-size:12px;color:#405649;margin:2px auto 14px;background:#f8f7ef;width:max-content;padding:5px 10px;border-radius:10px}.bubble{max-width:91%;padding:11px 13px;border-radius:14px;margin:9px 0;box-shadow:0 1px 2px #10271a18;font-size:14px;color:#24372c;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;animation:arrive .24s ease-out}.bubble.bot{background:#fff;border-top-left-radius:4px}.bubble.user{background:#d8f8c5;margin-left:auto;border-top-right-radius:4px}.bubble .time{display:block;text-align:right;font-size:11px;color:#536b5a;margin-top:5px}.suggestion{border-top:1px solid #d8e5d9;margin-top:8px;padding-top:8px}.suggestion strong{color:#075c3f}.suggestion ul{padding-left:17px;margin:7px 0}.suggestion li{margin:6px 0}.catalog-link{display:inline-flex;margin-top:7px;color:#075b34;font-weight:850;text-decoration:underline;word-break:break-word}.typing{color:#405649;font-style:italic}.error{color:#8b1f18;font-size:14px;min-height:18px}.home-indicator{width:112px;height:5px;border-radius:6px;background:#111;margin:7px auto 5px;flex:none}@keyframes grid-drift{to{background-position:240px 120px}}@keyframes arrive{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}@media(max-width:760px){.layout{grid-template-columns:1fr;margin:18px auto;gap:24px}.intro{padding:22px;text-align:center}.intro p{margin-inline:auto}.form{text-align:left}.phone-stage{width:min(100%,400px)}}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}body{min-height:100vh;display:grid;place-items:center;overflow-x:hidden;background:linear-gradient(135deg,#08743e,#075b35 55%,#0a7944);color:#153629}body:before{content:"";position:fixed;inset:-20%;z-index:-1;opacity:.23;background-image:repeating-linear-gradient(0deg,transparent 0 34px,#004326 35px 37px),repeating-linear-gradient(90deg,transparent 0 34px,#004326 35px 37px);filter:blur(.7px);transform:rotate(-4deg);animation:drift 40s linear infinite}.phone{position:relative;width:min(390px,94vw);aspect-ratio:2180/4310;filter:drop-shadow(0 24px 38px #00281766)}.frame{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;pointer-events:none}.screen{position:absolute;left:6.3%;right:6.3%;top:7.8%;bottom:4.2%;overflow:hidden;border-radius:10%/4%;background:#ece8df;display:flex;flex-direction:column}.status{height:35px;flex:none;padding:8px 22px 0;background:#08745a;color:white;font-size:12px;font-weight:800;display:flex;justify-content:space-between}.head{display:flex;align-items:center;gap:10px;padding:8px 15px 12px;color:white;background:#08745a}.avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:white;overflow:hidden}.avatar img{width:85%;height:85%;object-fit:contain}.name{font-size:16px;font-weight:850}.online{font-size:12px;margin-top:2px}.chat{flex:1;overflow:auto;padding:12px;background-color:#ece8df;background-image:radial-gradient(#cbd3c2 .7px,transparent .7px);background-size:14px 14px}.date{text-align:center;width:max-content;margin:3px auto 14px;padding:5px 10px;border-radius:10px;background:#fbfaf5;color:#405649;font-size:11px}.bubble{max-width:92%;margin:8px 0;padding:10px 12px;border-radius:14px;background:white;color:#24372c;font-size:13px;line-height:1.45;box-shadow:0 1px 2px #10271a18;overflow-wrap:anywhere;animation:pop .22s ease-out}.bubble.user{margin-left:auto;background:#d8f8c5;border-top-right-radius:4px}.bubble.bot{border-top-left-radius:4px}.time{display:block;text-align:right;margin-top:4px;color:#5a7161;font-size:10px}.items{margin:5px 0 0;padding-left:17px}.items li{margin:7px 0}.reasons{color:#496353;font-size:12px}.link{display:inline-block;margin-top:5px;color:#075b34;font-weight:800}.home{width:95px;height:4px;margin:6px auto;border-radius:8px;background:#161616;flex:none}.tools{position:fixed;right:18px;top:18px;display:flex;gap:8px}.tools button{border:0;border-radius:12px;background:#f4fbf4;color:#075b34;padding:10px 14px;font-weight:800;cursor:pointer}.error{position:fixed;bottom:12px;left:12px;right:12px;text-align:center;color:white;font-size:13px}.error:empty{display:none}@keyframes drift{to{background-position:140px 70px}}@keyframes pop{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}@media(max-height:680px){.phone{width:min(330px,88vw)}}
+  /* Fundo removido da arte do aparelho; a tela ocupa a área interna do vidro. */
+  .frame{mix-blend-mode:normal}
+  .screen{left:6.3%;right:6.3%;top:7.8%;bottom:4.2%;border-radius:10%/4%;}
+  .bubble.offer-wrap{padding:0;background:transparent;box-shadow:none;max-width:96%;}
+  .offer-card{overflow:hidden;border-radius:14px;background:#fff;box-shadow:0 2px 8px #10271a20}
+  .offer-art{position:relative;min-height:124px;padding:17px;color:#fff;background:radial-gradient(circle at 88% 18%,#c8ef77 0 7%,transparent 7.5%),linear-gradient(120deg,#00552f,#008149 65%,#74b82a);}
+  .offer-kicker{font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#d5ff8b}
+  .offer-title{max-width:205px;margin:7px 0 0;font-size:20px;font-weight:900;line-height:1.12}
+  .offer-copy{margin:7px 0 0;font-size:12px;color:#efffe9}
+  .offer-products{padding:11px 13px 4px;color:#263c30;font-size:12px;line-height:1.45}
+  .offer-products strong{color:#075b34}
+  .offer-action{display:block;margin:10px 12px 12px;padding:10px 12px;border-radius:9px;background:#08783f;color:#fff;text-align:center;text-decoration:none;font-size:13px;font-weight:850}
+  .link-preview{display:block;margin-top:7px;padding:11px;border-radius:10px;background:#e8f5e6;color:#0a5330;text-decoration:none;overflow-wrap:anywhere}
+  .link-preview strong{display:block;margin-bottom:3px;font-size:13px}
+  .link-preview span{font-size:11px;text-decoration:underline}
+  .chat{scrollbar-width:none}.chat::-webkit-scrollbar{display:none}
+  @media(max-height:680px){.phone{width:min(330px,88vw)}}
   </style>
 </head>
 <body>
-  <main class="layout">
-    <section class="intro">
-      <div class="eyebrow">Pede Fruki · ambiente de demonstração</div>
-      <h1>Do WhatsApp ao pedido.</h1>
-      <p>Simule a conversa do bot: identificação da loja, recomendações com score e motivos e um link de catálogo assinado pelo backend.</p>
-      <div class="form">
-        <label for="cliente">Loja</label><select id="cliente"><option value="">Carregando clientes…</option></select>
-        <label for="telefone">Telefone de demonstração</label><input id="telefone" value="5551999998888" inputmode="tel">
-        <button class="run" id="simular">Simular conversa</button>
-        <div class="error" id="erro" role="alert"></div>
-      </div>
-      <div class="hint">O pedido pode ser finalizado no catálogo; sugestões e compras mock aparecem identificadas como demonstração.</div>
-    </section>
-    <section class="phone-stage" aria-label="Moldura de iPhone com conversa do WhatsApp">
-      <div class="iphone"><img class="iphone-art" src="http://localhost:8080/images/brand/iphone-frame.png" alt="Moldura de iPhone"><div class="iphone-screen">
-        <div class="status-bar"><span>9:41</span><span>●●●  Wi-Fi  100%</span></div>
-        <header class="chat-head"><div class="avatar"><img src="http://localhost:8080/catalogo-app/assets/logo.webp" alt=""></div><div><div class="chat-name">Pede Fruki</div><div class="chat-status">atendimento B2B · online</div></div></header>
-        <div class="chat" id="chat" aria-live="polite"><div class="stamp">HOJE</div><div class="bubble bot">A conversa começa em instantes…<span class="time">agora</span></div></div>
-        <div class="home-indicator"></div>
-      </div></div>
+  <div class="tools"><button id="replay" type="button">Reproduzir conversa</button></div>
+  <main class="phone" aria-label="Simulação de conversa do WhatsApp Pede Fruki">
+    <img class="frame" src="/images/brand/iphone-frame-transparent.png" alt="">
+    <section class="screen">
+      <div class="status"><span>9:41</span><span>●●● Wi-Fi 100%</span></div>
+      <header class="head"><div class="avatar"><img src="/catalogo-app/assets/logo.webp" alt=""></div><div><div class="name">Pede Fruki</div><div class="online">atendimento B2B · online</div></div></header>
+      <div class="chat" id="chat" aria-live="polite"><div class="date">HOJE</div></div>
+      <div class="home"></div>
     </section>
   </main>
+  <div class="error" id="error" role="alert"></div>
   <script>
-    const API = (new URLSearchParams(location.search).get('api') || 'http://localhost:8080').replace(/\/$/, '');
-    const $ = (id) => document.getElementById(id);
-    const chat = $('chat');
-    let demo = null;
-    const safe = (value) => String(value ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    async function loadDemo() {
-      const response = await fetch(`${API}/mock/demo`, { headers: { Accept: 'application/json' } });
-      demo = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(demo.detail || `API ${response.status}`);
-      $('cliente').innerHTML = `<option value="${safe(demo.clienteId)}">${safe(demo.nome)} ? ${safe(demo.cnpj)}</option>`;
-      $('erro').textContent = '';
-      window.setTimeout(() => $('simular').click(), 500);
+    const API = (new URLSearchParams(location.search).get('api') || location.origin).replace(/\/$/, '');
+    const chat = document.querySelector('#chat');
+    const encode = (value) => String(value ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    function bubble(content, side = 'bot', html = false) {
+      const node = document.createElement('div'); node.className = `bubble ${side}`;
+      node.innerHTML = `${html ? content : encode(content)}<span class="time">agora</span>`;
+      chat.append(node); chat.scrollTop = chat.scrollHeight;
     }
-    $('simular').addEventListener('click', async () => {
-      if (!demo) { $('erro').textContent = `N?o foi poss?vel obter dados de demonstra??o. Inicie o Spring Boot em ${API}.`; return; }
-      $('simular').disabled = true;
-      $('simular').textContent = 'Simulando conversa?';
-      $('erro').textContent = '';
-      chat.innerHTML = '<div class="stamp">HOJE</div>';
+    async function simulate() {
+      document.querySelector('#error').textContent = '';
+      document.querySelector('#replay').disabled = true;
+      chat.innerHTML = '<div class="date">HOJE</div>';
       try {
-        bubble('Ol?! Quero fazer um pedido.', 'user'); await pause(450);
-        bubble('?? Bem-vindo ao Pede Fruki! Para localizar sua loja, por favor, informe o CNPJ.'); await pause(700);
-        bubble(demo.cnpj, 'user'); await pause(450);
-        bubble(`? ${demo.nome} identificado! Cadastro confirmado para ${demo.regiao}.`); await pause(650);
-        bubble(`Ol?, ${demo.nome}! Separei recomenda??es com alto potencial de venda para sua loja.`); await pause(500);
-        const items = demo.recomendacoes?.itens || [];
-        const rows = items.map((item) => `<li><strong>${safe(item.nome)}</strong> ? score ${Number(item.score).toFixed(1)}<br>${safe((item.motivos || []).join(' ? '))}</li>`).join('');
-        bubble(`<div class="suggestion"><strong>Recomenda??es para ${safe(demo.nome)}</strong><ul>${rows || '<li>Sem itens dispon?veis.</li>'}</ul></div>`, 'bot', true); await pause(800);
-        bubble('Aqui est? seu cat?logo personalizado. Toque para abrir e adicionar produtos ao carrinho.');
-        bubble(`<a class="catalog-link" href="${safe(demo.catalogoUrl)}">Abrir cat?logo Pede Fruki ?</a>`, 'bot', true);
-      } catch (error) {
-        $('erro').textContent = `Falha ao simular: ${error.message}`;
-        bubble(`N?o consegui completar a conversa: ${error.message}`);
-      } finally { $('simular').disabled = false; $('simular').textContent = 'Reproduzir conversa'; }
-    });
-    function bubble(text, side='bot', html=false) {
-      const el=document.createElement('div'); el.className=`bubble ${side}`;
-      el.innerHTML=`${html ? text : safe(text)}<span class="time">agora</span>`;
-      chat.append(el); chat.scrollTop=chat.scrollHeight; return el;
+        const response = await fetch(`${API}/mock/demo`, {headers:{Accept:'application/json'}});
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || `Erro ${response.status}`);
+        bubble('Oi! 👋 Quero fazer um pedido.', 'user'); await wait(450);
+        bubble('Olá! 🥤 Bem-vindo ao Pede Fruki. Para localizar sua loja, informe o CNPJ.'); await wait(650);
+        bubble(data.cnpj, 'user'); await wait(450);
+        bubble(`✅ ${data.nome} identificado! Cadastro confirmado para ${data.regiao}.`); await wait(600);
+        bubble(`Olá, ${data.nome}! 🎉 Separei sugestões com bom potencial de venda para sua loja.`); await wait(500);
+        const items = data.recomendacoes?.itens || [];
+        const list = items.map((item) => `<li><strong>${encode(item.nome)}</strong><br><span class="reasons">${encode((item.motivos || []).join(' · '))}</span></li>`).join('');
+        bubble(`<strong>💡 Sugestões para ${encode(data.nome)}</strong><ul class="items">${list || '<li>Novas sugestões estarão disponíveis em breve.</li>'}</ul>`, 'bot', true);
+        await wait(700);
+        const destaques = items.slice(0, 3).map((item) => encode(item.nome)).join(' · ');
+        bubble(`<div class="offer-card"><div class="offer-art"><div class="offer-kicker">✨ Seleção especial Pede Fruki</div><div class="offer-title">Mais giro para a sua loja!</div><p class="offer-copy">Sugestões escolhidas para o perfil da ${encode(data.nome)}.</p></div><div class="offer-products">🥤 <strong>Para conhecer:</strong><br>${destaques || 'Confira as novidades do catálogo.'}<br><br>Monte seus fardos e veja os preços no catálogo.</div><a class="offer-action" href="${encode(data.catalogoUrl)}">Ver ofertas para minha loja&nbsp; →</a></div>`, 'bot', true);
+        await wait(450);
+        bubble(`📦 Seu catálogo personalizado está pronto, ${encode(data.nome)}! Toque no link para escolher os produtos e montar seus fardos.`);
+        bubble(`<a class="link-preview" href="${encode(data.catalogoUrl)}"><strong>🥤 Catálogo Pede Fruki</strong><span>Abrir catálogo e fazer pedido →</span></a>`, 'bot', true);
+      } catch (error) { document.querySelector('#error').textContent = `Não foi possível carregar a conversa: ${error.message}. Confira se o Spring Boot está rodando.`; }
+      finally { document.querySelector('#replay').disabled = false; }
     }
-    loadDemo().catch((error) => {
-      $('cliente').innerHTML = '<option value="">Backend indispon?vel</option>';
-      $('erro').textContent = `N?o conectou em ${API}. Abra o Spring Boot na porta 8080 e recarregue. (${error.message})`;
-    });
+    document.querySelector('#replay').addEventListener('click', simulate);
+    simulate();
   </script>
 </body>
 </html>
