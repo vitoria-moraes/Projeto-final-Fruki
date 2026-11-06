@@ -1,10 +1,14 @@
 # Pede Fruki — Plano de desenvolvimento em dupla
 
-> **Versão:** 1.0 (proposta para revisão)
+> **Versão:** 2.0 (planejamento + relatório de execução)
 > **Data:** 2026-11-05
-> **Escopo:** planejamento. Nenhum código de produção foi alterado.
+> **Status:** T01–T07 e T09–T11 concluídos; T08 parcial; T12 bloqueado; T13 parcial; T14 pendente.
 > **Público:** as duas pessoas desenvolvedoras e o mentor.
 > **Repositório:** https://github.com/vitoria-moraes/Projeto-final-Fruki
+>
+> **Atualização:** a implementação foi feita depois da versão 1.0. O relatório do que
+> foi entregue, como validar, o que ainda falta e um guia de troubleshooting estão na
+> **seção 15**.
 
 ---
 
@@ -588,3 +592,230 @@ Reunião de **60–90 minutos** entre as duas, nesta ordem:
 4. **Cada uma cria sua branch** (`feat/a-T01-contrato`, `feat/b-T05-indicadores`) e roda a app até ver `200` em `/recomendacoes/41`; salva a evidência.
 
 Se quiserem, o próximo passo é transformar a seção 7 em `docs/contratos-api.md` e revisar junto com o mentor antes de liberar a implementação.
+
+---
+
+## 15. Relatório de execução (2026-11-05)
+
+> A “Próxima ação recomendada” da seção anterior foi executada. O que **ainda falta**
+> está na seção 15.5 — não marque como concluído o que não está.
+
+### 15.1 Status das tarefas
+
+| ID | Tarefa | Status | Entrega principal |
+|---|---|---|---|
+| T01 | Contrato + DTOs + exceções | ✅ Concluído | DTOs, exceções e `docs/API.md` |
+| T02 | `RecomendacaoService` + controller fino | ✅ Concluído | serviço + controller |
+| T03 | `GlobalExceptionHandler` + validação | ✅ Concluído | 400/404/405/409/503/500 |
+| T04 | Recomendador V2 | ✅ Concluído | score, diversidade, motivos, cold start |
+| T05 | Indicadores | ✅ Concluído | `/api/v1/indicadores` |
+| T06 | Ingestão de clientes | ✅ Concluído | `POST/GET /api/v1/clientes` |
+| T07 | Compras + pedido real | ✅ Concluído | `POST /compras`, `POST /pedidos` |
+| T08 | Catálogo consumindo a API | 🟡 Parcial | demo + guia + meta tags; `catalogo.html` ainda mock |
+| T09 | Testes do recomendador | ✅ Concluído | 3 classes de teste |
+| T10 | Testes de ingestão/indicadores | ✅ Concluído | clientes, compras, pedido, indicadores e contexto |
+| T11 | Documentação + evidências | ✅ Concluído | README + docs de API, recomendador, front e schema |
+| T12 | Pipeline Databricks | ⛔ Bloqueado | depende da Vitória (notebooks/schema) |
+| T13 | Integração e aceite | 🟡 Parcial | 40 testes verdes; runtime real pendente |
+| T14 | Pitch e demonstração | ⬜ Não iniciado | — |
+
+### 15.2 O que foi entregue, por tarefa
+
+### T01 — Contrato + DTOs + exceções ✅
+- **O que foi feito:** `RecomendacaoResponseDTO`, `ItemRecomendadoDTO`, `ContextoDTO`,
+  `ProdutoDTO`, `ClienteRequest/ResponseDTO`, `CompraRequest/ResponseDTO`,
+  `IndicadoresResponseDTO`, `EstacaoDTO`; exceções `ClienteNaoEncontradoException`,
+  `ProdutoNaoEncontradoException`, `ConflitoException`,
+  `DatabricksIndisponivelException`; contrato em `docs/API.md`.
+- **Por que:** a API deixou de devolver entidade crua; o front e os testes passaram a
+  depender de um contrato estável.
+- **Como testar:** `.\mvnw.cmd test` (os testes de contrato usam os DTOs).
+
+### T02 — `RecomendacaoService` + controller fino ✅
+- **O que foi feito:** `RecomendacaoService` orquestra Gold + cliente + contexto +
+  ranking; `RecomendacaoController` só delega; `limite` validado (1..50); 404 quando
+  não há cliente nem histórico; 503 quando o Databricks cai.
+- **Por que:** separa HTTP de regra de negócio e permite testar a regra sem subir a web.
+- **Como testar:** `GET /api/v1/recomendacoes/41` e `GET /api/v1/recomendacoes/999999`.
+
+### T03 — `GlobalExceptionHandler` ✅
+- **O que foi feito:** tratamento único com `ProblemDetail` para 400 (validação, JSON,
+  tipo), 404 (cliente/produto/rota), 405, 409 (CNPJ duplicado), 503 (Databricks e banco
+  transacional) e 500 (logado, sem vazar stack trace).
+- **Por que:** os erros deixaram de ser o JSON genérico do Spring e passaram a ter
+  `type`, `title`, `detail`, `instance` e `erros[]`.
+- **Como testar:** `GET /api/v1/recomendacoes/abc` (400), `/999999` (404),
+  `POST /api/v1/clientes` com CNPJ repetido (409).
+
+### T04 — Recomendador V2 ✅
+- **O que foi feito:** `RecomendadorV2Service` com RFM (50%), regional (20%),
+  sazonalidade (15%) e margem/giro (15%), penalidades (compra recente, preço outlier,
+  dado incompleto), diversidade (2 por categoria), cold start e `motivos[]`/`detalhe`.
+  Pesos em `app.recomendacao.*` (`RecomendacaoProperties`).
+- **Por que:** entrega o requisito 2 com explicação do score e comparabilidade V1×V2.
+- **Como testar:** `RecomendadorV2ServiceTest` e
+  `GET /api/v1/recomendacoes/41` (confira `score`, `motivos`, `detalhe`).
+
+### T05 — Indicadores ✅
+- **O que foi feito:** `IndicadoresRepository` (SQL agregado na Gold),
+  `IndicadoresService`, `GET /api/v1/indicadores` com cobertura, variedade, taxa
+  (clientes com 3+ itens) e média por cliente.
+- **Por que:** requisito 4; dá número para a apresentação.
+- **Como testar:** `GET /api/v1/indicadores` e `IndicadoresServiceTest`.
+
+### T06 — Ingestão de clientes ✅
+- **O que foi feito:** `POST /api/v1/clientes` (CNPJ com dígitos verificadores,
+  normalização, 409 para duplicado) e `GET /api/v1/clientes/{cnpj}`.
+- **Por que:** requisito 6; o cliente novo fica disponível para a recomendação.
+- **Como testar:** `POST` com `11.222.333/0001-81` e conferir a linha no Supabase.
+
+### T07 — Compras + pedido real ✅
+- **O que foi feito:** `CompraService` (item, quantidade, data não futura, preço da
+  tabela) e `PedidoService` (vários itens, total real, persistência em `fato_vendas`);
+  `PedidoController` deixou de devolver `150.00` fixo.
+- **Por que:** requisito 5 e 6; o dado entra e fica disponível.
+- **Como testar:** `POST /api/v1/compras` e `POST /api/v1/pedidos`; conferir a linha em
+  `fato_vendas`.
+
+### T08 — Catálogo consumindo a API 🟡
+- **O que foi feito:** página `demo-recomendacoes.html` (consome recomendação, contexto
+  e indicadores), meta tags `cliente-id`/`cnpj-cliente` no `catalogo.html`, CNPJ no JWT
+  e guia `docs/INTEGRACAO_FRONT.md` com os trechos de `fetch`, carrinho e `POST /pedidos`.
+- **O que falta:** trocar o array mock do `catalogo.html` pela API e ligar o botão de
+  pedido. O guia está pronto; a vitrine em si continua mock.
+- **Como testar:** abrir `/demo-recomendacoes.html` e seguir o checklist do guia.
+
+### T09/T10 — Testes ✅
+- **O que foi feito:** `RecomendadorV2ServiceTest`, `RecomendacaoServiceTest`,
+  `RecomendacaoControllerTest`, `PedidoControllerTest`, `PedidoServiceTest`,
+  `CompraServiceTest`, `ClienteServiceTest`, `IndicadoresServiceTest`,
+  `ContextoServiceTest`, `EstacaoTest`, `MotorSazonalidadeTest`, `CnpjValidatorTest`,
+  `RecomendacaoPropertiesTest`.
+- **Por que:** requisito 9; valida score, diversidade, cold start, 200/404/503/400 e a
+  ingestão sem depender do banco.
+- **Como testar:** `.\mvnw.cmd test` — **40 testes, 0 falhas, 5 ignorados**.
+
+### T11 — Documentação ✅
+- **O que foi feito:** `README.md` (com a seção “Como executar”, que cobre o antigo
+  `COMO_RODAR`), `docs/API.md`, `docs/RECOMENDADOR.md`,
+  `docs/INTEGRACAO_FRONT.md`, `docs/SCHEMA.md`, `docs/evidencias/testes.md`.
+- **Por que:** requisito 10; outra pessoa consegue executar e entender.
+- **Como testar:** seguir o README em uma máquina limpa.
+
+### T12 — Pipeline Databricks ⛔
+- **O que foi feito:** nada de notebook/job; apenas o consumo da Gold pelo Java.
+- **Por que está bloqueado:** depende dos notebooks/SQL e do schema real que a Vitória
+  precisa fornecer; não há contrato de `fato_vendas` no pacote Python nem `job.yml`.
+- **O que fazer:** cobrar Vitória/Fernando e versionar notebook + job (seção 7 do plano).
+
+### T13 — Integração e aceite 🟡
+- **O que foi feito:** código integrado e 40 testes verdes; contrato web validado com
+  `@WebMvcTest`.
+- **O que falta:** rodar contra Supabase/Databricks reais (o agente não tinha
+  credenciais); os 5 testes de integração ficaram ignorados.
+- **Como fechar:** `. .\scripts\env.local.ps1; .\mvnw.cmd test` e os `curl` da seção 15.4.
+
+### T14 — Pitch ⬜
+- Não iniciado. Falta roteiro de 5–8 min e ensaio.
+
+### 15.3 Requisitos — situação após a implementação
+
+| # | Requisito | Status | Evidência |
+|---|---|---|---|
+| 1 | Consulta da recomendação | ✅ | `GET /recomendacoes/{id}` com DTO, score e motivos |
+| 2 | Recomendador V2 | ✅ | `RecomendadorV2Service` + `docs/RECOMENDADOR.md` |
+| 3 | Tratamento de novos dados | 🟡 | validação no Java pronta; pipeline bloqueado (T12) |
+| 4 | Indicadores | ✅ | `GET /api/v1/indicadores` |
+| 5 | Aplicação Java V2 | ✅ | pedido real + persistência |
+| 6 | Ingestão consolidada | ✅ | `POST /clientes` e `POST /compras` |
+| 7 | Regras e exceções | ✅ | `GlobalExceptionHandler` |
+| 8 | Integração completa | 🟡 | REST/bot/contexto prontos; catálogo mock e pipeline pendentes |
+| 9 | Validação da recomendação | 🟡 | testes + análise em `RECOMENDADOR.md`; falta análise com dados reais |
+| 10 | Pendências finais | ✅ | README, API, schema e evidências (sem Flyway) |
+| MVP/pitch | Demonstração | 🟡 | demo técnica pronta; pitch não |
+
+### 15.4 Como validar (ordem recomendada)
+
+```powershell
+# 1. testes (não precisa de banco)
+cd projeto-final-fruki
+.\mvnw.cmd test          # 40 testes, 0 falhas, 5 ignorados
+
+# 2. subir com as variáveis
+. .\scripts\env.local.ps1
+.\mvnw.cmd -B spring-boot:run
+
+# 3. em outra janela
+curl.exe -s "http://localhost:8080/api/v1/recomendacoes/41" | ConvertFrom-Json | ConvertTo-Json -Depth 6
+curl.exe -s "http://localhost:8080/api/v1/indicadores"
+curl.exe -s "http://localhost:8080/api/v1/contexto?cidade=Gramado&uf=RS"
+curl.exe -s "http://localhost:8080/api/v1/contexto/estacao?data=2026-12-01"
+curl.exe -s "http://localhost:8080/api/v1/contexto/feriados?ano=2026&cidade=Gramado"
+
+# 4. demo no navegador
+start http://localhost:8080/demo-recomendacoes.html
+```
+
+**Aceite:** 200 no `/recomendacoes/41` (ou `404` se o cliente não existir), `score`
+entre 0 e 100, no máximo 2 itens por categoria, catálogo 401 sem token.
+
+### 15.5 O que ainda NÃO está concluído
+
+1. **T08 — catálogo real:** `catalogo.html` continua mock. Use
+   `docs/INTEGRACAO_FRONT.md` para trocar (fetch, carrinho por `codItem`,
+   `POST /pedidos`).
+2. **T12 — pipeline Databricks:** sem notebook/job/`fato_vendas` versionado; bloqueado
+   pela Vitória.
+3. **T13 — runtime real:** não validei contra Supabase/Databricks (sem credenciais).
+   Os 5 testes de integração estão ignorados até você rodar com `env.local.ps1`.
+4. **T14 — pitch:** não iniciado.
+5. **Autenticação da API** e **cache** não estavam no plano e continuam pendentes.
+6. **Migrations:** não há Flyway; o schema está documentado em `docs/SCHEMA.md`.
+
+### 15.6 Se algo der errado (troubleshooting)
+
+| Sintoma | Causa provável | Onde olhar | Comando/consulta |
+|---|---|---|---|
+| App não sobe / `APPLICATION FAILED` | variável ausente, `JWT_SECRET` curto, banco fora | `README.md` seção 2; `scripts/env.example.ps1` | `. .\scripts\env.local.ps1` |
+| 503 em `/recomendacoes` | Databricks: host, token, warehouse, tabela ou coluna | `RecomendacaoRepository` (agora loga a causa), `application.yml` | ver log `Caused by`; testar SQL no Databricks |
+| 404 em `/recomendacoes/41` | cliente não existe na base **e** Gold vazia | `RecomendacaoService` | `select * from cliente where cod_cliente='41';` |
+| `preco: null` | `cod_item` ≠ `cod_produto` | `CatalogoService`, `docs/SCHEMA.md` | `select * from tabela_preco where cod_produto like '%1%';` |
+| 409 em `/clientes` | CNPJ já cadastrado | `ClienteService` | consultar `cliente` por CNPJ |
+| 400 com `erros[]` | validação | corpo da resposta; `GlobalExceptionHandler` | conferir campo/mensagem |
+| 500/503 em `/clientes` ou `/compras` | tabela/coluna divergente | `docs/SCHEMA.md` | `information_schema.columns` |
+| Clima sempre `FALLBACK` | chave OpenWeather ausente/inválida | `OpenWeatherService` | `OPENWEATHER_KEY` |
+| Feriados vazios/lentos | BrasilAPI fora | `FeriadoService` (cache/fallback) | log `BrasilAPI indisponível` |
+| Front não mostra recomendação | JWT/meta tags/console | `docs/INTEGRACAO_FRONT.md`; demo | abrir DevTools → Network |
+| Testes ignorados | sem `SUPABASE_JDBC_URL`/`JWT_SECRET` | `@EnabledIfEnvironmentVariable` | rodar com `env.local.ps1` |
+| Nome/cidade `null` | `id_cliente` ≠ `cod_cliente` | `docs/SCHEMA.md` | conferir as duas bases |
+
+**Palavras-chave para pesquisar no código:** `RecomendadorV2Service`,
+`RecomendacaoService`, `GlobalExceptionHandler`, `CatalogoService`,
+`ContextoService`, `FeriadoService`, `OpenWeatherService`, `IndicadoresRepository`,
+`RecomendacaoProperties`, `CnpjValidator`.
+
+### 15.7 Decisões técnicas (e o porquê)
+
+- **DTO em vez de entidade:** contrato estável e sem vazar detalhes do banco.
+- **Service em vez de regra no controller:** testável e reutilizável (bot + API).
+- **Heurística de categoria/perfil:** o schema não tem categoria nem segmento; a
+  inferência está isolada em `CategoriaProduto`/`PerfilRegional` para trocar quando o
+  dado existir.
+- **Margem proxy:** não há margem real; o valor por categoria é explícito e documentado.
+- **Fallback de clima/feriado:** a demo não pode quebrar se a API externa cair.
+- **Testes de integração condicionais:** `mvn test` passa em qualquer máquina; quem tem
+  credenciais roda tudo.
+- **Sem dependências novas:** o build continua offline-friendly.
+
+### 15.8 Evidências
+
+- Compilação: **72 fontes principais + 17 de teste**.
+- Testes: **40 executados, 0 falhas, 0 erros, 5 ignorados**.
+- Registro: `docs/evidencias/testes.md`.
+- Execução anterior da app: `docs/evidencias/etapa5-6/README.md`.
+
+### 15.9 Manutenção deste documento
+
+Quando T08, T12, T13 ou T14 avançarem, atualize a tabela 15.1 e a seção 15.5. Não
+marque como concluído sem evidência (teste, `curl` ou print).
+

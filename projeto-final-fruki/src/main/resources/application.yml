@@ -52,6 +52,20 @@ app:
     recomendacao-table: ${DATABRICKS_RECOMENDACAO_TABLE:fruki.gold.gold_recomendacao_b2b}
   catalogo:
     base-url: ${CATALOGO_BASE_URL:http://localhost:8080}
+  recomendacao:
+    limite-padrao: 10
+    janela-compra-recente-dias: 7
+    pesos:
+      rfm: 0.50
+      regional: 0.20
+      sazonalidade: 0.15
+      margem: 0.15
+    penalidades:
+      comprado-recente: 15.0
+      preco-outlier: 20.0
+      dado-incompleto: 5.0
+    diversidade:
+      max-por-categoria: 2
 
 api:
   weather:

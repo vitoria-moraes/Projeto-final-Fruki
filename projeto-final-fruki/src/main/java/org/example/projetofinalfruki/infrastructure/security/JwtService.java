@@ -37,12 +37,22 @@ public class JwtService {
      * Gera o token JWT contendo os dados do cliente identificado no WhatsApp.
      */
     public String gerarTokenCatalogo(String clienteId, String nomeCliente, String regiao, String tabelaPreco) {
+        return gerarTokenCatalogo(clienteId, nomeCliente, regiao, tabelaPreco, null);
+    }
+
+    /** Variante com CNPJ, usada para o catálogo conseguir fechar pedido. */
+    public String gerarTokenCatalogo(String clienteId, String nomeCliente, String regiao,
+                                     String tabelaPreco, String cnpj) {
         long agora = System.currentTimeMillis();
-        return Jwts.builder()
+        var builder = Jwts.builder()
                 .subject(clienteId)
                 .claim("nome", nomeCliente)
                 .claim("regiao", regiao)
-                .claim("tabelaPreco", tabelaPreco)
+                .claim("tabelaPreco", tabelaPreco);
+        if (cnpj != null && !cnpj.isBlank()) {
+            builder.claim("cnpj", cnpj);
+        }
+        return builder
                 .issuedAt(new Date(agora))
                 .expiration(new Date(agora + expirationMillis))
                 .signWith(key)

@@ -1,6 +1,9 @@
 package org.example.projetofinalfruki.infrastructure.db.supabase.databricks;
 
+import org.example.projetofinalfruki.domain.exception.DatabricksIndisponivelException;
 import org.example.projetofinalfruki.domain.model.RecomendacaoB2B;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -22,10 +25,7 @@ import java.util.regex.Pattern;
 @Repository
 public class RecomendacaoRepository {
 
-    /** Falha de comunicação com o Databricks (warehouse parado, token inválido, rede...). */
-    public static class DatabricksIndisponivelException extends RuntimeException {
-        public DatabricksIndisponivelException(String mensagem, Throwable causa) { super(mensagem, causa); }
-    }
+    private static final Logger log = LoggerFactory.getLogger(RecomendacaoRepository.class);
 
     // catalog.schema.tabela: nome de tabela não pode ser parâmetro SQL, então validamos o formato
     private static final Pattern TABELA_VALIDA =
@@ -35,6 +35,7 @@ public class RecomendacaoRepository {
 
     private final NamedParameterJdbcTemplate jdbc;
     private final String sql;
+    private final String tabela;
 
     public RecomendacaoRepository(@Qualifier("databricksJdbcTemplate") NamedParameterJdbcTemplate jdbc,
                                   @Value("${app.databricks.recomendacao-table:fruki.gold.gold_recomendacao_b2b}") String tabela) {
@@ -42,6 +43,7 @@ public class RecomendacaoRepository {
             throw new IllegalArgumentException("Nome de tabela inválido em app.databricks.recomendacao-table: " + tabela);
         }
         this.jdbc = jdbc;
+        this.tabela = tabela;
         this.sql = "SELECT id_cliente, cod_item, total_quantidade_comprada, valor_total_gasto, "
                 + "ultima_data_compra, frequencia_pedidos, score_recomendacao "
                 + "FROM " + tabela + " WHERE id_cliente = :idCliente "
@@ -52,6 +54,8 @@ public class RecomendacaoRepository {
         try {
             return jdbc.query(sql, new MapSqlParameterSource("idCliente", idCliente), MAPPER);
         } catch (DataAccessException e) {
+            // Log com a causa real: sem isso, erro de coluna vira 503 "genérico" e esconde o bug.
+            log.error("Falha ao consultar {} para o cliente {}", tabela, idCliente, e);
             throw new DatabricksIndisponivelException(
                     "Não foi possível consultar as recomendações no Databricks agora.", e);
         }

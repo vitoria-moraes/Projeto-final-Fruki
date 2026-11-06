@@ -28,6 +28,7 @@ public class CatalogoInterceptor implements HandlerInterceptor {
             request.setAttribute("nomeCliente", claims.get("nome", String.class));
             request.setAttribute("regiaoCliente", claims.get("regiao", String.class));
             request.setAttribute("tabelaPrecoCliente", claims.get("tabelaPreco", String.class));
+            request.setAttribute("cnpjCliente", claims.get("cnpj", String.class));
 
             return true; // Deixa a requisição seguir para o Catálogo
         }

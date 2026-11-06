@@ -1,38 +1,35 @@
 package org.example.projetofinalfruki.application.controller;
 
-import org.example.projetofinalfruki.domain.model.RecomendacaoB2B;
-import org.example.projetofinalfruki.infrastructure.db.supabase.databricks.RecomendacaoRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
+import org.example.projetofinalfruki.application.dtos.RecomendacaoResponseDTO;
+import org.example.projetofinalfruki.domain.service.RecomendacaoService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
+/** Consulta da recomendação. O controller apenas delega para o service. */
 @RestController
 @RequestMapping("/api/v1/recomendacoes")
+@Validated
 public class RecomendacaoController {
 
-    private final RecomendacaoRepository recomendacaoRepository;
+    private final RecomendacaoService recomendacaoService;
 
-    // Injeção por construtor (em vez de @Autowired em campo): facilita teste e deixa a dependência explícita
-    public RecomendacaoController(RecomendacaoRepository recomendacaoRepository) {
-        this.recomendacaoRepository = recomendacaoRepository;
+    public RecomendacaoController(RecomendacaoService recomendacaoService) {
+        this.recomendacaoService = recomendacaoService;
     }
 
     @GetMapping("/{idCliente}")
-    public List<RecomendacaoB2B> listarRecomendacoesPorCliente(@PathVariable Long idCliente) {
-        return recomendacaoRepository.findByIdClienteOrderByScoreRecomendacaoDesc(idCliente);
-    }
-
-    /** Databricks fora do ar não vira erro 500 genérico: responde 503 com mensagem clara. */
-    @ExceptionHandler(RecomendacaoRepository.DatabricksIndisponivelException.class)
-    public ProblemDetail databricksIndisponivel(RecomendacaoRepository.DatabricksIndisponivelException e) {
-        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
-        pd.setTitle("Camada analítica indisponível");
-        return pd;
+    public RecomendacaoResponseDTO listarRecomendacoesPorCliente(
+            @PathVariable @Positive(message = "idCliente deve ser positivo") Long idCliente,
+            @RequestParam(defaultValue = "10")
+            @Min(value = 1, message = "limite mínimo é 1")
+            @Max(value = 50, message = "limite máximo é 50") int limite) {
+        return recomendacaoService.recomendar(idCliente, limite);
     }
 }

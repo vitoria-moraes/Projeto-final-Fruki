@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pede Fruki — Demo da API de Recomendação</title>
+    <style>
+        :root { --verde: #006633; --verde-claro: #7ACC00; --cinza: #f4f6f8; }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+               background: var(--cinza); color: #1f2937; }
+        header { background: var(--verde); color: #fff; padding: 24px; }
+        header h1 { margin: 0 0 4px; font-size: 22px; }
+        header p { margin: 0; opacity: .85; font-size: 14px; }
+        main { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+        .barra { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        input { padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; width: 160px; }
+        button { padding: 10px 16px; border: 0; border-radius: 8px; background: var(--verde);
+                 color: #fff; font-weight: 600; cursor: pointer; }
+        button:hover { filter: brightness(1.1); }
+        .contexto { background: #fff; border-left: 4px solid var(--verde-claro);
+                    padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+        .card { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.06);
+                display: flex; flex-direction: column; gap: 8px; }
+        .pos { font-size: 12px; color: #64748b; }
+        .nome { font-weight: 700; font-size: 16px; }
+        .cat { font-size: 12px; background: #e2f3e8; color: var(--verde); padding: 2px 8px;
+               border-radius: 999px; width: fit-content; }
+        .preco { font-size: 20px; font-weight: 800; color: var(--verde); }
+        .score { font-size: 13px; color: #475569; }
+        .motivos { margin: 0; padding-left: 18px; font-size: 12px; color: #475569; }
+        .erro { background: #fee2e2; color: #991b1b; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; }
+        .indicadores { margin-top: 24px; background: #fff; border-radius: 12px; padding: 16px; }
+        .indicadores span { display: inline-block; margin-right: 24px; font-size: 14px; }
+        .indicadores b { color: var(--verde); }
+        code { background: #eef2f7; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Demo da API de Recomendação — Pede Fruki</h1>
+    <p>Esta página consome os endpoints reais. Use como referência para integrar o catálogo.</p>
+</header>
+
+<main>
+    <div class="barra">
+        <input id="clienteId" type="number" min="1" value="41" placeholder="idCliente">
+        <button onclick="carregar()">Consultar</button>
+        <button onclick="carregar(48)">ID 48</button>
+        <button onclick="carregar(81)">ID 81</button>
+    </div>
+
+    <div id="erro" class="erro" style="display:none"></div>
+    <div id="contexto" class="contexto"></div>
+    <div id="grid" class="grid"></div>
+
+    <section class="indicadores">
+        <h3 style="margin-top:0">Indicadores</h3>
+        <div id="indicadores">Carregando…</div>
+        <p style="font-size:12px;color:#64748b">
+            Endpoints: <code>GET /api/v1/recomendacoes/{id}</code>,
+            <code>GET /api/v1/contexto</code>, <code>GET /api/v1/indicadores</code>.
+        </p>
+    </section>
+</main>
+
+<script>
+    const $ = (id) => document.getElementById(id);
+    const dinheiro = (v) => v == null ? "—" : v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+    async function getJson(url) {
+        const resposta = await fetch(url, { headers: { "Accept": "application/json" } });
+        if (!resposta.ok) {
+            let detalhe = "";
+            try { detalhe = (await resposta.json()).detail || ""; } catch (_) { /* ignore */ }
+            throw new Error(`HTTP ${resposta.status} em ${url}${detalhe ? " — " + detalhe : ""}`);
+        }
+        return resposta.json();
+    }
+
+    async function carregar(idForcado) {
+        const id = idForcado || Number($("clienteId").value) || 41;
+        $("clienteId").value = id;
+        $("erro").style.display = "none";
+        $("grid").innerHTML = "";
+        $("contexto").textContent = "Carregando contexto…";
+
+        try {
+            const rec = await getJson(`/api/v1/recomendacoes/${id}?limite=10`);
+            pintarContexto(rec.contexto);
+            pintarItens(rec.itens || [], rec);
+        } catch (e) {
+            $("erro").style.display = "block";
+            $("erro").textContent = "Falha ao consultar a recomendação: " + e.message;
+            $("contexto").textContent = "";
+        }
+
+        try {
+            const ind = await getJson("/api/v1/indicadores");
+            $("indicadores").innerHTML = `
+                <span>Cobertura: <b>${ind.coberturaPercent}%</b></span>
+                <span>Clientes com recomendação: <b>${ind.clientesComRecomendacao}/${ind.clientesTotal}</b></span>
+                <span>Itens distintos: <b>${ind.itensDistintos}</b></span>
+                <span>Média por cliente: <b>${ind.mediaItensPorCliente}</b></span>`;
+        } catch (e) {
+            $("indicadores").textContent = "Indicadores indisponíveis: " + e.message;
+        }
+    }
+
+    function pintarContexto(ctx) {
+        if (!ctx) { $("contexto").textContent = ""; return; }
+        $("contexto").innerHTML =
+            `<b>${ctx.estacaoDescricao}</b> · ${ctx.cidade}/${ctx.uf} · ${ctx.temperatura} °C ` +
+            `(${ctx.fonteClima})${ctx.feriadoProximo ? " · <b>feriado/evento próximo</b>" : ""}`;
+    }
+
+    function pintarItens(itens, rec) {
+        if (!itens.length) {
+            $("grid").innerHTML = `<p>Nenhuma recomendação para este cliente (cold start sem catálogo).</p>`;
+            return;
+        }
+        $("grid").innerHTML = itens.map((item) => `
+            <article class="card">
+                <span class="pos">#${item.posicao} · ${rec.perfil || ""}</span>
+                <span class="nome">${item.nome}</span>
+                <span class="cat">${item.categoria}</span>
+                <span class="preco">${dinheiro(item.preco)}</span>
+                <span class="score">Score: <b>${item.score}</b> / 100</span>
+                <ul class="motivos">${(item.motivos || []).map((m) => `<li>${m}</li>`).join("")}</ul>
+            </article>`).join("");
+    }
+
+    carregar(41);
+</script>
+</body>
+</html>

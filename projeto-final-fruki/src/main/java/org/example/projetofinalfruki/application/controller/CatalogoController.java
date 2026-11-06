@@ -14,6 +14,8 @@ public class CatalogoController {
         model.addAttribute("nomeCliente", request.getAttribute("nomeCliente"));
         model.addAttribute("regiaoCliente", request.getAttribute("regiaoCliente"));
         model.addAttribute("tabelaPreco", request.getAttribute("tabelaPrecoCliente"));
+        model.addAttribute("clienteId", request.getAttribute("clienteId"));
+        model.addAttribute("cnpjCliente", request.getAttribute("cnpjCliente"));
         return "catalogo";
     }
 }

@@ -1,0 +1,74 @@
+@base = http://localhost:8080
+
+### 1. Contexto (clima + estação + feriado)
+GET {{base}}/api/v1/contexto?cidade=Porto%20Alegre&uf=RS
+
+### 2. Estação do ano (Hemisfério Sul)
+GET {{base}}/api/v1/contexto/estacao?data=2026-12-01
+
+### 3. Feriados/eventos do Sul
+GET {{base}}/api/v1/contexto/feriados?ano=2026&cidade=Gramado
+
+### 4. Recomendação (200)
+GET {{base}}/api/v1/recomendacoes/41?limite=5
+
+### 5. Recomendação de cliente inexistente (404)
+GET {{base}}/api/v1/recomendacoes/999999
+
+### 6. ID inválido (400)
+GET {{base}}/api/v1/recomendacoes/abc
+
+### 7. Indicadores
+GET {{base}}/api/v1/indicadores
+
+### 8. Produtos
+GET {{base}}/api/v1/produtos?limite=10
+
+### 9. Catálogo sem token (401)
+GET {{base}}/catalogo
+
+### 10. Criar cliente (201; 409 se repetir)
+POST {{base}}/api/v1/clientes
+Content-Type: application/json
+
+{
+  "codCliente": "9001",
+  "cnpj": "11.222.333/0001-81",
+  "nomeFantasia": "Loja Teste",
+  "cidade": "Lajeado",
+  "uf": "RS"
+}
+
+### 11. Consultar cliente
+GET {{base}}/api/v1/clientes/11222333000181
+
+### 12. Registrar compra (201)
+POST {{base}}/api/v1/compras
+Content-Type: application/json
+
+{
+  "cnpj": "11222333000181",
+  "codItem": "00001",
+  "quantidade": 3,
+  "dataCompra": "2026-11-05"
+}
+
+### 13. Pedido real (201 com total calculado)
+POST {{base}}/api/v1/pedidos
+Content-Type: application/json
+
+{
+  "cnpjCliente": "11222333000181",
+  "itens": [
+    { "codigoProduto": "00001", "quantidade": 2 }
+  ]
+}
+
+### 14. Bot do WhatsApp (sem Evolution)
+POST {{base}}/mock/whatsapp/enviar-mensagem
+Content-Type: application/json
+
+{
+  "telefone": "5551999998888",
+  "mensagem": "oi"
+}

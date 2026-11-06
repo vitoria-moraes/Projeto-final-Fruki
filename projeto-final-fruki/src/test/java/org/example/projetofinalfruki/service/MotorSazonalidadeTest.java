@@ -1,26 +1,62 @@
 package org.example.projetofinalfruki.service;
 
+import org.example.projetofinalfruki.application.dtos.ContextoDTO;
+import org.example.projetofinalfruki.domain.model.Estacao;
+import org.example.projetofinalfruki.domain.service.ContextoService;
+import org.example.projetofinalfruki.domain.service.MotorSazonalidadeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import java.math.BigDecimal;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.time.LocalDate;
+import java.util.List;
 
-public class MotorSazonalidadeTest {
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class MotorSazonalidadeTest {
+
+    @Mock
+    private ContextoService contextoService;
+
+    @InjectMocks
+    private MotorSazonalidadeService motor;
 
     @Test
-    @DisplayName("Deve calcular o desconto sazonal corretamente para períodos de alto volume")
-    public void testCalculoDescontoSazonal() {
-        // Cenário simulado de regra de negócio
-        BigDecimal valorBase = new BigDecimal("1000.00");
-        double percentualDesconto = 0.10; // 10% de desconto sazonal (ex: Verão/Festas)
+    @DisplayName("destaca feriado/evento quando está próximo")
+    void mensagemDeFeriado() {
+        when(contextoService.obterContexto("Porto Alegre", null))
+                .thenReturn(contexto(Estacao.VERAO, 30.0, true));
 
-        // Ação
-        BigDecimal valorComDesconto = valorBase.subtract(valorBase.multiply(BigDecimal.valueOf(percentualDesconto)));
+        String mensagem = motor.gerarRecomendacaoParaCidade("Porto Alegre");
 
-        // Validação
-        assertNotNull(valorComDesconto);
-        assertEquals(0, new BigDecimal("900.00").compareTo(valorComDesconto), "O valor com desconto deve ser 900.00");
+        assertTrue(mensagem.contains("Feriado"));
+    }
+
+    @Test
+    @DisplayName("destaca dia quente acima de 28 °C")
+    void mensagemDeCalor() {
+        when(contextoService.obterContexto("Porto Alegre", null))
+                .thenReturn(contexto(Estacao.VERAO, 31.0, false));
+
+        assertTrue(motor.gerarRecomendacaoParaCidade("Porto Alegre").contains("Dia quente"));
+    }
+
+    @Test
+    @DisplayName("destaca inverno quando não há calor nem feriado")
+    void mensagemDeInverno() {
+        when(contextoService.obterContexto("Gramado", null))
+                .thenReturn(contexto(Estacao.INVERNO, 10.0, false));
+
+        assertTrue(motor.gerarRecomendacaoParaCidade("Gramado").contains("Inverno"));
+    }
+
+    private ContextoDTO contexto(Estacao estacao, double temperatura, boolean feriado) {
+        return new ContextoDTO("Porto Alegre", "RS", LocalDate.now(), estacao,
+                estacao.getDescricao(), temperatura, "TESTE", feriado, "teste", List.of());
     }
 }

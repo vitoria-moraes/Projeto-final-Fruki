@@ -1,65 +1,59 @@
 package org.example.projetofinalfruki.domain.service;
 
+import org.example.projetofinalfruki.application.dtos.ContextoDTO;
 import org.example.projetofinalfruki.application.dtos.FeriadoDTO;
-import org.example.projetofinalfruki.infrastructure.external.weather.OpenWeatherService;
+import org.example.projetofinalfruki.domain.model.Estacao;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Gera a mensagem sazonal do bot a partir do contexto unificado
+ * (clima + estação + feriados). Não acessa APIs diretamente.
+ */
 @Service
 public class MotorSazonalidadeService {
 
-    private final OpenWeatherService weatherService;
-    private final FeriadoService feriadoService;
+    private final ContextoService contextoService;
 
-    public MotorSazonalidadeService(OpenWeatherService weatherService, FeriadoService feriadoService) {
-        this.weatherService = weatherService;
-        this.feriadoService = feriadoService;
+    public MotorSazonalidadeService(ContextoService contextoService) {
+        this.contextoService = contextoService;
     }
 
     public List<FeriadoDTO> listarFeriadosDoAno(String cidade) {
-        int anoAtual = LocalDate.now().getYear();
-        return feriadoService.buscarFeriadosCompletos(anoAtual, cidade);
+        return contextoService.feriados(LocalDate.now().getYear(), cidade);
     }
 
     public String gerarRecomendacaoParaCidade(String cidade) {
-        String cidadeFinal = (cidade != null && !cidade.isBlank()) ? cidade : "Porto Alegre";
+        ContextoDTO ctx = contextoService.obterContexto(cidade, null);
+        double temperatura = ctx.temperatura();
 
-        // 1. Busca a temperatura real do OpenWeather
-        double temperaturaAtual = weatherService.obterTemperaturaAtual(cidadeFinal);
-
-        // 2. Verifica se há feriado próximo
-        boolean proximoFeriado = feriadoService.isProximoDeFeriado(cidadeFinal);
-
-        LocalDate hoje = LocalDate.now();
-        int mes = hoje.getMonthValue();
-
-        // Se houver Feriado Próximo + Temperatura Real do OpenWeather
-        if (proximoFeriado) {
+        if (ctx.feriadoProximo()) {
             return String.format(
-                    "🎉 *Feriado a chegar nos próximos dias em %s (Temperatura atual: %.1f°C)!*\nAntecipe o pedido da sua loja! Recomenda-se reforço de estoque em **Packs de Fruki Guaraná 2L**, **Água Mineral Pedra** e **Cervejas**.",
-                    cidadeFinal, temperaturaAtual
-            );
+                    "🎉 *Feriado/evento a chegar em %s (%.1f °C)!*%nAntecipe o pedido! Reforce *Fruki Guaraná 2L*, *Água da Pedra* e *Cervejas*.",
+                    ctx.cidade(), temperatura);
         }
-
-        // Se o dia estiver quente (> 28°C)
-        if (temperaturaAtual > 28.0) {
+        if (temperatura > 28.0) {
             return String.format(
-                    "🔥 *Dia quente em %s (%.1f°C)!*\nQue tal reforçar o estoque com **Água Mineral Pedra** gelada e **Fruki Guaraná 2L**? Alta saída garantida!",
-                    cidadeFinal, temperaturaAtual
-            );
+                    "🔥 *Dia quente em %s (%.1f °C)!*%nReforce *Água Mineral Pedra* gelada e *Fruki Guaraná 2L*: alta saída garantida!",
+                    ctx.cidade(), temperatura);
         }
-
-        // Mês Farroupilha
-        if (mes == 9) {
-            return "🐎 *É tempo de Revolução Farroupilha no RS!*\nO churrasco dos seus clientes vai pedir os sabores tradicionais da **Fruki** e **H2OH! / Citrus**. Garanta o seu mix!";
+        if (ctx.estacao() == Estacao.VERAO) {
+            return String.format(
+                    "☀️ *Verão em %s (%.1f °C).*%nMix de verão: águas, refrigerantes e energéticos gelados.",
+                    ctx.cidade(), temperatura);
         }
-
-        // Recomendação padrão com clima
+        if (ctx.estacao() == Estacao.INVERNO) {
+            return String.format(
+                    "❄️ *Inverno em %s (%.1f °C).*%nSucos e refrescos ganham espaço; mantenha o mix equilibrado.",
+                    ctx.cidade(), temperatura);
+        }
+        if (LocalDate.now().getMonthValue() == 9) {
+            return "🐎 *É tempo de Revolução Farroupilha no RS!*\nO churrasco dos seus clientes vai pedir os sabores tradicionais da **Fruki** e **Citrus**. Garanta o seu mix!";
+        }
         return String.format(
-                "💡 *Dica do Dia (%s - %.1f°C):*\nMantenha o mix equilibrado entre **Fruki Cola** e os sabores frutas para garantir giro rápido na prateleira.",
-                cidadeFinal, temperaturaAtual
-        );
+                "💡 *Dica do Dia (%s - %.1f °C):*%nMantenha o mix equilibrado entre **Fruki Cola** e os sabores de fruta para giro rápido.",
+                ctx.cidade(), temperatura);
     }
 }

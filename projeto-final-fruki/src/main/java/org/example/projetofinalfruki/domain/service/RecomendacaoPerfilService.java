@@ -1,5 +1,6 @@
 package org.example.projetofinalfruki.domain.service;
 
+import org.example.projetofinalfruki.domain.exception.DatabricksIndisponivelException;
 import org.example.projetofinalfruki.infrastructure.db.supabase.databricks.RecomendacaoRepository;
 import org.example.projetofinalfruki.infrastructure.db.supabase.entity.ClienteEntity;
 import org.example.projetofinalfruki.infrastructure.db.supabase.entity.PedidoEntity;
@@ -116,7 +117,7 @@ public class RecomendacaoPerfilService {
                     .map(r -> tabelaPrecoRepository.findByCodProduto(r.getCodItem())
                             .map(TabelaPrecoEntity::getNomeProduto).orElse("Item " + r.getCodItem()))
                     .toList();
-        } catch (NumberFormatException | RecomendacaoRepository.DatabricksIndisponivelException e) {
+        } catch (NumberFormatException | DatabricksIndisponivelException e) {
             return List.of();
         }
     }
