@@ -1,11 +1,11 @@
 -- ============================================================================
 -- Pede Fruki — somente CLIENTES de teste (Supabase/PostgreSQL)
 -- Use este arquivo quando o seed completo falhar por causa de tabela_preco.
--- Ids: 1001 a 1020 + 9001 (Loja Teste do painel).
+-- Ids: 1001 a 1020 + 9001 (Pub Hundte do painel).
 -- ============================================================================
 
 INSERT INTO cliente (cod_cliente, nome_fantasia, cnpj, cidade, uf, cod_hierarquia) VALUES
-  (9001, 'Loja Teste', '11222333000181', 'Lajeado', 'RS', NULL),
+  (9001, 'Pub Hundte', '11222333000181', 'Lajeado', 'RS', NULL),
   (1001, 'Mercado Litoral 1001', '10000001000190', 'Capão da Canoa', 'RS', NULL),
   (1002, 'Super Litoral 1002', '10000002000134', 'Tramandaí', 'RS', NULL),
   (1003, 'Mercado das Torres 1003', '10000003000189', 'Torres', 'RS', NULL),
@@ -27,6 +27,14 @@ INSERT INTO cliente (cod_cliente, nome_fantasia, cnpj, cidade, uf, cod_hierarqui
   (1019, 'Mercado Ilha 1019', '10000019000191', 'Florianópolis', 'SC', NULL),
   (1020, 'Distribuidora Joinville 1020', '10000020000116', 'Joinville', 'SC', NULL)
 ON CONFLICT DO NOTHING;
+
+-- Mantem o cliente de demonstração consistente quando o seed já foi executado.
+UPDATE cliente
+SET nome_fantasia = 'Pub Hundte',
+    cnpj = '11222333000181',
+    cidade = 'Lajeado',
+    uf = 'RS'
+WHERE cod_cliente = 9001;
 
 -- Conferência
 SELECT cod_cliente, nome_fantasia, cnpj, cidade, uf

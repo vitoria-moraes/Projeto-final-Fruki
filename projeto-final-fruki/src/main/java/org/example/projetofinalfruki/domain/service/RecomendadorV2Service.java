@@ -118,7 +118,8 @@ public class RecomendadorV2Service {
                     c.produto() != null ? c.produto().getPrecoBase() : null,
                     arredondar(a.score(), 1),
                     a.motivos(),
-                    detalhe(a)
+                    detalhe(a),
+                    false
             ));
         }
         return saida;

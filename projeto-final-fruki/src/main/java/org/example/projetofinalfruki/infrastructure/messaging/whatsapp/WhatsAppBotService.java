@@ -124,7 +124,7 @@ public class WhatsAppBotService {
         return switch (intencao) {
             case CATALOGO -> {
                 sessoes.put(telefone, EstadoSessao.MENU_PRINCIPAL);
-                yield "🛒 *Seu catálogo B2B* (link válido por 2 horas):\n" + linkCatalogo(cliente)
+                yield "🛒 *Seu catálogo B2B* (link válido por 5 dias):\n" + linkCatalogo(cliente)
                         + "\n\nDigite *menu* para voltar.";
             }
             case COMPRAR -> {

@@ -16,6 +16,12 @@ public record ItemRecomendadoDTO(
         BigDecimal preco,
         double score,
         List<String> motivos,
-        Map<String, Double> detalhe
+        Map<String, Double> detalhe,
+        boolean demonstracao
 ) {
+    public ItemRecomendadoDTO(int posicao, String codItem, String nome, String categoria,
+                              BigDecimal preco, double score, List<String> motivos,
+                              Map<String, Double> detalhe) {
+        this(posicao, codItem, nome, categoria, preco, score, motivos, detalhe, false);
+    }
 }

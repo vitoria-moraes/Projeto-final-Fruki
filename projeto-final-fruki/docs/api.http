@@ -34,7 +34,7 @@ Content-Type: application/json
 {
   "codCliente": 9001,
   "cnpj": "11.222.333/0001-81",
-  "nomeFantasia": "Loja Teste",
+  "nomeFantasia": "Pub Hundte",
   "cidade": "Lajeado",
   "uf": "RS"
 }

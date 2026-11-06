@@ -284,6 +284,8 @@
             </div>
         </div>
 
+        <div id="banner-contexto" class="small text-muted mb-3" aria-live="polite"></div>
+        <div id="aviso-api" class="alert alert-warning py-2 d-none" role="status" aria-live="polite"></div>
         <div class="row row-cols-1 row-cols-md-3 g-4" id="container-recomendacoes">
             <!-- Injetado dinamicamente via JS -->
         </div>
@@ -344,7 +346,7 @@
             <span class="fs-5 fw-bold text-dark">Total Estimado:</span>
             <span class="fs-4 fw-extrabold text-success" id="total-carrinho-valor">R$ 0,00</span>
         </div>
-        <button onclick="enviarPedidoWhatsApp()" id="btn-finalizar-whatsapp" disabled class="btn btn-success btn-lg w-100 font-weight-bold d-flex align-items-center justify-content-center gap-2 py-3 shadow">
+        <button onclick="enviarPedido()" id="btn-finalizar-whatsapp" disabled class="btn btn-success btn-lg w-100 font-weight-bold d-flex align-items-center justify-content-center gap-2 py-3 shadow">
             <i class="fa-brands fa-whatsapp fs-4"></i>
             <span>Enviar Pedido via WhatsApp</span>
         </button>
@@ -402,187 +404,115 @@
     ];
 
     let carrinho = [];
+    const clienteId = document.querySelector('meta[name="cliente-id"]')?.content?.trim() || '';
+    const cnpjCliente = document.querySelector('meta[name="cnpj-cliente"]')?.content?.trim() || '';
+    let recomendacoesApi = null;
+    const IMAGENS = Object.fromEntries(produtosFruki.map(p => [p.nome, p.imagem]));
+    const imagemDoProduto = nome => IMAGENS[nome] || '/images/brand/produto-placeholder.svg';
+    const escaparHtml = valor => String(valor ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const moeda = valor => valor == null || Number.isNaN(Number(valor)) ? '—' : Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    const aviso = mensagem => { const el = document.getElementById('aviso-api'); el.textContent = mensagem || ''; el.classList.toggle('d-none', !mensagem); };
 
-    // Renderiza os cards de recomendação
-    function renderizarRecomendacoes() {
+    async function buscarJson(url, opcoes) {
+        const resposta = await fetch(url, opcoes);
+        const corpo = await resposta.json().catch(() => ({}));
+        if (!resposta.ok) { const erro = new Error(corpo.detail || `HTTP ${resposta.status}`); erro.status = resposta.status; erro.detalhes = corpo.erros || []; throw erro; }
+        return corpo;
+    }
+    async function buscarRecomendacoes(id) { return buscarJson(`/api/v1/recomendacoes/${encodeURIComponent(id)}?limite=8`, { headers: { Accept: 'application/json' } }); }
+
+    function renderizarRecomendacoesApi(rec) {
         const container = document.getElementById('container-recomendacoes');
+        if (!rec.itens?.length) { container.innerHTML = '<div class="col-12 text-muted">Nenhuma recomendação disponível no momento.</div>'; return; }
+        container.innerHTML = rec.itens.map(item => `
+            <div class="col"><div class="card card-produto h-100 shadow-sm border-0"><div class="card-img-container">
+                <span class="badge-destaque">#${Number(item.posicao)} · ${Number(item.score).toFixed(1)}</span>
+                <img src="${escaparHtml(imagemDoProduto(item.nome))}" alt="${escaparHtml(item.nome)}" onerror="this.onerror=null;this.src='https://placehold.co/200x200/006633/ffffff?text=Fruki'"></div>
+                <div class="card-body p-4 d-flex flex-column justify-content-between"><div><span class="badge bg-light text-success fw-bold mb-2">${escaparHtml(item.categoria)}</span>
+                    <h5 class="fw-bold text-dark mb-1">${escaparHtml(item.nome)}</h5><ul class="text-muted small mb-3">${(item.motivos || []).map(m => `<li>${escaparHtml(m)}</li>`).join('')}</ul></div>
+                    <div class="d-flex align-items-center justify-content-between pt-3 border-top"><div><span class="text-muted fs-7 block">Preço B2B</span><span class="fs-5 fw-extrabold text-success">${moeda(item.preco)}</span></div>
+                    <button type="button" data-cod-item="${escaparHtml(item.codItem)}" data-nome="${escaparHtml(item.nome)}" data-preco="${item.preco ?? ''}" onclick="adicionarAoCarrinhoApi(this)" class="btn btn-fruki d-flex align-items-center gap-2"><i class="fa-solid fa-plus"></i><span>Adicionar</span></button></div></div></div></div>`).join('');
+    }
+    async function carregarRecomendacoes() {
+        if (!clienteId) return;
+        try { recomendacoesApi = await buscarRecomendacoes(clienteId); renderizarRecomendacoesApi(recomendacoesApi); carregarContexto(recomendacoesApi.contexto); }
+        catch (e) { console.warn('Recomendação indisponível; usando fallback:', e); aviso(e.status === 404 ? 'Não encontramos seu cadastro para recomendações. Fale com o atendimento.' : 'Recomendações temporariamente indisponíveis; exibindo sugestões locais.'); }
+    }
+    async function carregarContexto(ctx) {
+        try {
+            ctx = ctx || await buscarJson(`/api/v1/contexto?cidade=${encodeURIComponent('Porto Alegre')}&uf=RS`);
+            document.getElementById('banner-contexto').textContent = [ctx.estacaoDescricao || ctx.estacao, ctx.temperatura == null ? null : `${ctx.temperatura} °C`, ctx.feriadoProximo ? 'feriado próximo' : 'sem feriado'].filter(Boolean).join(' · ');
+        } catch (e) { console.warn('Contexto indisponível:', e); }
+    }
+    async function carregarProdutosApi() {
+        try {
+            const produtos = await buscarJson('/api/v1/produtos?limite=100');
+            if (!Array.isArray(produtos) || !produtos.length) return;
+            produtosFruki.splice(0, produtosFruki.length, ...produtos.map(p => ({ id: String(p.codItem), codItem: String(p.codItem), nome: p.nome, categoria: p.categoria || 'Outros', preco: p.preco == null ? null : Number(p.preco), descricao: 'Produto do catálogo Fruki.', imagem: imagemDoProduto(p.nome) })));
+            renderizarCatalogo(document.querySelector('#filtros-categoria .active')?.dataset.categoria || 'todos');
+        } catch (e) { console.warn('Catálogo API indisponível; mantendo mock:', e); }
+    }
+
+    function renderizarRecomendacoes() {
         const recomendados = produtosFruki.filter(p => p.recomendado);
-
-        container.innerHTML = recomendados.map(p => `
-                <div class="col">
-                    <div class="card card-produto h-100 shadow-sm border-0">
-                        <div class="card-img-container">
-                            <span class="badge-destaque">${p.badge}</span>
-                            <img src="${p.imagem}" alt="${p.nome}" onerror="this.src='https://placehold.co/200x200/006633/ffffff?text=Fruki+Bebidas'">
-                        </div>
-                        <div class="card-body p-4 d-flex flex-column justify-between">
-                            <div>
-                                <span class="badge bg-light text-success fw-bold mb-2">${p.categoria}</span>
-                                <h5 class="fw-bold text-dark mb-1">${p.nome}</h5>
-                                <p class="text-muted small mb-3">${p.descricao}</p>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between pt-3 border-top">
-                                <div>
-                                    <span class="text-muted fs-7 block">Preço B2B</span>
-                                    <span class="fs-5 fw-extrabold text-success">R$ ${p.preco.toFixed(2).replace('.', ',')}</span>
-                                </div>
-                                <button onclick="adicionarAoCarrinho(${p.id})" class="btn btn-fruki d-flex align-items-center gap-2">
-                                    <i class="fa-solid fa-plus"></i>
-                                    <span>Adicionar</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+        document.getElementById('container-recomendacoes').innerHTML = recomendados.map(p => `
+            <div class="col"><div class="card card-produto h-100 shadow-sm border-0"><div class="card-img-container"><span class="badge-destaque">${escaparHtml(p.badge)}</span>
+                <img src="${escaparHtml(p.imagem)}" alt="${escaparHtml(p.nome)}" onerror="this.onerror=null;this.src='https://placehold.co/200x200/006633/ffffff?text=Fruki+Bebidas'"></div>
+                <div class="card-body p-4 d-flex flex-column justify-content-between"><div><span class="badge bg-light text-success fw-bold mb-2">${escaparHtml(p.categoria)}</span><h5 class="fw-bold text-dark mb-1">${escaparHtml(p.nome)}</h5><p class="text-muted small mb-3">${escaparHtml(p.descricao)}</p></div>
+                    <div class="d-flex align-items-center justify-content-between pt-3 border-top"><div><span class="text-muted fs-7 block">Preço B2B</span><span class="fs-5 fw-extrabold text-success">${moeda(p.preco)}</span></div>
+                    <button data-cod-item="${escaparHtml(p.codItem || p.id)}" data-nome="${escaparHtml(p.nome)}" data-preco="${p.preco}" onclick="adicionarAoCarrinhoApi(this)" class="btn btn-fruki"><i class="fa-solid fa-plus"></i> Adicionar</button></div></div></div></div>`).join('');
     }
-
-    // Renderiza o catálogo completo com filtros
     function renderizarCatalogo(categoriaFiltro = 'todos') {
-        const grelha = document.getElementById('grelha-produtos');
-        const produtosFiltrados = categoriaFiltro === 'todos'
-            ? produtosFruki
-            : produtosFruki.filter(p => p.categoria === categoriaFiltro);
-
-        grelha.innerHTML = produtosFiltrados.map(p => `
-                <div class="col">
-                    <div class="card card-produto h-100 shadow-sm">
-                        <div class="card-img-container">
-                            <img src="${p.imagem}" alt="${p.nome}" onerror="this.src='https://placehold.co/200x200/006633/ffffff?text=Fruki'">
-                        </div>
-                        <div class="card-body p-3 d-flex flex-column justify-between">
-                            <div>
-                                <span class="badge bg-secondary-subtle text-secondary mb-2 fs-7">${p.categoria}</span>
-                                <h6 class="fw-bold text-dark mb-1">${p.nome}</h6>
-                                <p class="text-muted small mb-3 text-truncate">${p.descricao}</p>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between pt-2 border-top">
-                                <span class="fs-6 fw-bold text-success">R$ ${p.preco.toFixed(2).replace('.', ',')}</span>
-                                <button onclick="adicionarAoCarrinho(${p.id})" class="btn btn-sm btn-fruki">
-                                    <i class="fa-solid fa-cart-plus me-1"></i> Pedir
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+        const produtosFiltrados = categoriaFiltro === 'todos' ? produtosFruki : produtosFruki.filter(p => p.categoria === categoriaFiltro);
+        document.getElementById('grelha-produtos').innerHTML = produtosFiltrados.map(p => `
+            <div class="col"><div class="card card-produto h-100 shadow-sm"><div class="card-img-container"><img src="${escaparHtml(p.imagem || imagemDoProduto(p.nome))}" alt="${escaparHtml(p.nome)}" onerror="this.onerror=null;this.src='https://placehold.co/200x200/006633/ffffff?text=Fruki'"></div>
+                <div class="card-body p-3 d-flex flex-column justify-content-between"><div><span class="badge bg-secondary-subtle text-secondary mb-2 fs-7">${escaparHtml(p.categoria)}</span><h6 class="fw-bold text-dark mb-1">${escaparHtml(p.nome)}</h6><p class="text-muted small mb-3 text-truncate">${escaparHtml(p.descricao)}</p></div>
+                    <div class="d-flex align-items-center justify-content-between pt-2 border-top"><span class="fs-6 fw-bold text-success">${moeda(p.preco)}</span><button data-cod-item="${escaparHtml(p.codItem || p.id)}" data-nome="${escaparHtml(p.nome)}" data-preco="${p.preco ?? ''}" onclick="adicionarAoCarrinhoApi(this)" class="btn btn-sm btn-fruki"><i class="fa-solid fa-cart-plus me-1"></i> Pedir</button></div></div></div></div>`).join('');
     }
-
-    // Filtra por Categoria
     function filtrarProdutos(categoria) {
-        document.querySelectorAll('#filtros-categoria .btn-categoria').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        event.target.classList.add('active');
-
+        document.querySelectorAll('#filtros-categoria .btn-categoria').forEach(btn => btn.classList.toggle('active', btn.getAttribute('onclick')?.includes(`'${categoria}'`)));
         renderizarCatalogo(categoria);
     }
-
-    // Adiciona Item ao Carrinho
-    function adicionarAoCarrinho(id) {
-        const produto = produtosFruki.find(p => p.id === id);
-        const itemExistente = carrinho.find(item => item.id === id);
-
-        if (itemExistente) {
-            itemExistente.quantidade += 1;
-        } else {
-            carrinho.push({ ...produto, quantidade: 1 });
-        }
-
+    function adicionarAoCarrinhoApi(botao) {
+        const codItem = String(botao.dataset.codItem);
+        const produto = produtosFruki.find(p => String(p.codItem || p.id) === codItem);
+        const item = carrinho.find(i => i.codItem === codItem);
+        if (item) item.quantidade++;
+        else carrinho.push({ codItem, nome: botao.dataset.nome || produto?.nome, preco: Number(botao.dataset.preco || produto?.preco || 0), imagem: produto?.imagem || imagemDoProduto(botao.dataset.nome || produto?.nome), quantidade: 1 });
         atualizarCarrinhoDrawer();
     }
-
-    // Altera Quantidade no Carrinho
-    function alterarQuantidade(id, delta) {
-        const item = carrinho.find(i => i.id === id);
-        if (item) {
-            item.quantidade += delta;
-            if (item.quantidade <= 0) {
-                carrinho = carrinho.filter(i => i.id !== id);
-            }
-        }
+    function alterarQuantidade(codItem, delta) {
+        const item = carrinho.find(i => i.codItem === String(codItem));
+        if (item) { item.quantidade += delta; if (item.quantidade <= 0) carrinho = carrinho.filter(i => i.codItem !== String(codItem)); }
         atualizarCarrinhoDrawer();
     }
-
-    // Atualiza a View do Drawer e Totais
     function atualizarCarrinhoDrawer() {
         const container = document.getElementById('itens-carrinho-container');
         const totalValorEl = document.getElementById('total-carrinho-valor');
-        const badgeTotalItens = document.getElementById('badge-total-itens');
+        document.getElementById('badge-total-itens').innerText = carrinho.reduce((acc, i) => acc + i.quantidade, 0);
         const btnFinalizar = document.getElementById('btn-finalizar-whatsapp');
-
-        const totalItens = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
-        badgeTotalItens.innerText = totalItens;
-
-        if (carrinho.length === 0) {
-            container.innerHTML = `
-                    <div class="text-center text-muted py-5">
-                        <i class="fa-solid fa-basket-shopping fs-1 mb-3 text-black-50"></i>
-                        <p>Seu carrinho está vazio no momento.</p>
-                    </div>
-                `;
-            totalValorEl.innerText = "R$ 0,00";
-            btnFinalizar.disabled = true;
-            return;
+        if (!carrinho.length) { container.innerHTML = '<div class="text-center text-muted py-5"><i class="fa-solid fa-basket-shopping fs-1 mb-3 text-black-50"></i><p>Seu carrinho está vazio no momento.</p></div>'; totalValorEl.innerText = 'R$ 0,00'; btnFinalizar.disabled = true; return; }
+        const total = carrinho.reduce((s, i) => s + (i.preco || 0) * i.quantidade, 0);
+        container.innerHTML = carrinho.map(i => `<div class="d-flex align-items-center justify-content-between py-3 border-bottom"><div class="d-flex align-items-center gap-3"><img src="${escaparHtml(i.imagem)}" alt="" style="width:45px;height:45px;object-fit:contain"><div><h6 class="fw-bold text-dark mb-0 fs-7">${escaparHtml(i.nome)}</h6><span class="text-muted small">${moeda(i.preco)} un.</span></div></div><div class="d-flex align-items-center gap-2"><button onclick="alterarQuantidade('${escaparHtml(i.codItem)}',-1)" class="btn btn-sm btn-light border px-2 py-0">-</button><span class="fw-bold px-1">${i.quantidade}</span><button onclick="alterarQuantidade('${escaparHtml(i.codItem)}',1)" class="btn btn-sm btn-light border px-2 py-0">+</button></div></div>`).join('');
+        totalValorEl.innerText = moeda(total); btnFinalizar.disabled = false;
+    }
+    async function enviarPedido() {
+        if (!carrinho.length) return;
+        if (clienteId && cnpjCliente) {
+            try {
+                const pedido = await buscarJson('/api/v1/pedidos', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ cnpjCliente, itens: carrinho.map(i => ({ codigoProduto: i.codItem, quantidade: i.quantidade })) }) });
+                alert(`Pedido ${pedido.codigoPedido} criado. Total: ${moeda(pedido.valorTotal)}`); carrinho = []; atualizarCarrinhoDrawer(); return;
+            } catch (e) { const campos = e.detalhes?.map(x => `${x.campo}: ${x.mensagem}`).join('\n'); alert(`Falha ao enviar pedido: ${e.message}${campos ? `\n${campos}` : ''}`); return; }
         }
-
-        let totalGeral = 0;
-        container.innerHTML = carrinho.map(item => {
-            const subtotal = item.preco * item.quantidade;
-            totalGeral += subtotal;
-            return `
-                    <div class="d-flex align-items-center justify-content-between py-3 border-bottom">
-                        <div class="d-flex align-items-center gap-3">
-                            <img src="${item.imagem}" alt="${item.nome}" style="width: 45px; height: 45px; object-fit: contain;">
-                            <div>
-                                <h6 class="fw-bold text-dark mb-0 fs-7">${item.nome}</h6>
-                                <span class="text-muted small">R$ ${item.preco.toFixed(2).replace('.', ',')} un.</span>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <button onclick="alterarQuantidade(${item.id}, -1)" class="btn btn-sm btn-light border px-2 py-0 font-weight-bold">-</button>
-                            <span class="fw-bold px-1">${item.quantidade}</span>
-                            <button onclick="alterarQuantidade(${item.id}, 1)" class="btn btn-sm btn-light border px-2 py-0 font-weight-bold">+</button>
-                        </div>
-                    </div>
-                `;
-        }).join('');
-
-        totalValorEl.innerText = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
-        btnFinalizar.disabled = false;
+        enviarPedidoWhatsApp();
     }
-
-    // Simula o Envio do Pedido via WhatsApp
     function enviarPedidoWhatsApp() {
-        if (carrinho.length === 0) return;
-
-        let mensagem = `🛒 *NOVO PEDIDO B2B - PEDE FRUKI*\n`;
-        mensagem += `👤 Lojista: *Vitória*\n`;
-        mensagem += `📍 Região: *Porto Alegre - RS*\n`;
-        mensagem += `🏷️ Tabela: *TABELA_VIP_RS*\n\n`;
-        mensagem += `*Itens do Pedido:*\n`;
-
-        let totalGeral = 0;
-        carrinho.forEach(item => {
-            const subtotal = item.preco * item.quantidade;
-            totalGeral += subtotal;
-            mensagem += `• ${item.quantidade}x ${item.nome} - R$ ${subtotal.toFixed(2).replace('.', ',')}\n`;
-        });
-
-        mensagem += `\n💰 *Total Estimado: R$ ${totalGeral.toFixed(2).replace('.', ',')}*\n`;
-        mensagem += `_Enviado via Catálogo Web Seguro Pede Fruki._`;
-
-        const telefoneAtendimento = "5551988887777";
-        const url = `https://api.whatsapp.com/send?phone=${telefoneAtendimento}&text=${encodeURIComponent(mensagem)}`;
-
-        window.open(url, '_blank');
+        if (!carrinho.length) return;
+        let mensagem = `🛒 *NOVO PEDIDO B2B - PEDE FRUKI*\n👤 Lojista: *${document.querySelector('meta[name="cliente-id"]')?.content || 'Visitante'}*\n\n*Itens do Pedido:*\n`;
+        carrinho.forEach(item => { mensagem += `• ${item.quantidade}x ${item.nome} - ${moeda(item.preco * item.quantidade)}\n`; });
+        mensagem += `\n💰 *Total Estimado: ${moeda(carrinho.reduce((s, i) => s + i.preco * i.quantidade, 0))}*\n_Enviado via Catálogo Web Pede Fruki._`;
+        window.open(`https://api.whatsapp.com/send?phone=5551988887777&text=${encodeURIComponent(mensagem)}`, '_blank');
     }
-
-    // Inicialização ao carregar a página
-    window.onload = function() {
-        renderizarRecomendacoes();
-        renderizarCatalogo('todos');
-    };
-</script>
+    window.onload = function() { renderizarRecomendacoes(); renderizarCatalogo('todos'); carregarProdutosApi(); carregarRecomendacoes(); };</script>
 </body>
 </html>

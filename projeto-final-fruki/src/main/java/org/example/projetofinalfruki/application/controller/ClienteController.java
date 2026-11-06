@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.example.projetofinalfruki.application.dtos.ClienteRequestDTO;
 import org.example.projetofinalfruki.application.dtos.ClienteResponseDTO;
+import org.example.projetofinalfruki.application.dtos.HistoricoCompraDTO;
 import org.example.projetofinalfruki.domain.service.ClienteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -50,5 +51,14 @@ public class ClienteController {
     @GetMapping("/{cnpj}")
     public ClienteResponseDTO buscar(@PathVariable String cnpj) {
         return service.buscarPorCnpj(cnpj);
+    }
+
+    @GetMapping("/{cnpj}/compras")
+    public List<HistoricoCompraDTO> historico(
+            @PathVariable String cnpj,
+            @RequestParam(defaultValue = "10")
+            @Min(value = 1, message = "limite mínimo é 1")
+            @Max(value = 20, message = "limite máximo é 20") int limite) {
+        return service.historico(cnpj, limite);
     }
 }

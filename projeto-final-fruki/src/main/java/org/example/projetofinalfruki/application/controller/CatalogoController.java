@@ -16,6 +16,6 @@ public class CatalogoController {
         model.addAttribute("tabelaPreco", request.getAttribute("tabelaPrecoCliente"));
         model.addAttribute("clienteId", request.getAttribute("clienteId"));
         model.addAttribute("cnpjCliente", request.getAttribute("cnpjCliente"));
-        return "catalogo";
+        return "catalogo-react";
     }
 }

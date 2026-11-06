@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Popula pedidos de demonstração. Só roda com o perfil "dev" (--spring.profiles.active=dev) e NUNCA
- * derruba a aplicação: se a tabela fato_vendas não existir no banco, apenas avisa no log.
+ * Popula pedidos de demonstraÃ§Ã£o. SÃ³ roda com o perfil "dev" (--spring.profiles.active=dev) e NUNCA
+ * derruba a aplicaÃ§Ã£o: se a tabela fato_vendas nÃ£o existir no banco, apenas avisa no log.
  */
 @Component
 @Profile("dev")
@@ -30,14 +30,14 @@ public class DataSeeder implements CommandLineRunner {
             if (pedidoRepository.count() > 0) return;
 
             PedidoEntity p1 = PedidoEntity.builder()
-                    .codCliente("1")
-                    .dataPedido(LocalDateTime.now().minusDays(5))
+                    .codCliente(1L)
+                    .dataVenda(LocalDateTime.now().minusDays(5).toLocalDate())
                     .valorTotal(new BigDecimal("1250.00"))
                     .status("ENTREGUE")
-                    .resumoItens("20x Guaraná Fruki 2L, 10x Água Mineral 500ml")
+                    .resumoItens("20x GuaranÃ¡ Fruki 2L, 10x Ãgua Mineral 500ml")
                     .build();
             pedidoRepository.saveAll(List.of(p1));
-            System.out.println("[DataSeeder] Histórico de teste criado.");
+            System.out.println("[DataSeeder] HistÃ³rico de teste criado.");
         } catch (Exception e) {
             System.err.println("[DataSeeder] Ignorado (a tabela fato_vendas existe? " + e.getClass().getSimpleName() + ")");
         }

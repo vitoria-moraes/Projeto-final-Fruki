@@ -23,6 +23,7 @@ $env:SUPABASE_PASSWORD = "<senha>"        # cuidado com espaco no fim
 # Gere uma vez e mantenha:
 #   [guid]::NewGuid().ToString('N') + [guid]::NewGuid().ToString('N')
 $env:JWT_SECRET = "<32+ caracteres>"
+$env:JWT_EXPIRATION_MINUTES = "7200"
 
 # --- Databricks (camada analitica) ------------------------------------------
 $env:DATABRICKS_HOST      = "<workspace>.cloud.databricks.com"   # sem https:// e sem :443

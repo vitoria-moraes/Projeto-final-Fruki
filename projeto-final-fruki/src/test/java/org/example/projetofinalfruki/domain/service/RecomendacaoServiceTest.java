@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -54,7 +54,7 @@ class RecomendacaoServiceTest {
     }
 
     @Test
-    @DisplayName("monta resposta quando a Gold tem histórico")
+    @DisplayName("completa com sugestões demonstrativas quando há poucas recomendações reais")
     void recomendaComHistorico() {
         RecomendacaoB2B linha = new RecomendacaoB2B();
         linha.setCodItem("00001");
@@ -68,8 +68,9 @@ class RecomendacaoServiceTest {
         RecomendacaoResponseDTO resposta = service.recomendar(41L, 10);
 
         assertEquals(41L, resposta.idCliente());
-        assertNull(resposta.nomeCliente());
-        assertEquals(1, resposta.itens().size());
+        assertEquals("Loja de Demonstração", resposta.nomeCliente());
+        assertEquals(5, resposta.itens().size());
+        assertTrue(resposta.itens().stream().anyMatch(ItemRecomendadoDTO::demonstracao));
         assertEquals("Mercado Central", resposta.perfil());
     }
 
@@ -103,12 +104,15 @@ class RecomendacaoServiceTest {
     }
 
     @Test
-    @DisplayName("propaga 503 do Databricks")
-    void propaga503() {
+    @DisplayName("usa recomendações de demonstração quando Databricks está indisponível")
+    void usaFallbackQuandoDatabricksIndisponivel() {
         when(recomendacaoRepository.findByIdClienteOrderByScoreRecomendacaoDesc(41L))
                 .thenThrow(new DatabricksIndisponivelException("fora", new RuntimeException()));
 
-        assertThrows(DatabricksIndisponivelException.class, () -> service.recomendar(41L, 10));
+        RecomendacaoResponseDTO resposta = service.recomendar(41L, 10);
+
+        assertEquals(5, resposta.itens().size());
+        assertTrue(resposta.itens().stream().allMatch(ItemRecomendadoDTO::demonstracao));
     }
 
     private RecomendacaoB2B linha() {

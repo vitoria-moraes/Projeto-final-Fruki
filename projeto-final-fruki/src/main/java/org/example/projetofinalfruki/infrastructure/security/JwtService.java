@@ -24,7 +24,7 @@ public class JwtService {
     private final long expirationMillis;
 
     public JwtService(@Value("${jwt.secret:}") String secret,
-                      @Value("${jwt.expiration-minutes:120}") long expirationMinutes) {
+                      @Value("${jwt.expiration-minutes:7200}") long expirationMinutes) {
         if (secret == null || secret.getBytes(StandardCharsets.UTF_8).length < TAMANHO_MINIMO_BYTES) {
             throw new IllegalStateException(
                     "jwt.secret ausente ou curto demais: defina a variável de ambiente JWT_SECRET com pelo menos 32 caracteres.");

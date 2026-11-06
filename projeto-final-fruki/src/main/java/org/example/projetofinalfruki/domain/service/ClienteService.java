@@ -2,15 +2,19 @@ package org.example.projetofinalfruki.domain.service;
 
 import org.example.projetofinalfruki.application.dtos.ClienteRequestDTO;
 import org.example.projetofinalfruki.application.dtos.ClienteResponseDTO;
+import org.example.projetofinalfruki.application.dtos.HistoricoCompraDTO;
 import org.example.projetofinalfruki.domain.exception.ClienteNaoEncontradoException;
 import org.example.projetofinalfruki.domain.exception.ConflitoException;
 import org.example.projetofinalfruki.domain.util.CnpjValidator;
 import org.example.projetofinalfruki.infrastructure.db.supabase.entity.ClienteEntity;
 import org.example.projetofinalfruki.infrastructure.db.supabase.repository.ClienteJpaRepository;
+import org.example.projetofinalfruki.infrastructure.db.supabase.repository.PedidoJpaRepository;
+import org.example.projetofinalfruki.infrastructure.db.supabase.entity.PedidoEntity;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.dao.DataAccessException;
 
 import java.util.List;
 import java.util.Locale;
@@ -20,9 +24,14 @@ import java.util.Locale;
 public class ClienteService {
 
     private final ClienteJpaRepository repository;
+    private final PedidoJpaRepository pedidoRepository;
+    private final MockPedeFrukiService mockService;
 
-    public ClienteService(ClienteJpaRepository repository) {
+    public ClienteService(ClienteJpaRepository repository, PedidoJpaRepository pedidoRepository,
+                          MockPedeFrukiService mockService) {
         this.repository = repository;
+        this.pedidoRepository = pedidoRepository;
+        this.mockService = mockService;
     }
 
     @Transactional
@@ -62,6 +71,30 @@ public class ClienteService {
                 .stream()
                 .map(this::paraDTO)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<HistoricoCompraDTO> historico(String cnpj, int limite) {
+        ClienteEntity cliente;
+        try {
+            cliente = repository.findByCnpj(CnpjValidator.normalizar(cnpj))
+                    .orElseThrow(() -> new ClienteNaoEncontradoException(cnpj));
+        } catch (DataAccessException e) {
+            return mockService.historico(limite);
+        }
+        try {
+            List<HistoricoCompraDTO> historico = pedidoRepository.findByCodClienteOrderByDataVendaDesc(
+                            cliente.getCodCliente(), PageRequest.of(0, Math.max(1, Math.min(limite, 20))))
+                    .stream().map(this::paraHistorico).toList();
+            return historico.isEmpty() ? mockService.historico(limite) : historico;
+        } catch (DataAccessException e) {
+            return mockService.historico(limite);
+        }
+    }
+
+    private HistoricoCompraDTO paraHistorico(PedidoEntity pedido) {
+        return new HistoricoCompraDTO(pedido.getId(), pedido.getDataPedido(), pedido.getValorTotal(),
+                "REGISTRADA", "A tabela transacional atual não armazena o detalhamento dos itens.", false);
     }
 
     private ClienteResponseDTO paraDTO(ClienteEntity entity) {

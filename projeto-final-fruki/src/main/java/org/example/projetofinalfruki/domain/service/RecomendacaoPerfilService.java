@@ -65,7 +65,7 @@ public class RecomendacaoPerfilService {
     public Resultado recomendar(ClienteEntity cliente) {
         List<PedidoEntity> historico;
         try {
-            historico = pedidoRepository.findByCodCliente(String.valueOf(cliente.getCodCliente()));
+            historico = pedidoRepository.findByCodCliente(cliente.getCodCliente());
         } catch (DataAccessException e) {
             // Se fato_vendas estiver com schema divergente/fora, o bot continua com as regras.
             log.warn("Historico de fato_vendas indisponivel ({}). Seguindo com as regras.",
