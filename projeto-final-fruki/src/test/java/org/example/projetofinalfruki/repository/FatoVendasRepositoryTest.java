@@ -2,21 +2,22 @@ package org.example.projetofinalfruki.repository;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Garante que o contexto JPA sobe sem depender do Supabase.
+ * Com H2 + Replace.ANY, o teste é hermético: não precisa de variáveis de ambiente.
+ */
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@EnabledIfEnvironmentVariable(named = "SUPABASE_JDBC_URL", matches = ".+")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class FatoVendasRepositoryTest {
 
     @Test
-    @DisplayName("Deve carregar o contexto JPA com sucesso")
+    @DisplayName("Deve carregar o contexto JPA com o banco em memória")
     public void testContextoJpaCarregado() {
-        assertNotNull(true, "O contexto JPA deve iniciar corretamente");
+        assertTrue(true, "O contexto JPA deve iniciar corretamente com H2");
     }
 }
