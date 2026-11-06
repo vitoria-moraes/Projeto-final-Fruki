@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Painel de testes — Pede Fruki</title>
+    <link rel="icon" type="image/svg+xml" href="/images/brand/logo-fruki.svg">
+    <link rel="stylesheet" href="/css/painel.css">
+</head>
+<body>
+
+<header class="topbar">
+    <a class="brand" href="/painel.html">
+        <img src="/images/brand/logo-fruki.svg" alt="Pede Fruki">
+        <span>Pede <b>Fruki</b> <small>· painel de testes</small></span>
+    </a>
+    <div class="top-actions">
+        <span id="apiStatus" class="status-chip">verificando API…</span>
+        <a class="link-btn" href="/demo-recomendacoes.html">Demo simples</a>
+        <a class="link-btn" href="/catalogo">Catálogo (JWT)</a>
+    </div>
+</header>
+
+<div class="shell">
+    <aside class="sidebar">
+        <p class="eyebrow">Console de validação</p>
+        <h1>Teste tudo,<br><em>de ponta a ponta.</em></h1>
+        <p class="side-hint">Cada aba chama a API real. Os resultados mostram status HTTP, corpo e erros no padrão ProblemDetail.</p>
+
+        <nav id="tabs" class="tabs">
+            <button class="tab active" data-tab="overview">Visão geral</button>
+            <button class="tab" data-tab="recomendacao">Recomendação</button>
+            <button class="tab" data-tab="contexto">Contexto do Sul</button>
+            <button class="tab" data-tab="indicadores">Indicadores</button>
+            <button class="tab" data-tab="catalogo">Catálogo</button>
+            <button class="tab" data-tab="clientes">Clientes</button>
+            <button class="tab" data-tab="compras">Compras</button>
+            <button class="tab" data-tab="pedidos">Pedido</button>
+            <button class="tab" data-tab="whatsapp">WhatsApp</button>
+            <button class="tab" data-tab="erros">Erros</button>
+        </nav>
+
+        <div class="side-foot">
+            <label for="clienteAtual">Cliente em uso</label>
+            <input id="clienteAtual" inputmode="numeric" placeholder="ex.: 41">
+            <small>Usado como atalho nas abas de recomendação e pedido.</small>
+        </div>
+    </aside>
+
+    <main class="content">
+
+        <!-- ============================================================ OVERVIEW -->
+        <section class="panel active" id="tab-overview">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Comece por aqui</p>
+                    <h2>O que você consegue testar</h2>
+                    <p class="lead">Dez abas, uma para cada funcionalidade do backend. A ordem abaixo é a sugestão de roteiro.</p>
+                </div>
+            </div>
+
+            <div class="stat-grid">
+                <article class="stat"><strong>1</strong><span>Consulta da recomendação</span><button class="mini" data-go="recomendacao">Abrir</button></article>
+                <article class="stat"><strong>2</strong><span>Contexto (clima, estação, feriados)</span><button class="mini" data-go="contexto">Abrir</button></article>
+                <article class="stat"><strong>3</strong><span>Indicadores</span><button class="mini" data-go="indicadores">Abrir</button></article>
+                <article class="stat"><strong>4</strong><span>Ingestão (cliente, compra, pedido)</span><button class="mini" data-go="clientes">Abrir</button></article>
+            </div>
+
+            <div class="two-col">
+                <article class="card">
+                    <h3>Roteiro de 10 minutos</h3>
+                    <ol class="steps">
+                        <li><b>Recomendação:</b> consulte o cliente <code>41</code> e veja nome, perfil, score, motivos e detalhe.</li>
+                        <li><b>Contexto:</b> troque para <code>Gramado</code> e compare a estação/feriados com <code>Capão da Canoa</code>.</li>
+                        <li><b>Indicadores:</b> veja cobertura, variedade e taxa.</li>
+                        <li><b>Catálogo:</b> filtre por categoria e adicione itens ao pedido.</li>
+                        <li><b>Pedido:</b> informe o CNPJ e finalize; veja o total real calculado.</li>
+                        <li><b>Erros:</b> dispare 400/404/409/401 e confira o ProblemDetail.</li>
+                    </ol>
+                </article>
+                <article class="card">
+                    <h3>Atalhos úteis</h3>
+                    <div class="quick">
+                        <button class="btn" data-go="recomendacao" data-id="41">Recomendação 41</button>
+                        <button class="btn" data-go="recomendacao" data-id="1001">Recomendação 1001</button>
+                        <button class="btn" data-go="contexto" data-cidade="Gramado">Contexto Gramado</button>
+                        <button class="btn" data-go="whatsapp">Simular WhatsApp</button>
+                    </div>
+                    <p class="fine">Os IDs 1001–1020 existem se você rodou <code>db/seed_supabase.sql</code> e <code>db/seed_gold_databricks.sql</code>. Sem a massa, use 41/48/81/112.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- ============================================================ RECOMENDACAO -->
+        <section class="panel" id="tab-recomendacao">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Requisito 1 · 2 · 8</p>
+                    <h2>Consulta da recomendação</h2>
+                    <p class="lead">Chama <code>GET /api/v1/recomendacoes/{id}?limite=</code>. Mostra o ranking V2 com explicação.</p>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label>idCliente <input id="recId" inputmode="numeric" value="41" placeholder="41"></label>
+                <label>limite <input id="recLimite" type="number" min="1" max="50" value="10"></label>
+                <button class="btn primary" id="btnRec">Consultar</button>
+                <button class="btn ghost" data-rec-sample="48">48</button>
+                <button class="btn ghost" data-rec-sample="81">81</button>
+                <button class="btn ghost" data-rec-sample="112">112</button>
+                <button class="btn ghost" data-rec-sample="1001">1001</button>
+            </div>
+
+            <div id="recResult" class="result-area">
+                <div class="empty">Informe um cliente e clique em Consultar.</div>
+            </div>
+        </section>
+
+        <!-- ============================================================ CONTEXTO -->
+        <section class="panel" id="tab-contexto">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Clima · estação · feriados</p>
+                    <h2>Contexto do Sul</h2>
+                    <p class="lead">Endpoints <code>/contexto</code>, <code>/contexto/estacao</code>, <code>/contexto/feriados</code> e <code>/contexto/mensagem</code>.</p>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label>cidade <input id="ctxCidade" value="Porto Alegre"></label>
+                <label>uf <input id="ctxUf" value="RS" maxlength="2" style="width:70px"></label>
+                <label>data <input id="ctxData" type="date"></label>
+                <button class="btn primary" id="btnCtx">Contexto</button>
+                <button class="btn ghost" id="btnEstacao">Estação</button>
+                <button class="btn ghost" id="btnFeriados">Feriados</button>
+                <button class="btn ghost" id="btnMensagem">Mensagem</button>
+            </div>
+
+            <div id="ctxResult" class="result-area">
+                <div class="empty">Escolha a cidade e consulte.</div>
+            </div>
+        </section>
+
+        <!-- ============================================================ INDICADORES -->
+        <section class="panel" id="tab-indicadores">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Requisito 4</p>
+                    <h2>Indicadores</h2>
+                    <p class="lead"><code>GET /api/v1/indicadores</code> — cobertura, variedade, taxa e média por cliente.</p>
+                </div>
+            </div>
+            <button class="btn primary" id="btnInd">Carregar indicadores</button>
+            <div id="indResult" class="result-area">
+                <div class="empty">Clique em Carregar indicadores.</div>
+            </div>
+        </section>
+
+        <!-- ============================================================ CATALOGO -->
+        <section class="panel" id="tab-catalogo">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">GET /api/v1/produtos</p>
+                    <h2>Catálogo e carrinho</h2>
+                    <p class="lead">Filtra por nome/categoria e adiciona itens ao pedido. O carrinho é compartilhado com a aba Pedido.</p>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label class="grow">buscar <input id="prodBusca" placeholder="guaraná, água, cerveja..."></label>
+                <label>categoria
+                    <select id="prodCategoria">
+                        <option value="">Todas</option>
+                    </select>
+                </label>
+                <button class="btn primary" id="btnProd">Carregar</button>
+            </div>
+
+            <div id="prodGrid" class="prod-grid"></div>
+        </section>
+
+        <!-- ============================================================ CLIENTES -->
+        <section class="panel" id="tab-clientes">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Requisito 3 · 6</p>
+                    <h2>Clientes</h2>
+                    <p class="lead"><code>POST /api/v1/clientes</code> valida CNPJ, normaliza e devolve 409 se duplicado.</p>
+                </div>
+            </div>
+
+            <div class="two-col">
+                <article class="card">
+                    <h3>Cadastrar cliente</h3>
+                    <div class="stack">
+                        <label>codCliente <input id="cliCod" inputmode="numeric" value="9001"></label>
+                        <label>CNPJ <input id="cliCnpj" value="11.222.333/0001-81"></label>
+                        <label>nomeFantasia <input id="cliNome" value="Loja Teste"></label>
+                        <label>cidade <input id="cliCidade" value="Lajeado"></label>
+                        <label>uf <input id="cliUf" value="RS" maxlength="2"></label>
+                        <label>codHierarquia (opcional) <input id="cliHierarquia" inputmode="numeric" placeholder="123"></label>
+                        <button class="btn primary" id="btnCli">Cadastrar</button>
+                    </div>
+                </article>
+                <article class="card">
+                    <h3>Consultar por CNPJ</h3>
+                    <div class="form-row">
+                        <label class="grow">CNPJ <input id="cliBusca" value="11222333000181"></label>
+                        <button class="btn" id="btnCliBusca">Buscar</button>
+                    </div>
+                    <p class="fine">O CNPJ é normalizado (só dígitos) antes da consulta.</p>
+                </article>
+            </div>
+            <div id="cliResult" class="result-area"></div>
+        </section>
+
+        <!-- ============================================================ COMPRAS -->
+        <section class="panel" id="tab-compras">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Requisito 3 · 6</p>
+                    <h2>Compras</h2>
+                    <p class="lead"><code>POST /api/v1/compras</code> grava em <code>fato_vendas</code> e calcula o total pelo preço da tabela.</p>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label>CNPJ <input id="compCnpj" value="11222333000181"></label>
+                <label>codItem <input id="compItem" value="00001" inputmode="numeric"></label>
+                <label>quantidade <input id="compQtd" type="number" min="1" value="3"></label>
+                <label>data <input id="compData" type="date"></label>
+                <label>valorUnitario (opcional) <input id="compValor" type="number" step="0.01" placeholder="vazio usa a tabela"></label>
+                <button class="btn primary" id="btnCompra">Registrar compra</button>
+            </div>
+
+            <div id="compraResult" class="result-area"></div>
+        </section>
+
+        <!-- ============================================================ PEDIDOS -->
+        <section class="panel" id="tab-pedidos">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Requisito 5</p>
+                    <h2>Pedido real</h2>
+                    <p class="lead">Monta o carrinho e chama <code>POST /api/v1/pedidos</code>. O total é calculado no backend e persistido.</p>
+                </div>
+            </div>
+
+            <div class="cart-layout">
+                <article class="card">
+                    <h3>Itens do pedido</h3>
+                    <div id="cartBody" class="cart-body"><p class="fine">Carrinho vazio. Adicione itens na aba Catálogo ou na Recomendação.</p></div>
+                    <div class="cart-total"><span>Estimado</span><strong id="cartTotal">R$ 0,00</strong></div>
+                </article>
+                <article class="card">
+                    <h3>Finalizar</h3>
+                    <div class="stack">
+                        <label>CNPJ do cliente <input id="pedCnpj" value="11222333000181"></label>
+                        <button class="btn primary" id="btnPedido">Enviar pedido</button>
+                        <button class="btn ghost" id="btnLimpar">Limpar carrinho</button>
+                    </div>
+                    <p class="fine">O CNPJ precisa existir em <code>cliente</code>. O total oficial é o retornado pela API.</p>
+                </article>
+            </div>
+            <div id="pedidoResult" class="result-area"></div>
+        </section>
+
+        <!-- ============================================================ WHATSAPP -->
+        <section class="panel" id="tab-whatsapp">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Bot · Evolution API (mock)</p>
+                    <h2>Simulador de WhatsApp</h2>
+                    <p class="lead">Chama <code>POST /mock/whatsapp/enviar-mensagem</code> — o mesmo cérebro do webhook, sem precisar da Evolution.</p>
+                </div>
+            </div>
+
+            <div class="two-col">
+                <article class="card chat-card">
+                    <div id="chatLog" class="chat-log">
+                        <div class="bubble bot">Olá! Envie <b>oi</b> para começar. Depois teste <b>catalogo</b>, <b>recomendação</b> ou um CNPJ.</div>
+                    </div>
+                    <div class="chat-input">
+                        <input id="chatText" placeholder="digite uma mensagem..." value="oi">
+                        <button class="btn primary" id="btnChat">Enviar</button>
+                    </div>
+                </article>
+                <article class="card">
+                    <h3>Telefone de teste</h3>
+                    <label>telefone <input id="chatPhone" value="5551999998888"></label>
+                    <div class="quick">
+                        <button class="btn ghost" data-chat="oi">oi</button>
+                        <button class="btn ghost" data-chat="catalogo">catalogo</button>
+                        <button class="btn ghost" data-chat="recomendação">recomendação</button>
+                        <button class="btn ghost" data-chat="tabela de precos">tabela de precos</button>
+                    </div>
+                    <p class="fine">O bot guarda sessão em memória. Se mudar o telefone, começa do zero.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- ============================================================ ERROS -->
+        <section class="panel" id="tab-erros">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Requisito 7</p>
+                    <h2>Erros e ProblemDetail</h2>
+                    <p class="lead">Dispare cenários e confira <code>type</code>, <code>title</code>, <code>status</code>, <code>detail</code> e <code>instance</code>.</p>
+                </div>
+            </div>
+
+            <div class="quick">
+                <button class="btn" data-erro="404">404 cliente inexistente</button>
+                <button class="btn" data-erro="400">400 id inválido</button>
+                <button class="btn" data-erro="409">409 CNPJ duplicado</button>
+                <button class="btn" data-erro="401">401 catálogo sem JWT</button>
+                <button class="btn" data-erro="422">400 corpo inválido</button>
+            </div>
+            <div id="erroResult" class="result-area"></div>
+        </section>
+
+    </main>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="/js/painel.js"></script>
+</body>
+</html>

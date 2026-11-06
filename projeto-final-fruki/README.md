@@ -9,6 +9,8 @@ devolve um ranking pronto para o catálogo.
 > [`docs/RECOMENDADOR.md`](docs/RECOMENDADOR.md) ·
 > [`docs/INTEGRACAO_FRONT.md`](docs/INTEGRACAO_FRONT.md) ·
 > [`docs/SCHEMA.md`](docs/SCHEMA.md) ·
+> [`docs/MASSA_DE_TESTE.md`](docs/MASSA_DE_TESTE.md) ·
+> [`docs/GUIA_PAINEL.md`](docs/GUIA_PAINEL.md) ·
 > [`docs/PLANEJAMENTO.md`](docs/PLANEJAMENTO.md)
 
 ---
@@ -96,9 +98,13 @@ perder variáveis a cada terminal novo.
 
 ### 2.5 Demonstração no navegador
 
-Abra **http://localhost:8080/demo-recomendacoes.html**.
-A página consome a API real (`/recomendacoes`, `/contexto`, `/indicadores`) e serve de
-referência para integrar o catálogo.
+- **Painel de testes (recomendado):** **http://localhost:8080/painel.html** — testa
+  recomendação, contexto, indicadores, catálogo, clientes, compras, pedido, WhatsApp e
+  erros em uma única página. Guia em [`docs/GUIA_PAINEL.md`](docs/GUIA_PAINEL.md).
+- **Demo simples:** **http://localhost:8080/demo-recomendacoes.html** — mostra só a
+  recomendação, o contexto e os indicadores.
+
+As duas páginas consomem a API real e servem de referência para integrar o catálogo.
 
 ---
 
