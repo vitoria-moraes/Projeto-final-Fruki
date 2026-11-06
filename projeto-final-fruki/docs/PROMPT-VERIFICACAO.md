@@ -25,7 +25,7 @@ ARQUIVOS-CHAVE PARA LER ANTES DE OPINAR
 - docs/RECOMENDADOR.md
 - docs/INTEGRACAO_FRONT.md
 - docs/SCHEMA.md
-- docs/PLANEJAMENTO.md (seção 15 — relatório de execução)
+- docs/GUIA_DO_PROJETO.md (guia, dúvidas e passo a passo)
 - src/main/java/org/example/projetofinalfruki/domain/service/RecomendadorV2Service.java
 - src/main/java/org/example/projetofinalfruki/domain/service/RecomendacaoService.java
 - src/main/java/org/example/projetofinalfruki/application/controller/GlobalExceptionHandler.java
@@ -48,7 +48,7 @@ O QUE VOCÊ DEVE FAZER (nesta ordem)
    - trata cold start;
    - devolve `motivos[]` e `detalhe`.
 5. Verificar se o tratamento de erros devolve ProblemDetail com `type/title/status/detail`.
-6. Apontar divergências entre o relatório (seção 15 do PLANEJAMENTO) e o código.
+6. Apontar divergências entre o guia (seção 7 do GUIA_DO_PROJETO) e o código.
 7. NÃO alterar código, NÃO commitar, NÃO usar credenciais. Se precisar rodar a app,
    peça ao usuário para subir com as variáveis dele.
 

@@ -5,13 +5,13 @@ O backend expõe uma API REST, consulta a camada analítica (Databricks/Gold) e 
 transacional (Supabase/PostgreSQL), aplica um **recomendador híbrido e explicável** e
 devolve um ranking pronto para o catálogo.
 
-> Documentação complementar: [`docs/API.md`](docs/API.md) ·
+> Documentação complementar: [`docs/GUIA_DO_PROJETO.md`](docs/GUIA_DO_PROJETO.md) ·
+> [`docs/API.md`](docs/API.md) ·
 > [`docs/RECOMENDADOR.md`](docs/RECOMENDADOR.md) ·
 > [`docs/INTEGRACAO_FRONT.md`](docs/INTEGRACAO_FRONT.md) ·
 > [`docs/SCHEMA.md`](docs/SCHEMA.md) ·
 > [`docs/MASSA_DE_TESTE.md`](docs/MASSA_DE_TESTE.md) ·
-> [`docs/GUIA_PAINEL.md`](docs/GUIA_PAINEL.md) ·
-> [`docs/PLANEJAMENTO.md`](docs/PLANEJAMENTO.md)
+> [`docs/GUIA_PAINEL.md`](docs/GUIA_PAINEL.md)
 
 ---
 
