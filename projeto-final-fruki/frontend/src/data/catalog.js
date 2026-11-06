@@ -1,0 +1,153 @@
+// Portfólio completo de bebidas Fruki disponível no catálogo.
+// Os itens com `code` usam o preço da tabela oficial quando a API responde.
+// Os demais são alternativas do portfólio com preço de referência para a demonstração.
+const item = (code, name, category, volumeMl, packSize, price, image, extra = {}) => ({
+  code,
+  name,
+  category,
+  volumeMl,
+  packSize,
+  price,
+  image,
+  ...extra,
+});
+
+export const CATEGORY_ORDER = [
+  'Refrigerantes',
+  'Águas',
+  'Energéticos',
+  'Cervejas',
+  'Refrescos',
+  'Sucos',
+  'Tônicas',
+];
+
+export const CATEGORY_META = {
+  Refrigerantes: { accent: '#0b6b3a', soft: '#e8f6ed', icon: '🥤' },
+  'Águas': { accent: '#0e7490', soft: '#e6f7fb', icon: '💧' },
+  'Energéticos': { accent: '#a16207', soft: '#fff7dc', icon: '⚡' },
+  Cervejas: { accent: '#9a3412', soft: '#fff1e8', icon: '🍺' },
+  Refrescos: { accent: '#7c3aed', soft: '#f3edff', icon: '🧃' },
+  Sucos: { accent: '#be123c', soft: '#fff0f3', icon: '🍊' },
+  'Tônicas': { accent: '#0369a1', soft: '#eaf5ff', icon: '🍋' },
+};
+
+export const CATALOG = [
+  // Refrigerantes Fruki
+  item('00001', 'Refrigerante Fruki Guaraná 2 L', 'Refrigerantes', 2000, 6, 7.49, '/images/Energetico fruki/pet_guarana_frontal.webp', { featured: true, aliases: ['Fruki Guaraná 2L', 'Fruki Guarana 2L'] }),
+  item('00007', 'Refrigerante Fruki Guaraná Zero 2 L', 'Refrigerantes', 2000, 6, 7.49, '/images/Refri fruki/fruki_pet_2l_zero_frontal.webp', { aliases: ['Fruki Guaraná Zero 2L'] }),
+  item('00011', 'Refrigerante Fruki Guaraná 1,5 L', 'Refrigerantes', 1500, 6, 6.49, '/images/Refri fruki/guarana1-5l.webp'),
+  item('00012', 'Refrigerante Fruki Guaraná 600 ml', 'Refrigerantes', 600, 12, 4.29, '/images/Refri fruki/fruki_pet_600ml__frontal.webp'),
+  item('00013', 'Refrigerante Fruki Guaraná Zero 600 ml', 'Refrigerantes', 600, 12, 4.29, '/images/Refri fruki/fruki_pet_600ml_zero_frontal.webp'),
+  item('00014', 'Refrigerante Fruki Guaraná 200 ml', 'Refrigerantes', 200, 12, 2.19, '/images/Refri fruki/fruki_pet_200ml_regular_frontal.webp'),
+  item('00015', 'Refrigerante Fruki Guaraná Zero 200 ml', 'Refrigerantes', 200, 12, 2.19, '/images/Refri fruki/fruki_pet_200ml_zero_frontal.webp'),
+  item('00016', 'Refrigerante Fruki Guaraná 3 L', 'Refrigerantes', 3000, 6, 9.99, '/images/Refri fruki/fruki_pet3l_guaraná_seco-1-.webp'),
+  item('00017', 'Refrigerante Fruki Guaraná Zero 3 L', 'Refrigerantes', 3000, 6, 9.99, '/images/Refri fruki/fruki_pet3l_guaraná-zero_seco.webp'),
+  item('00018', 'Refrigerante Fruki Guaraná 269 ml', 'Refrigerantes', 269, 12, 3.49, '/images/Refri fruki/mockup_269ml_-_fruki_guaraná_-sem_fundo-.webp'),
+  item('00019', 'Refrigerante Fruki Guaraná com Bergamota 2 L', 'Refrigerantes', 2000, 6, 7.99, '/images/Refri fruki/fruki_berga_pet2000_dry-1-.webp', { featured: true }),
+  item('00020', 'Refrigerante Fruki Guaraná com Bergamota Zero 2 L', 'Refrigerantes', 2000, 6, 7.99, '/images/Refri fruki/mockup-fruki-berga-zero_pet2000_dry-copiar-1-1-.webp'),
+  item('00021', 'Refrigerante Fruki Guaraná com Bergamota 350 ml', 'Refrigerantes', 350, 12, 3.99, '/images/Refri fruki/alta_fruki_berga_lata350ml-2-7-.webp'),
+  item('00022', 'Refrigerante Fruki Guaraná com Bergamota Zero 350 ml', 'Refrigerantes', 350, 12, 3.99, '/images/Refri fruki/fruki_berga-zero_350ml_suada.webp'),
+  item('00023', 'Refrigerante Frukaxi 350 ml', 'Refrigerantes', 350, 12, 3.49, '/images/Refri fruki/fruki_frukaxi_350ml_seca_-1-.webp'),
+  item('00024', 'Refrigerante Frukaxi Zero 350 ml', 'Refrigerantes', 350, 12, 3.49, '/images/Refri fruki/fruki_frukaxi-zero_350ml_seca_-1-.webp'),
+  item('00006', 'Refrigerante Fruki Cola 2 L', 'Refrigerantes', 2000, 6, 7.29, '/images/Refri fruki/cola-2l.webp', { aliases: ['Fruki Cola 2L'] }),
+  item('00025', 'Refrigerante Fruki Cola Zero 2 L', 'Refrigerantes', 2000, 6, 7.29, '/images/Refri fruki/cola-zero-2l.webp'),
+  item('00026', 'Refrigerante Fruki Cola 1,5 L', 'Refrigerantes', 1500, 6, 6.29, '/images/Refri fruki/cola-1-5l.webp'),
+  item('00027', 'Refrigerante Fruki Cola 600 ml', 'Refrigerantes', 600, 12, 4.19, '/images/Refri fruki/cola-600.webp'),
+  item('00028', 'Refrigerante Fruki Cola 350 ml', 'Refrigerantes', 350, 12, 3.89, '/images/Refri fruki/cola_lata350_wet.webp'),
+  item('00029', 'Refrigerante Fruki Cola Zero 350 ml', 'Refrigerantes', 350, 12, 3.89, '/images/Refri fruki/colazero_lata350_wet.webp'),
+  item('00030', 'Refrigerante Fruki Laranja 2 L', 'Refrigerantes', 2000, 6, 7.29, '/images/Refri fruki/laranja-let-2l.webp'),
+  item('00031', 'Refrigerante Fruki Laranja 3 L', 'Refrigerantes', 3000, 6, 9.79, '/images/Refri fruki/fruki_pet3l_laranja_seco-1-.webp'),
+  item('00032', 'Refrigerante Fruki Laranja 600 ml', 'Refrigerantes', 600, 12, 4.19, '/images/Refri fruki/laranja-600.webp'),
+  item('00033', 'Refrigerante Fruki Laranja 350 ml', 'Refrigerantes', 350, 12, 3.89, '/images/Refri fruki/laranja_lata350_wet.webp'),
+  item('00034', 'Refrigerante Fruki Laranja 200 ml', 'Refrigerantes', 200, 12, 2.19, '/images/Refri fruki/pet200ml-laranja-suado.webp'),
+  item('00035', 'Refrigerante Fruki Limão 2 L', 'Refrigerantes', 2000, 6, 7.29, '/images/Refri fruki/limao-2l-pet.webp'),
+  item('00036', 'Refrigerante Fruki Limão 600 ml', 'Refrigerantes', 600, 12, 4.19, '/images/Refri fruki/limoa-600-pet.webp'),
+  item('00037', 'Refrigerante Fruki Limão 600 ml vidro', 'Refrigerantes', 600, 12, 5.49, '/images/Refri fruki/limão-600-vidro.webp'),
+  item('00038', 'Refrigerante Fruki Limão 350 ml', 'Refrigerantes', 350, 12, 3.89, '/images/Refri fruki/limão_lata350_wet.webp'),
+  item('00039', 'Refrigerante Fruki Limão 200 ml', 'Refrigerantes', 200, 12, 2.19, '/images/Refri fruki/pet200ml_limão_suado.webp'),
+  item('00040', 'Refrigerante Fruki Laranjinha 2 L', 'Refrigerantes', 2000, 6, 7.29, '/images/Refri fruki/laranjinha-2l-sem-_novo.webp'),
+  item('00041', 'Refrigerante Fruki Laranjinha 200 ml', 'Refrigerantes', 200, 12, 2.19, '/images/Refri fruki/pet200ml_laranjinha_suado.webp'),
+  item('00042', 'Refrigerante Fruki Uva 2 L', 'Refrigerantes', 2000, 6, 7.29, '/images/Refri fruki/mockup-2l-uva-final.webp'),
+  item('00043', 'Refrigerante Fruki Uva 600 ml', 'Refrigerantes', 600, 12, 4.19, '/images/Refri fruki/uva-600-pet.webp'),
+  item('00044', 'Refrigerante Fruki Uva 200 ml', 'Refrigerantes', 200, 12, 2.19, '/images/Refri fruki/pet200ml_uva_suado.webp'),
+  item('00045', 'Refrigerante Fruki Framboesa 2 L', 'Refrigerantes', 2000, 6, 7.29, '/images/Refri fruki/pet2000_franboesa_seca.webp'),
+  item('00046', 'Refrigerante Fruki Framboesa 200 ml', 'Refrigerantes', 200, 12, 2.19, '/images/Refri fruki/pet200ml_franboesa_seca.webp'),
+  item('00047', 'Refrigerante Fruki Passion Fruit Zero 350 ml', 'Refrigerantes', 350, 12, 3.99, '/images/Refri fruki/passion-zero-350.webp'),
+  item('00048', 'Refrigerante Fruki Guaraná Zero 600 ml vidro', 'Refrigerantes', 600, 12, 5.99, '/images/Refri fruki/fruki_vidro_600ml_zero_frontal-1-.webp'),
+  item('00049', 'Refrigerante Fruki Cola 200 ml', 'Refrigerantes', 200, 12, 2.19, '/images/Refri fruki/pet200ml_cola_suado.webp'),
+
+  // Águas da Pedra
+  item('00002', 'Água da Pedra sem gás 500 ml', 'Águas', 500, 12, 2.29, '/images/Agua fruki/fruki-500ml-agua-s-gas-gotas.webp', { featured: true, aliases: ['Água da Pedra 500ml', 'Agua da Pedra 500ml'] }),
+  item('00008', 'Água da Pedra com gás 500 ml', 'Águas', 500, 12, 2.49, '/images/Agua fruki/fruki-500ml-agua-c-gas-gotas.webp', { aliases: ['Água da Pedra com Gás 500ml'] }),
+  item('00050', 'Água da Pedra sem gás 1,5 L', 'Águas', 1500, 6, 3.49, '/images/Agua fruki/fruki_pet_1-5l_regular_frontal.webp'),
+  item('00051', 'Água da Pedra sem gás 2 L', 'Águas', 2000, 6, 4.29, '/images/Agua fruki/fruki_pet_2l_regular_frontal.webp'),
+  item('00052', 'Água da Pedra sem gás 5 L', 'Águas', 5000, 4, 7.49, '/images/Agua fruki/fruki-5l-agua-s-gas-gotas.webp'),
+  item('00053', 'Água da Pedra com gás 2 L', 'Águas', 2000, 6, 4.49, '/images/Agua fruki/fruki-2l-agua-c-gas-gotas.webp'),
+  item('00054', 'Água da Pedra sem gás lata 350 ml', 'Águas', 350, 12, 2.99, '/images/Agua fruki/lata269_350_sem_gás_suado_sombra-2-.webp'),
+  item('00055', 'Água da Pedra com gás lata 350 ml', 'Águas', 350, 12, 2.99, '/images/Agua fruki/lata269_350_comgás_suado_sombra-2-.webp'),
+  item('00056', 'Água da Pedra Blueberry com Limão Siciliano 350 ml', 'Águas', 350, 12, 3.49, '/images/Agua fruki/lata-350ml_blueberry-limão_siciliano_seco-1-.webp'),
+  item('00057', 'Água da Pedra Abacaxi com Hortelã 350 ml', 'Águas', 350, 12, 3.49, '/images/Agua fruki/lata269_350_abacaxi_e_hortelã.webp'),
+  item('00058', 'Água da Pedra Frutas Vermelhas 350 ml', 'Águas', 350, 12, 3.49, '/images/Agua fruki/lata269_350_frutasvermelhas_suado.webp'),
+  item('00059', 'Água da Pedra Limão com Alecrim 350 ml', 'Águas', 350, 12, 3.49, '/images/Agua fruki/lata269_350_limãoealecrim_suado.webp'),
+  item('00060', 'Água da Pedra Bergamota com Capim-Limão 350 ml', 'Águas', 350, 12, 3.49, '/images/Agua fruki/lata_350ml_bergamota-capim_limão_seco-1-.webp'),
+  item('00061', 'Água da Pedra Pêssego 350 ml', 'Águas', 350, 12, 3.49, '/images/Agua fruki/lata_350ml_pessego_seco-2-.webp'),
+
+  // Energéticos Elev
+  item('00003', 'Energético Elev Original 473 ml', 'Energéticos', 473, 6, 5.99, '/images/Energetico fruki/eleve_473_original.webp', { featured: true, aliases: ['Elev Energy Drink 473ml'] }),
+  item('00070', 'Energético Elev Original 269 ml', 'Energéticos', 269, 12, 4.49, '/images/Energetico fruki/elev-269ml-original.webp'),
+  item('00071', 'Energético Elev Zero 473 ml', 'Energéticos', 473, 6, 5.99, '/images/Energetico fruki/eleve_473_zero_açucar.webp'),
+  item('00072', 'Energético Elev Zero 269 ml', 'Energéticos', 269, 12, 4.49, '/images/Energetico fruki/elev-269ml-zero-açucar.webp'),
+  item('00073', 'Energético Elev Frutas Tropicais 473 ml', 'Energéticos', 473, 6, 5.99, '/images/Energetico fruki/eleve_473_frutas-tropicais.webp'),
+  item('00074', 'Energético Elev Frutas Tropicais 269 ml', 'Energéticos', 269, 12, 4.49, '/images/Energetico fruki/elev-269ml-frutas-tropicais.webp'),
+  item('00075', 'Energético Elev Maçã Verde 473 ml', 'Energéticos', 473, 6, 5.99, '/images/Energetico fruki/eleve_473_maca_verde.webp'),
+  item('00076', 'Energético Elev Maçã Verde 269 ml', 'Energéticos', 269, 12, 4.49, '/images/Energetico fruki/elev-269ml-maça-verde.webp'),
+  item('00077', 'Energético Elev Guaraná com Maracujá 473 ml', 'Energéticos', 473, 6, 5.99, '/images/Energetico fruki/eleve_473_guarana_maracuja.webp'),
+  item('00078', 'Energético Elev Guaraná com Maracujá 269 ml', 'Energéticos', 269, 12, 4.49, '/images/Energetico fruki/elev-269ml-guaraná-maracujá.webp'),
+  item('00079', 'Energético Elev Coco com Açaí 473 ml', 'Energéticos', 473, 6, 5.99, '/images/Energetico fruki/fruki_elev_coco_acai_473.webp'),
+  item('00080', 'Energético Elev Coco com Açaí 269 ml', 'Energéticos', 269, 12, 4.49, '/images/Energetico fruki/elev-269ml-coco-açaí.webp'),
+  item('00081', 'Energético Elev Morango com Melancia 473 ml', 'Energéticos', 473, 6, 5.99, '/images/Energetico fruki/elev_morango_melancia_473_jpg-1-3-.webp'),
+  item('00082', 'Energético Elev Pink Lemonade 473 ml', 'Energéticos', 473, 6, 5.99, '/images/Energetico fruki/elev_pink-limonade_473ml_seca-1-.webp'),
+  item('00083', 'Energético Elev Pink Lemonade 2 L', 'Energéticos', 2000, 6, 13.99, '/images/Energetico fruki/elev_pink-limonade_2l_seca-1-.webp'),
+  item('00084', 'Energético Elev Coco com Açaí 2 L', 'Energéticos', 2000, 6, 13.99, '/images/Energetico fruki/fruki_elev_coco_acai_2l.webp'),
+  item('00085', 'Energético Elev Morango com Melancia 2 L', 'Energéticos', 2000, 6, 13.99, '/images/Energetico fruki/elev_pet_morango_melancia.webp'),
+  item('00086', 'Energético Elev Maçã Verde 2 L', 'Energéticos', 2000, 6, 13.99, '/images/Energetico fruki/pet_maca_verde_frontal.webp'),
+
+  // Cervejas Bellavista
+  item('00004', 'Cerveja Bellavista Pilsen 473 ml', 'Cervejas', 473, 6, 5.90, '/images/Cervejas fruki/bellavista-pilsen-473.webp', { aliases: ['Cerveja Bellavista 473ml'] }),
+  item('00090', 'Cerveja Bellavista Premium Lager 473 ml', 'Cervejas', 473, 6, 6.49, '/images/Cervejas fruki/bellavista-premium.webp'),
+  item('00091', 'Cerveja Bellavista Premium Lager 355 ml', 'Cervejas', 355, 6, 5.49, '/images/Cervejas fruki/premium-lager-355.webp'),
+  item('00092', 'Cerveja Bellavista IPA 350 ml', 'Cervejas', 350, 12, 6.99, '/images/Cervejas fruki/bellavista-ipa-350.webp'),
+  item('00093', 'Cerveja Bellavista Session IPA 350 ml', 'Cervejas', 350, 12, 5.99, '/images/Cervejas fruki/bellavista-session-ipa-350.webp'),
+  item('00094', 'Cerveja Bellavista Zero 350 ml', 'Cervejas', 350, 12, 5.49, '/images/Cervejas fruki/bellavista-zero-350.webp'),
+
+  // Refrescos Frukito
+  item('00010', 'Refresco Frukito Uva 2 L', 'Refrescos', 2000, 6, 5.49, '/images/Sucos citrus fruki/alta_frukito_uva_2l_gotas.webp', { featured: true, aliases: ['Refresco Frukito Uva 2L'] }),
+  item('00100', 'Refresco Frukito Uva 500 ml', 'Refrescos', 500, 12, 3.29, '/images/Sucos citrus fruki/alta_frukito_uva_500ml_gotas.webp'),
+  item('00101', 'Refresco Frukito Uva 200 ml', 'Refrescos', 200, 12, 1.99, '/images/Sucos citrus fruki/alta_frukito_uva_200ml_gotas-1-.webp'),
+  item('00102', 'Refresco Frukito Frutas Cítricas 2 L', 'Refrescos', 2000, 6, 5.49, '/images/Sucos citrus fruki/alta_frukito_frutas_citricas_2l_gotas.webp'),
+  item('00103', 'Refresco Frukito Frutas Cítricas 500 ml', 'Refrescos', 500, 12, 3.29, '/images/Sucos citrus fruki/alta_frukito_frutas_citricas_500ml_gotas.webp'),
+  item('00104', 'Refresco Frukito Frutas Cítricas 200 ml', 'Refrescos', 200, 12, 1.99, '/images/Sucos citrus fruki/citricas_200ml.webp'),
+  item('00105', 'Refresco Frukito Limão 2 L', 'Refrescos', 2000, 6, 5.49, '/images/Sucos citrus fruki/alta_frukito_limao_2l_gotas.webp'),
+  item('00106', 'Refresco Frukito Limão 500 ml', 'Refrescos', 500, 12, 3.29, '/images/Sucos citrus fruki/alta_frukito_limao_500ml_gotas.webp'),
+  item('00107', 'Refresco Frukito Limão 200 ml', 'Refrescos', 200, 12, 1.99, '/images/Sucos citrus fruki/alta_frukito_limao_200ml_gotas.webp'),
+
+  // Sucos COM/TEM
+  item('00005', 'Suco COM/TEM Laranja 1 L', 'Sucos', 1000, 6, 12.90, '/images/Sucos fruki/_suco_tetrapack_1l_frente_laranja.webp', { aliases: ['Suco COM/TEM Laranja 1L'] }),
+  item('00110', 'Suco COM/TEM Laranja 1 L vidro', 'Sucos', 1000, 6, 14.90, '/images/Sucos fruki/_suco_vidro_1l_frente_laranja.webp'),
+  item('00111', 'Suco COM/TEM Laranja 200 ml', 'Sucos', 200, 12, 3.49, '/images/Sucos fruki/_suco_tetrapack_200ml_frente_laranja.webp'),
+  item('00112', 'Suco COM/TEM Uva 1 L vidro', 'Sucos', 1000, 6, 14.90, '/images/Sucos fruki/_suco_vidro_1l_frente_uva.webp'),
+  item('00113', 'Suco COM/TEM Uva 200 ml', 'Sucos', 200, 12, 3.49, '/images/Sucos fruki/_suco_tetrapack_200ml_frente_uva.webp'),
+  item('00114', 'Suco COM/TEM Maçã 1 L', 'Sucos', 1000, 6, 12.90, '/images/Sucos fruki/_suco_tetrapack_1l_frente_maca.webp'),
+  item('00115', 'Suco COM/TEM Verde 1 L vidro', 'Sucos', 1000, 6, 14.90, '/images/Sucos fruki/_suco_vidro_1l_frente_verde.webp'),
+
+  // Tônicas e Citrus
+  item('00009', 'Água Tônica Fruki 350 ml', 'Tônicas', 350, 12, 3.49, '/images/Tonicas fruki/tonica__350ml.webp', { aliases: ['Tônica Fruki 350ml'] }),
+  item('00120', 'Água Tônica Fruki 1,5 L', 'Tônicas', 1500, 6, 6.49, '/images/Tonicas fruki/tonica_1500ml.webp'),
+  item('00121', 'Água Tônica Fruki Zero 350 ml', 'Tônicas', 350, 12, 3.49, '/images/Tonicas fruki/tonica_zero_lata-1-.webp'),
+  item('00122', 'Água Tônica Fruki Zero 1,5 L', 'Tônicas', 1500, 6, 6.49, '/images/Tonicas fruki/tonica_zero_garrafa-1-.webp'),
+  item('00123', 'Fruki Citrus 350 ml', 'Tônicas', 350, 12, 3.49, '/images/Tonicas fruki/citrus_350ml.png2.webp'),
+  item('00124', 'Fruki Citrus 1,5 L', 'Tônicas', 1500, 6, 6.49, '/images/Tonicas fruki/citrus_1500ml-1-.webp'),
+];
+
+export const CATALOG_BY_CODE = new Map(CATALOG.map((product) => [product.code, product]));

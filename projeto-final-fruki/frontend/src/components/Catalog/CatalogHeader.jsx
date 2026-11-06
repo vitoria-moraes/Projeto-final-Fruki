@@ -1,23 +1,16 @@
-export default function CatalogHeader() {
+export default function CatalogHeader({ total = 0, categories = 0 }) {
   return (
-    <section className="w-full py-8">
-      <div className="flex flex-col gap-3">
-
-        <span className="text-xs font-bold tracking-widest text-lime-200 uppercase">
-          Pede Fruki · Catálogo
-        </span>
-
-        <h2 className="text-3xl md:text-4xl font-extrabold text-white">
-          Nossos produtos
-        </h2>
-
-        <p className="text-base md:text-lg font-medium text-white max-w-2xl">
-          Explore nossa variedade de bebidas e encontre seus
-          produtos favoritos.
+    <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <span className="fruki-kicker text-lime-200">Pede Fruki · Catálogo completo</span>
+        <h2 className="mt-2 text-3xl font-black leading-tight text-white sm:text-4xl">Nossos produtos</h2>
+        <p className="mt-2 max-w-2xl text-sm font-medium leading-6 text-white/80 sm:text-base">
+          Explore o portfólio por categoria, marca ou sabor. Confira o preço por unidade, o conteúdo do fardo e monte o pedido da sua loja.
         </p>
-
-        <div className="w-16 h-1.5 bg-[#A9DF38] rounded-full mt-2" />
-
+      </div>
+      <div className="flex shrink-0 flex-wrap gap-2">
+        <span className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-xs font-bold text-white backdrop-blur">{total} produtos</span>
+        <span className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-xs font-bold text-white backdrop-blur">{categories} categorias</span>
       </div>
     </section>
   );

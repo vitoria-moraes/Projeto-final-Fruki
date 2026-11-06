@@ -67,7 +67,7 @@ mostra status HTTP, corpo e erros.
 
 | Arquivo | Onde rodar | Conteúdo |
 |---|---|---|
-| `db/seed_produtos.sql` | Supabase | 10 produtos (`00001`–`00010`) |
+| `db/seed_produtos.sql` | Supabase | 102 produtos do catálogo completo (`00001`–`00124`) |
 | `db/seed_clientes.sql` | Supabase | 1001–1020 + 9001 (Pub Hundte) |
 | `db/seed_supabase.sql` | Supabase | 20 clientes + produtos + compras |
 | `db/seed_80_clientes.sql` | Supabase | **80 clientes** (2001–2080), CNPJs e cidades únicos |

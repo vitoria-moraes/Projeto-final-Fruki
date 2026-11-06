@@ -10,9 +10,9 @@ Nada é executado automaticamente: você cola o SQL no Supabase/Databricks.
 
 | Arquivo | Onde rodar | O que faz |
 |---|---|---|
-| `db/seed_supabase.sql` | Supabase → SQL Editor | 10 produtos, 20 clientes (IDs 1001–1020) e 40 compras em `fato_vendas` |
+| `db/seed_supabase.sql` | Supabase → SQL Editor | **102 produtos** (catálogo completo), 20 clientes (IDs 1001–1020) e 40 compras em `fato_vendas` |
 | `db/seed_clientes.sql` | Supabase → SQL Editor | **somente** os clientes (1001–1020 + 9001), sem depender de `tabela_preco` |
-| `db/seed_produtos.sql` | Supabase → SQL Editor | 10 produtos (`00001`–`00010`) para a massa de 80 |
+| `db/seed_produtos.sql` | Supabase → SQL Editor | **102 produtos** do portfólio Fruki (`00001`–`00124`) para a massa de 80 |
 | `db/seed_80_clientes.sql` | Supabase → SQL Editor | **80 clientes** (IDs 2001–2080), CNPJs únicos e cidades variadas |
 | `db/seed_80_compras.sql` | Supabase → SQL Editor | 160 compras (2 por cliente) em `fato_vendas` |
 | `db/seed_80_gold.sql` | Databricks → SQL Editor | 368 linhas na Gold (4–5 itens por cliente) |
@@ -88,7 +88,7 @@ Saída esperada: 20 linhas com nome, perfil e o item de topo.
 
 Para ter **80 recomendações diferentes**, rode nesta ordem:
 
-1. `db/seed_produtos.sql` (Supabase) — garante os itens `00001`–`00010`.
+1. `db/seed_produtos.sql` (Supabase) — garante o catálogo completo (`00001`–`00124`), com os mesmos códigos, nomes e preços exibidos no front.
 2. `db/seed_80_clientes.sql` (Supabase) — 80 clientes, um por cidade.
 3. `db/seed_80_compras.sql` (Supabase) — histórico em `fato_vendas` para o bot.
 4. `db/seed_80_gold.sql` (Databricks) — 4–5 itens de Gold por cliente.

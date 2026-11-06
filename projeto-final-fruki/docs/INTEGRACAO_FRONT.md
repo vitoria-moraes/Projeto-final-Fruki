@@ -1,6 +1,12 @@
 # Integração do front com a API
 
-O catálogo atual (`templates/catalogo.html`) usa um array mock. Abaixo está o caminho
+> O catálogo em produção hoje é o React em `frontend/`, servido por
+> `templates/catalogo-react.html`. Ele já consome `/api/v1/produtos`,
+> `/api/v1/recomendacoes` e `/api/v1/pedidos`, com catálogo local de referência como
+> fallback. Este documento mantém a referência da integração usada pelo template
+> Thymeleaf anterior (`templates/catalogo.html`).
+
+O catálogo anterior (`templates/catalogo.html`) usa um array mock. Abaixo está o caminho
 para trocar o mock pela API real, sem quebrar o layout.
 
 > Já existe uma página funcional de referência: **`/demo-recomendacoes.html`**.

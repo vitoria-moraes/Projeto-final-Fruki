@@ -42,7 +42,7 @@ Supabase (transacional)        Databricks (analítico)
 | Framework | Spring Boot 3.2.5 (Web, Data JPA, Validation, Security) |
 | Banco transacional | PostgreSQL (Supabase) via Hibernate/JPA |
 | Camada analítica | Databricks via JDBC (`databricks-jdbc 2.6.36`) |
-| Front | Thymeleaf + HTML/JS (catálogo) |
+| Front | React + Vite (catálogo) servido por Thymeleaf |
 | Testes | JUnit 5, Mockito, MockMvc |
 | Build | Maven Wrapper (`mvnw`) |
 
@@ -214,8 +214,9 @@ src/main/java/org/example/projetofinalfruki
 4. A margem real não existe na base; usamos um proxy por categoria.
 5. Sem cache distribuído: cada consulta vai ao Databricks (cold start pode levar minutos).
 6. A API de recomendação não exige autenticação (o JWT protege apenas `/catalogo`).
-7. O catálogo web ainda usa dados mock; a integração está documentada e há uma demo
-   funcional em `/demo-recomendacoes.html`.
+7. O catálogo web consome a API e mantém um catálogo local de referência com 102 itens
+   para resiliência; itens sem preço na tabela aparecem sinalizados como referência.
+   A integração está documentada em [`docs/INTEGRACAO_FRONT.md`](docs/INTEGRACAO_FRONT.md).
 8. O pipeline Databricks (notebook/job) não está versionado neste repositório.
 
 ### Dados de teste

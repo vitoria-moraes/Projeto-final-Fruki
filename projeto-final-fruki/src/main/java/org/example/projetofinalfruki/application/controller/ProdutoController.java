@@ -50,12 +50,12 @@ public class ProdutoController {
         try {
             return catalogo.buscarProduto(codItem)
                     .map(catalogo::paraDTO)
-                    .orElseGet(() -> mockService.produtosDemo(5).stream()
-                            .filter(produto -> produto.codItem().equals(codItem))
+                    .orElseGet(() -> mockService.produtosDemo(200).stream()
+                            .filter(produto -> produto.codItem().equals(codItem) || produto.codItem().equals("MOCK-" + codItem))
                             .findFirst().orElseThrow(() -> new ProdutoNaoEncontradoException(codItem)));
         } catch (DataAccessException | TransactionException e) {
-            return mockService.produtosDemo(5).stream()
-                    .filter(produto -> produto.codItem().equals(codItem))
+            return mockService.produtosDemo(200).stream()
+                    .filter(produto -> produto.codItem().equals(codItem) || produto.codItem().equals("MOCK-" + codItem))
                     .findFirst().orElseThrow(() -> new ProdutoNaoEncontradoException(codItem));
         }
     }
