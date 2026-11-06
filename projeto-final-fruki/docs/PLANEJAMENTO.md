@@ -616,7 +616,7 @@ Se quiserem, o próximo passo é transformar a seção 7 em `docs/contratos-api.
 | T10 | Testes de ingestão/indicadores | ✅ Concluído | clientes, compras, pedido, indicadores e contexto |
 | T11 | Documentação + evidências | ✅ Concluído | README + docs de API, recomendador, front e schema |
 | T12 | Pipeline Databricks | ⛔ Bloqueado | depende da Vitória (notebooks/schema) |
-| T13 | Integração e aceite | 🟡 Parcial | 40 testes verdes; runtime real pendente |
+| T13 | Integração e aceite | 🟡 Parcial | 41 testes verdes; runtime real pendente |
 | T14 | Pitch e demonstração | ⬜ Não iniciado | — |
 
 ### 15.2 O que foi entregue, por tarefa
@@ -693,7 +693,7 @@ Se quiserem, o próximo passo é transformar a seção 7 em `docs/contratos-api.
   `RecomendacaoPropertiesTest`.
 - **Por que:** requisito 9; valida score, diversidade, cold start, 200/404/503/400 e a
   ingestão sem depender do banco.
-- **Como testar:** `.\mvnw.cmd test` — **40 testes, 0 falhas, 5 ignorados**.
+- **Como testar:** `.\mvnw.cmd test` — **41 testes, 0 falhas, 4 ignorados**.
 
 ### T11 — Documentação ✅
 - **O que foi feito:** `README.md` (com a seção “Como executar”, que cobre o antigo
@@ -709,7 +709,7 @@ Se quiserem, o próximo passo é transformar a seção 7 em `docs/contratos-api.
 - **O que fazer:** cobrar Vitória/Fernando e versionar notebook + job (seção 7 do plano).
 
 ### T13 — Integração e aceite 🟡
-- **O que foi feito:** código integrado e 40 testes verdes; contrato web validado com
+- **O que foi feito:** código integrado e 41 testes verdes; contrato web validado com
   `@WebMvcTest`.
 - **O que falta:** rodar contra Supabase/Databricks reais (o agente não tinha
   credenciais); os 5 testes de integração ficaram ignorados.
@@ -739,7 +739,7 @@ Se quiserem, o próximo passo é transformar a seção 7 em `docs/contratos-api.
 ```powershell
 # 1. testes (não precisa de banco)
 cd projeto-final-fruki
-.\mvnw.cmd test          # 40 testes, 0 falhas, 5 ignorados
+.\mvnw.cmd test          # 41 testes, 0 falhas, 4 ignorados
 
 # 2. subir com as variáveis
 . .\scripts\env.local.ps1
@@ -810,7 +810,7 @@ entre 0 e 100, no máximo 2 itens por categoria, catálogo 401 sem token.
 ### 15.8 Evidências
 
 - Compilação: **72 fontes principais + 17 de teste**.
-- Testes: **40 executados, 0 falhas, 0 erros, 5 ignorados**.
+- Testes: **41 executados, 0 falhas, 0 erros, 4 ignorados**.
 - Registro: `docs/evidencias/testes.md`.
 - Execução anterior da app: `docs/evidencias/etapa5-6/README.md`.
 

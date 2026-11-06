@@ -34,6 +34,7 @@
             <button class="tab" data-tab="indicadores">Indicadores</button>
             <button class="tab" data-tab="catalogo">Catálogo</button>
             <button class="tab" data-tab="clientes">Clientes</button>
+            <button class="tab" data-tab="cnpjs">Todos os CNPJs</button>
             <button class="tab" data-tab="compras">Compras</button>
             <button class="tab" data-tab="pedidos">Pedido</button>
             <button class="tab" data-tab="whatsapp">WhatsApp</button>
@@ -212,6 +213,29 @@
                 </article>
             </div>
             <div id="cliResult" class="result-area"></div>
+        </section>
+
+        <!-- ============================================================ TODOS OS CNPJS -->
+        <section class="panel" id="tab-cnpjs">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">GET /api/v1/clientes</p>
+                    <h2>Todos os CNPJs</h2>
+                    <p class="lead">Lista os clientes cadastrados, com cidade/UF e atalho para testar a recomendação de cada um.</p>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label class="grow">buscar por nome, CNPJ ou cidade
+                    <input id="cnpjBusca" placeholder="ex.: 2001, Gramado, 11222333000181">
+                </label>
+                <button class="btn primary" id="btnCnpjs">Carregar</button>
+                <span id="cnpjCount" class="fine"></span>
+            </div>
+
+            <div id="cnpjsResult" class="result-area">
+                <div class="empty">Clique em Carregar para listar os clientes do banco.</div>
+            </div>
         </section>
 
         <!-- ============================================================ COMPRAS -->

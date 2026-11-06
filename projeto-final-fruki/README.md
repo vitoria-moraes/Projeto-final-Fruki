@@ -172,7 +172,7 @@ Detalhes, pesos configuráveis e limitações em [`docs/RECOMENDADOR.md`](docs/R
 .\mvnw.cmd test
 ```
 
-- **40 testes**, 0 falhas, 5 ignorados (integração que exige Supabase/JWT_SECRET).
+- **41 testes**, 0 falhas, 4 ignorados (integração que exige Supabase/JWT_SECRET).
 - Cobertura: recomendador (score, diversidade, penalidade, cold start), serviço de
   recomendação (200/404/503), controllers (`@WebMvcTest`), CNPJ, estação, contexto,
   ingestão, indicadores e o motor sazonal.

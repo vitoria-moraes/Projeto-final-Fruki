@@ -33,7 +33,7 @@ ARQUIVOS-CHAVE PARA LER ANTES DE OPINAR
 
 O QUE VOCÊ DEVE FAZER (nesta ordem)
 1. Compilar: `.\mvnw.cmd -B -DskipTests test-compile`.
-2. Rodar os testes: `.\mvnw.cmd -B test`. Esperado: 40 testes, 0 falhas, 5 ignorados.
+2. Rodar os testes: `.\mvnw.cmd -B test`. Esperado: 41 testes, 0 falhas, 4 ignorados.
 3. Conferir o contrato real de:
    - `GET /api/v1/recomendacoes/{id}` (200/404/400/503)
    - `POST /api/v1/clientes` (201/400/409)

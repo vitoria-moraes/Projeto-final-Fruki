@@ -12,7 +12,11 @@ Nada é executado automaticamente: você cola o SQL no Supabase/Databricks.
 |---|---|---|
 | `db/seed_supabase.sql` | Supabase → SQL Editor | 10 produtos, 20 clientes (IDs 1001–1020) e 40 compras em `fato_vendas` |
 | `db/seed_clientes.sql` | Supabase → SQL Editor | **somente** os clientes (1001–1020 + 9001), sem depender de `tabela_preco` |
-| `db/seed_gold_databricks.sql` | Databricks → SQL Editor | 60 linhas na Gold (`workspace.default.gold_recomendacao_b2b`) |
+| `db/seed_produtos.sql` | Supabase → SQL Editor | 10 produtos (`00001`–`00010`) para a massa de 80 |
+| `db/seed_80_clientes.sql` | Supabase → SQL Editor | **80 clientes** (IDs 2001–2080), CNPJs únicos e cidades variadas |
+| `db/seed_80_compras.sql` | Supabase → SQL Editor | 160 compras (2 por cliente) em `fato_vendas` |
+| `db/seed_80_gold.sql` | Databricks → SQL Editor | 368 linhas na Gold (4–5 itens por cliente) |
+| `db/seed_gold_databricks.sql` | Databricks → SQL Editor | 60 linhas na Gold para os IDs 1001–1020 |
 
 > **Se o seed completo falhar** (ex.: `tabela_preco` com schema diferente), rode
 > primeiro `db/seed_clientes.sql`. Ele cria os IDs 1001–1020 **e o 9001** com CNPJ
@@ -80,12 +84,70 @@ categoria** é que devem se manter.
 
 Saída esperada: 20 linhas com nome, perfil e o item de topo.
 
+## Massa de 80 clientes (2001–2080)
+
+Para ter **80 recomendações diferentes**, rode nesta ordem:
+
+1. `db/seed_produtos.sql` (Supabase) — garante os itens `00001`–`00010`.
+2. `db/seed_80_clientes.sql` (Supabase) — 80 clientes, um por cidade.
+3. `db/seed_80_compras.sql` (Supabase) — histórico em `fato_vendas` para o bot.
+4. `db/seed_80_gold.sql` (Databricks) — 4–5 itens de Gold por cliente.
+
+Distribuição das cidades:
+
+| Perfil | IDs | Cidades |
+|---|---|---|
+| Super Litoral | 2001–2020 | Capão da Canoa, Tramandaí, Torres, Cidreira, Xangri-lá, ... Balneário Camboriú, Florianópolis, São Francisco do Sul |
+| Conveniência Serra | 2021–2035 | Gramado, Canela, Caxias do Sul, Bento Gonçalves, ... Flores da Cunha |
+| Distribuidora Vale | 2036–2050 | Lajeado, Estrela, Teutônia, Encantado, ... Ilópolis |
+| Mercado Central | 2051–2080 | Porto Alegre, Canoas, ... Osório, Joinville, Blumenau, ... Caçador |
+
+Cada cliente tem um CNPJ **único e válido** (dígitos verificadores conferidos) e um
+histórico próprio (quantidades, valores, datas e scores diferentes).
+
+### Ver todos os CNPJs
+
+- **No painel:** aba **Todos os CNPJs** (`/painel.html`) → lista `codCliente`, nome,
+  CNPJ, cidade/UF e botões **Testar** e **Copiar**. Vem de
+  `GET /api/v1/clientes?limite=500`.
+- **No SQL:**
+  ```sql
+  select cod_cliente, nome_fantasia, cnpj, cidade, uf
+  from cliente where cod_cliente between 2001 and 2080 order by cod_cliente;
+  ```
+- **No arquivo:** `db/seed_80_clientes.sql`.
+
+### Consultar os 80 de uma vez
+
+```powershell
+2001..2080 | ForEach-Object {
+    try {
+        $r = Invoke-RestMethod "http://localhost:8080/api/v1/recomendacoes/$_?limite=3" -TimeoutSec 120
+        $top = $r.itens | Select-Object -First 1
+        "{0} | {1} | {2} | top: {3} ({4})" -f $_, $r.nomeCliente, $r.perfil, $top.nome, $top.score
+    } catch {
+        "{0} | ERRO {1}" -f $_, $_.Exception.Message
+    }
+}
+```
+
+### Limpar a massa de 80
+
+```sql
+-- Supabase
+delete from fato_vendas where cod_cliente::text between '2001' and '2080';
+delete from cliente where cod_cliente between 2001 and 2080;
+
+-- Databricks
+delete from workspace.default.gold_recomendacao_b2b where id_cliente between 2001 and 2080;
+```
+
 ## Testes de comportamento
 
 | Cenário | Como testar | Resultado esperado |
 |---|---|---|
 | Cliente com histórico | `GET /recomendacoes/1001` | 200, itens com `motivos` e `detalhe` |
-| Cliente sem histórico (cold start) | crie um cliente 2001 **sem** linha na Gold | 200, itens vindos do catálogo + motivo "sem histórico" |
+| Cliente sem histórico (cold start) | crie um cliente 3001 **sem** linha na Gold | 200, itens vindos do catálogo + motivo "sem histórico" |
 | Cliente inexistente | `GET /recomendacoes/999999` | 404 em `ProblemDetail` |
 | ID inválido | `GET /recomendacoes/abc` | 400 |
 | Catálogo sem token | `GET /catalogo` | 401 |
@@ -99,12 +161,12 @@ Saída esperada: 20 linhas com nome, perfil e o item de topo.
 ```sql
 -- Supabase: cliente que NÃO existe na Gold
 insert into cliente (cod_cliente, nome_fantasia, cnpj, cidade, uf)
-values (2001, 'Mercado Cold Start', '10000021000151', 'Porto Alegre', 'RS')
+values (3001, 'Mercado Cold Start', '10000021000160', 'Porto Alegre', 'RS')
 on conflict do nothing;
 ```
 
 ```powershell
-curl.exe -s "http://localhost:8080/api/v1/recomendacoes/2001" | ConvertFrom-Json | ConvertTo-Json -Depth 5
+curl.exe -s "http://localhost:8080/api/v1/recomendacoes/3001" | ConvertFrom-Json | ConvertTo-Json -Depth 5
 ```
 
 Deve vir **200** com itens do catálogo e o motivo `sem histórico`.

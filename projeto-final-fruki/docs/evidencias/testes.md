@@ -7,11 +7,11 @@
 ## Resultado
 
 ```text
-Tests run: 40, Failures: 0, Errors: 0, Skipped: 5
+Tests run: 41, Failures: 0, Errors: 0, Skipped: 4
 BUILD SUCCESS
 ```
 
-Os 5 ignorados são testes de integração que exigem `SUPABASE_JDBC_URL` e
+Os 4 ignorados são testes de integração que exigem `SUPABASE_JDBC_URL` e
 `JWT_SECRET` no ambiente (anotados com `@EnabledIfEnvironmentVariable`). Sem essas
 variáveis eles são pulados em vez de falhar.
 
@@ -25,7 +25,7 @@ variáveis eles são pulados em vez de falhar.
 | `PedidoControllerTest` | 201 e total calculado (`@WebMvcTest`) |
 | `PedidoServiceTest` | total real, cliente inexistente |
 | `CompraServiceTest` | total pelo preço, 404/400 |
-| `ClienteServiceTest` | cadastro, CNPJ inválido, 409 duplicado |
+| `ClienteServiceTest` | cadastro, CNPJ inválido, 409 duplicado, listagem |
 | `IndicadoresServiceTest` | cobertura, taxa, média, base vazia |
 | `ContextoServiceTest` | verão + feriado, inverno, sem feriado |
 | `EstacaoTest` | as quatro estações no Hemisfério Sul |
@@ -55,4 +55,4 @@ Com as variáveis carregadas:
 .\mvnw.cmd test
 ```
 
-Aí os 5 testes de contexto/webhook também executam (exigem Supabase e JWT_SECRET).
+Aí os 4 testes de contexto/webhook também executam (exigem Supabase e JWT_SECRET).

@@ -136,6 +136,21 @@ Se o Databricks estiver fora, aparece 503; o corpo do erro fica visível abaixo.
 
 ---
 
+## 6.1 Todos os CNPJs
+
+**O que testa:** `GET /api/v1/clientes?limite=500`
+
+1. Abra a aba **Todos os CNPJs** (ela carrega sozinha na primeira vez).
+2. Use a busca por **ID, nome, CNPJ ou cidade**.
+3. A tabela mostra `codCliente`, `nomeFantasia`, `cnpj`, `cidade/UF`.
+4. **Testar** define o cliente e abre a recomendação dele.
+5. **Copiar** copia o CNPJ para usar em `/compras` ou `/pedidos`.
+
+Se você rodou `db/seed_80_clientes.sql`, aparecem os IDs **2001–2080**, cada um com
+cidade e CNPJ únicos. Se rodou o seed de 20, aparecem 1001–1020 + 9001.
+
+---
+
 ## 7. Compras
 
 **O que testa:** `POST /api/v1/compras`

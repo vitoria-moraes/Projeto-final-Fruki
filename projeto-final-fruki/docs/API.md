@@ -170,6 +170,18 @@ Texto pronto para o bot do WhatsApp.
 
 200 ou 404.
 
+### `GET /api/v1/clientes?limite=200`
+
+Lista os clientes cadastrados (1 a 500), ordenados por `codCliente`. Usado pela aba
+**Todos os CNPJs** do painel.
+
+```json
+[
+  { "codCliente": 2001, "cnpj": "20000001000143", "nomeFantasia": "Mercado Capão da Canoa 2001",
+    "cidade": "Capão da Canoa", "uf": "RS", "codHierarquia": null }
+]
+```
+
 ---
 
 ## 6. Compras

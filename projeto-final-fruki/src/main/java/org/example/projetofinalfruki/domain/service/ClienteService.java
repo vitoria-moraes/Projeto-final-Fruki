@@ -7,9 +7,12 @@ import org.example.projetofinalfruki.domain.exception.ConflitoException;
 import org.example.projetofinalfruki.domain.util.CnpjValidator;
 import org.example.projetofinalfruki.infrastructure.db.supabase.entity.ClienteEntity;
 import org.example.projetofinalfruki.infrastructure.db.supabase.repository.ClienteJpaRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Locale;
 
 /** Cadastro e consulta de lojistas no Supabase. */
@@ -49,6 +52,16 @@ public class ClienteService {
         return repository.findByCnpj(normalizado)
                 .map(this::paraDTO)
                 .orElseThrow(() -> new ClienteNaoEncontradoException(normalizado));
+    }
+
+    /** Lista os clientes cadastrados (para a tela de CNPJs do painel). */
+    @Transactional(readOnly = true)
+    public List<ClienteResponseDTO> listar(int limite) {
+        int seguro = Math.max(1, Math.min(limite, 500));
+        return repository.findAll(PageRequest.of(0, seguro, Sort.by("codCliente").ascending()))
+                .stream()
+                .map(this::paraDTO)
+                .toList();
     }
 
     private ClienteResponseDTO paraDTO(ClienteEntity entity) {

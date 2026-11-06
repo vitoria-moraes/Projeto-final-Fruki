@@ -11,7 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -59,5 +62,19 @@ class ClienteServiceTest {
         when(repository.findByCnpj("11222333000181")).thenReturn(Optional.of(new ClienteEntity()));
 
         assertThrows(ConflitoException.class, () -> service.criar(dto));
+    }
+
+    @Test
+    @DisplayName("lista clientes para a tela de CNPJs")
+    void listaClientes() {
+        ClienteEntity entity = new ClienteEntity();
+        entity.setCodCliente(2001L);
+        entity.setNomeFantasia("Mercado Teste");
+        when(repository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(entity)));
+
+        List<ClienteResponseDTO> lista = service.listar(200);
+
+        assertEquals(1, lista.size());
+        assertEquals(2001L, lista.get(0).codCliente());
     }
 }

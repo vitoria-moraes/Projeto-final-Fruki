@@ -319,6 +319,16 @@ code {
 .kpi strong { display: block; margin-top: 5px; font-size: 24px; letter-spacing: -.04em; color: var(--forest); }
 .kpi small { color: var(--muted); font-size: 10px; }
 
+/* ------------------------------------------------------------------ tabela de CNPJs */
+.table-wrap { overflow: auto; max-height: 620px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+table.cnpjs { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+table.cnpjs th, table.cnpjs td { padding: 9px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+table.cnpjs th { position: sticky; top: 0; z-index: 1; background: #f7faf4; color: var(--green); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+table.cnpjs tr:hover td { background: #fbfdf8; }
+table.cnpjs .mono { font-family: ui-monospace, Consolas, monospace; font-size: 10.5px; white-space: nowrap; }
+table.cnpjs .actions { display: flex; gap: 5px; }
+table.cnpjs .actions .btn { padding: 5px 8px; font-size: 10px; }
+
 /* ------------------------------------------------------------------ toast */
 .toast {
     position: fixed;

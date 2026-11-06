@@ -25,7 +25,9 @@
         lastRec: null,
         clienteId: load('pedeFruki.painel.cliente', 41) || 41,
         indLoaded: false,
-        ctxLoaded: false
+        ctxLoaded: false,
+        cnpjs: [],
+        cnpjsLoaded: false
     };
 
     function toast(msg) {
@@ -109,6 +111,7 @@
         if (nome === 'catalogo' && !state.produtos.length) carregarProdutos();
         if (nome === 'indicadores' && !state.indLoaded) carregarIndicadores();
         if (nome === 'contexto' && !state.ctxLoaded) carregarContexto();
+        if (nome === 'cnpjs' && !state.cnpjsLoaded) carregarCnpjs();
         const painel = $('tab-' + nome);
         if (painel) painel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -397,6 +400,75 @@
         });
     }
 
+    /* ---------------------------------------------------------------- todos os CNPJs */
+    async function carregarCnpjs() {
+        await comBotao($('btnCnpjs'), 'Carregando...', async () => {
+            try {
+                const lista = await api('/api/v1/clientes?limite=500');
+                state.cnpjs = lista || [];
+                state.cnpjsLoaded = true;
+                renderCnpjs();
+            } catch (e) {
+                state.cnpjsLoaded = false;
+                mostrarErro($('cnpjsResult'), e);
+            }
+        });
+    }
+
+    function renderCnpjs() {
+        const termo = ($('cnpjBusca').value || '').toLowerCase().trim();
+        const lista = state.cnpjs.filter((c) => {
+            const alvo = [c.codCliente, c.nomeFantasia, c.cnpj, c.cidade, c.uf]
+                .join(' ').toLowerCase();
+            return !termo || alvo.includes(termo);
+        });
+        $('cnpjCount').textContent = `${lista.length} de ${state.cnpjs.length} cliente(s)`;
+        if (!lista.length) {
+            $('cnpjsResult').innerHTML = '<div class="empty">Nenhum cliente encontrado. Rode o seed ou ajuste a busca.</div>';
+            return;
+        }
+        const linhas = lista.map((c) => `
+            <tr>
+                <td class="mono">#${esc(c.codCliente)}</td>
+                <td>${esc(c.nomeFantasia)}</td>
+                <td class="mono">${esc(c.cnpj)}</td>
+                <td>${esc(c.cidade)}/${esc(c.uf)}</td>
+                <td>
+                    <div class="actions">
+                        <button class="btn" data-use-client="${esc(c.codCliente)}">Testar</button>
+                        <button class="btn ghost" data-copy-cnpj="${esc(c.cnpj)}">Copiar</button>
+                    </div>
+                </td>
+            </tr>`).join('');
+        $('cnpjsResult').innerHTML = `
+            <div class="table-wrap">
+                <table class="cnpjs">
+                    <thead>
+                        <tr><th>ID</th><th>Nome</th><th>CNPJ</th><th>Cidade/UF</th><th>Ações</th></tr>
+                    </thead>
+                    <tbody>${linhas}</tbody>
+                </table>
+            </div>`;
+    }
+
+    function usarCliente(id) {
+        const numero = Number(id);
+        if (!numero) return;
+        state.clienteId = numero;
+        $('clienteAtual').value = numero;
+        $('recId').value = numero;
+        save('pedeFruki.painel.cliente', numero);
+        go('recomendacao');
+        carregarRecomendacao();
+    }
+
+    function copiarTexto(texto) {
+        if (!navigator.clipboard) { toast('Copie manualmente: ' + texto); return; }
+        navigator.clipboard.writeText(texto)
+            .then(() => toast('Copiado: ' + texto))
+            .catch(() => toast('Não foi possível copiar.'));
+    }
+
     /* ---------------------------------------------------------------- compras */
     async function registrarCompra() {
         const body = {
@@ -532,6 +604,14 @@
 
         $('btnCli').addEventListener('click', cadastrarCliente);
         $('btnCliBusca').addEventListener('click', buscarCliente);
+        $('btnCnpjs').addEventListener('click', carregarCnpjs);
+        $('cnpjBusca').addEventListener('input', renderCnpjs);
+        $('cnpjsResult').addEventListener('click', (e) => {
+            const use = e.target.closest('[data-use-client]');
+            if (use) { usarCliente(use.dataset.useClient); return; }
+            const copy = e.target.closest('[data-copy-cnpj]');
+            if (copy) copiarTexto(copy.dataset.copyCnpj);
+        });
         $('btnCompra').addEventListener('click', registrarCompra);
         $('btnPedido').addEventListener('click', finalizarPedido);
         $('btnLimpar').addEventListener('click', () => {
