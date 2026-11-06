@@ -50,7 +50,7 @@ public class CompraService {
         BigDecimal total = preco.multiply(BigDecimal.valueOf(dto.quantidade()));
 
         PedidoEntity pedido = PedidoEntity.builder()
-                .codCliente(cliente.getCodCliente())
+                .codCliente(String.valueOf(cliente.getCodCliente()))
                 .dataPedido(dto.dataCompra().atStartOfDay())
                 .valorTotal(total)
                 .status("REGISTRADA")

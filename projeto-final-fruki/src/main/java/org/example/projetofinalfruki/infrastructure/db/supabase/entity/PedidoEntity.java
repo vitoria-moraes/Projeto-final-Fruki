@@ -19,7 +19,7 @@ public class PedidoEntity {
     private Long id;
 
     @Column(name = "cod_cliente", nullable = false)
-    private Long codCliente;
+    private String codCliente;
 
     @Column(name = "data_pedido")
     private LocalDateTime dataPedido;

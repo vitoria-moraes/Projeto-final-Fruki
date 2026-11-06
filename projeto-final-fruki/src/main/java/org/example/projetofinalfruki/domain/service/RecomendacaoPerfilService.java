@@ -7,6 +7,9 @@ import org.example.projetofinalfruki.infrastructure.db.supabase.entity.PedidoEnt
 import org.example.projetofinalfruki.infrastructure.db.supabase.entity.TabelaPrecoEntity;
 import org.example.projetofinalfruki.infrastructure.db.supabase.repository.PedidoJpaRepository;
 import org.example.projetofinalfruki.infrastructure.db.supabase.repository.TabelaPrecoJpaRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -27,6 +30,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class RecomendacaoPerfilService {
+
+    private static final Logger log = LoggerFactory.getLogger(RecomendacaoPerfilService.class);
 
     public enum Perfil {
         PEQUENO_VAREJO("pequeno varejo"),
@@ -58,7 +63,15 @@ public class RecomendacaoPerfilService {
     }
 
     public Resultado recomendar(ClienteEntity cliente) {
-        List<PedidoEntity> historico = pedidoRepository.findByCodCliente(cliente.getCodCliente());
+        List<PedidoEntity> historico;
+        try {
+            historico = pedidoRepository.findByCodCliente(String.valueOf(cliente.getCodCliente()));
+        } catch (DataAccessException e) {
+            // Se fato_vendas estiver com schema divergente/fora, o bot continua com as regras.
+            log.warn("Historico de fato_vendas indisponivel ({}). Seguindo com as regras.",
+                    e.getClass().getSimpleName());
+            historico = List.of();
+        }
         Perfil perfil = classificar(historico);
 
         Set<String> sugestoes = new LinkedHashSet<>();
@@ -120,7 +133,7 @@ public class RecomendacaoPerfilService {
                     .map(r -> tabelaPrecoRepository.findByCodProduto(r.getCodItem())
                             .map(TabelaPrecoEntity::getNomeProduto).orElse("Item " + r.getCodItem()))
                     .toList();
-        } catch (DatabricksIndisponivelException e) {
+        } catch (DatabricksIndisponivelException | DataAccessException e) {
             return List.of();
         }
     }

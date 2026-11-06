@@ -61,7 +61,7 @@ public class PedidoService {
         }
 
         PedidoEntity pedido = PedidoEntity.builder()
-                .codCliente(cliente.getCodCliente())
+                .codCliente(String.valueOf(cliente.getCodCliente()))
                 .dataPedido(LocalDateTime.now())
                 .valorTotal(total)
                 .status("CRIADO")

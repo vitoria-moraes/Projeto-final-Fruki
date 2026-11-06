@@ -11,7 +11,13 @@ Nada é executado automaticamente: você cola o SQL no Supabase/Databricks.
 | Arquivo | Onde rodar | O que faz |
 |---|---|---|
 | `db/seed_supabase.sql` | Supabase → SQL Editor | 10 produtos, 20 clientes (IDs 1001–1020) e 40 compras em `fato_vendas` |
+| `db/seed_clientes.sql` | Supabase → SQL Editor | **somente** os clientes (1001–1020 + 9001), sem depender de `tabela_preco` |
 | `db/seed_gold_databricks.sql` | Databricks → SQL Editor | 60 linhas na Gold (`workspace.default.gold_recomendacao_b2b`) |
+
+> **Se o seed completo falhar** (ex.: `tabela_preco` com schema diferente), rode
+> primeiro `db/seed_clientes.sql`. Ele cria os IDs 1001–1020 **e o 9001** com CNPJ
+> `11222333000181`, que é o CNPJ usado nos exemplos do painel. O `ON CONFLICT` torna
+> a execução repetível.
 
 ## Ordem de execução
 

@@ -30,7 +30,7 @@ public class DataSeeder implements CommandLineRunner {
             if (pedidoRepository.count() > 0) return;
 
             PedidoEntity p1 = PedidoEntity.builder()
-                    .codCliente(1L)
+                    .codCliente("1")
                     .dataPedido(LocalDateTime.now().minusDays(5))
                     .valorTotal(new BigDecimal("1250.00"))
                     .status("ENTREGUE")
