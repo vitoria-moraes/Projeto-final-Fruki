@@ -212,6 +212,16 @@ src/main/java/org/example/projetofinalfruki
    funcional em `/demo-recomendacoes.html`.
 8. O pipeline Databricks (notebook/job) não está versionado neste repositório.
 
+### Dados de teste
+
+> Devido a restrições de acesso, a tabela Gold oficial não pôde ser usada no ambiente
+> local. Para fins de teste e demonstração, foram criadas tabelas mock (`cliente`,
+> `tabela_preco`) no Supabase e uma tabela (`workspace.default.gold_recomendacao_b2b`)
+> no Databricks.
+
+Scripts prontos em [`db/`](db/) e guia em [`docs/MASSA_DE_TESTE.md`](docs/MASSA_DE_TESTE.md)
+(20 clientes de teste, IDs 1001–1020, com compras e linhas na Gold).
+
 ---
 
 ## 9. Segurança
