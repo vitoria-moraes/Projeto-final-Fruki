@@ -43,7 +43,7 @@ class RecomendadorV2ServiceTest {
         props = new RecomendacaoProperties();
         recomendador = new RecomendadorV2Service(catalogo, props);
         cliente = new ClienteEntity();
-        cliente.setCodCliente("41");
+        cliente.setCodCliente(41L);
         cliente.setNomeFantasia("Mercado Central");
         cliente.setCidade("Porto Alegre");
         cliente.setUf("RS");

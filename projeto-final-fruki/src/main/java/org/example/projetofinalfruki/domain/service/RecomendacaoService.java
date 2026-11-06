@@ -51,8 +51,8 @@ public class RecomendacaoService {
         List<RecomendacaoB2B> historico =
                 recomendacaoRepository.findByIdClienteOrderByScoreRecomendacaoDesc(idCliente);
 
-        // O código do cliente no Supabase é String; tentamos o mesmo número da Gold.
-        ClienteEntity cliente = clienteRepository.findById(String.valueOf(idCliente)).orElse(null);
+        // O código do cliente no Supabase é BIGINT (Long), igual ao id_cliente da Gold.
+        ClienteEntity cliente = clienteRepository.findById(idCliente).orElse(null);
         if ((historico == null || historico.isEmpty()) && cliente == null) {
             throw new ClienteNaoEncontradoException(String.valueOf(idCliente));
         }

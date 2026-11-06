@@ -778,7 +778,7 @@ entre 0 e 100, no máximo 2 itens por categoria, catálogo 401 sem token.
 |---|---|---|---|
 | App não sobe / `APPLICATION FAILED` | variável ausente, `JWT_SECRET` curto, banco fora | `README.md` seção 2; `scripts/env.example.ps1` | `. .\scripts\env.local.ps1` |
 | 503 em `/recomendacoes` | Databricks: host, token, warehouse, tabela ou coluna | `RecomendacaoRepository` (agora loga a causa), `application.yml` | ver log `Caused by`; testar SQL no Databricks |
-| 404 em `/recomendacoes/41` | cliente não existe na base **e** Gold vazia | `RecomendacaoService` | `select * from cliente where cod_cliente='41';` |
+| 404 em `/recomendacoes/41` | cliente não existe na base **e** Gold vazia | `RecomendacaoService` | `select * from cliente where cod_cliente=41;` |
 | `preco: null` | `cod_item` ≠ `cod_produto` | `CatalogoService`, `docs/SCHEMA.md` | `select * from tabela_preco where cod_produto like '%1%';` |
 | 409 em `/clientes` | CNPJ já cadastrado | `ClienteService` | consultar `cliente` por CNPJ |
 | 400 com `erros[]` | validação | corpo da resposta; `GlobalExceptionHandler` | conferir campo/mensagem |

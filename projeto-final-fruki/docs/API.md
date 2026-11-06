@@ -150,12 +150,12 @@ Texto pronto para o bot do WhatsApp.
 
 ```json
 {
-  "codCliente": "41",
+  "codCliente": 41,
   "cnpj": "11.222.333/0001-81",
   "nomeFantasia": "Mercado Central",
   "cidade": "Porto Alegre",
   "uf": "RS",
-  "codHierarquia": "H-01"
+  "codHierarquia": 123
 }
 ```
 

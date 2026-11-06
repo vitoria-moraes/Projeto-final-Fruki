@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ClienteJpaRepository extends JpaRepository<ClienteEntity, String> {
+public interface ClienteJpaRepository extends JpaRepository<ClienteEntity, Long> {
     Optional<ClienteEntity> findByCnpj(String cnpj);
 }

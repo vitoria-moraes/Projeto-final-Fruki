@@ -108,16 +108,19 @@ public class RecomendacaoPerfilService {
         };
     }
 
-    /** Databricks fora do ar (ou id não numérico) nunca derruba o bot: cai nas regras. */
+    /** Databricks fora do ar nunca derruba o bot: cai nas regras. */
     private List<String> topDoDatabricks(ClienteEntity cliente) {
+        Long id = cliente.getCodCliente();
+        if (id == null) {
+            return List.of();
+        }
         try {
-            Long id = Long.parseLong(cliente.getCodCliente().trim());
             return databricksRepository.findByIdClienteOrderByScoreRecomendacaoDesc(id).stream()
                     .limit(3)
                     .map(r -> tabelaPrecoRepository.findByCodProduto(r.getCodItem())
                             .map(TabelaPrecoEntity::getNomeProduto).orElse("Item " + r.getCodItem()))
                     .toList();
-        } catch (NumberFormatException | DatabricksIndisponivelException e) {
+        } catch (DatabricksIndisponivelException e) {
             return List.of();
         }
     }

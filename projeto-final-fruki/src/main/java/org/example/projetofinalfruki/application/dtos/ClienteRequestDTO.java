@@ -1,15 +1,17 @@
 package org.example.projetofinalfruki.application.dtos;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 /** Entrada para cadastro de um novo lojista. */
 public record ClienteRequestDTO(
 
-        @NotBlank(message = "codCliente é obrigatório")
-        @Size(max = 20, message = "codCliente deve ter no máximo 20 caracteres")
-        String codCliente,
+        @NotNull(message = "codCliente é obrigatório")
+        @Positive(message = "codCliente deve ser positivo")
+        Long codCliente,
 
         @NotBlank(message = "CNPJ é obrigatório")
         @Size(max = 20, message = "CNPJ inválido")
@@ -27,7 +29,7 @@ public record ClienteRequestDTO(
         @Pattern(regexp = "(?i)[a-z]{2}", message = "UF deve ter 2 letras (ex.: RS)")
         String uf,
 
-        @Size(max = 20, message = "codHierarquia deve ter no máximo 20 caracteres")
-        String codHierarquia
+        @Positive(message = "codHierarquia deve ser positivo")
+        Long codHierarquia
 ) {
 }

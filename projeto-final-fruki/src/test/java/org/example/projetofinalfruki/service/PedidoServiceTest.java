@@ -47,7 +47,7 @@ class PedidoServiceTest {
     @DisplayName("calcula o total real do pedido e persiste")
     void calculaTotalReal() {
         ClienteEntity cliente = new ClienteEntity();
-        cliente.setCodCliente("41");
+        cliente.setCodCliente(41L);
         cliente.setCnpj("11222333000181");
         when(clienteRepository.findByCnpj("11222333000181")).thenReturn(Optional.of(cliente));
         when(catalogo.buscarProduto("00001")).thenReturn(Optional.of(produto()));

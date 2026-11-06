@@ -19,7 +19,7 @@ public class ClienteEntity {
 
     @Id
     @Column(name = "cod_cliente")
-    private String codCliente;
+    private Long codCliente;
 
     @Column(name = "nome_fantasia")
     private String nomeFantasia;
@@ -34,5 +34,5 @@ public class ClienteEntity {
     private String uf;
 
     @Column(name = "cod_hierarquia")
-    private String codHierarquia;
+    private Long codHierarquia;
 }

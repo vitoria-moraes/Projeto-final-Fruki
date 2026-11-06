@@ -59,7 +59,7 @@ class RecomendacaoServiceTest {
         RecomendacaoB2B linha = new RecomendacaoB2B();
         linha.setCodItem("00001");
         when(recomendacaoRepository.findByIdClienteOrderByScoreRecomendacaoDesc(41L)).thenReturn(List.of(linha));
-        when(clienteRepository.findById("41")).thenReturn(Optional.empty());
+        when(clienteRepository.findById(41L)).thenReturn(Optional.empty());
         when(contextoService.obterContexto(null, null)).thenReturn(contexto);
         when(recomendador.recomendar(any(), any(), any(), anyInt()))
                 .thenReturn(List.of(new ItemRecomendadoDTO(1, "00001", "Fruki Guaraná 2L",
@@ -77,13 +77,13 @@ class RecomendacaoServiceTest {
     @DisplayName("usa o nome do cliente quando ele existe no Supabase")
     void enriqueceComNomeDoCliente() {
         ClienteEntity cliente = new ClienteEntity();
-        cliente.setCodCliente("41");
+        cliente.setCodCliente(41L);
         cliente.setNomeFantasia("Mercado Central");
         cliente.setCidade("Porto Alegre");
         cliente.setUf("RS");
 
         when(recomendacaoRepository.findByIdClienteOrderByScoreRecomendacaoDesc(41L)).thenReturn(List.of(linha()));
-        when(clienteRepository.findById("41")).thenReturn(Optional.of(cliente));
+        when(clienteRepository.findById(41L)).thenReturn(Optional.of(cliente));
         when(contextoService.obterContexto("Porto Alegre", "RS")).thenReturn(contexto);
         when(recomendador.recomendar(any(), any(), any(), anyInt())).thenReturn(List.of());
 
@@ -97,7 +97,7 @@ class RecomendacaoServiceTest {
     @DisplayName("404 quando não há histórico nem cliente")
     void lanca404() {
         when(recomendacaoRepository.findByIdClienteOrderByScoreRecomendacaoDesc(999L)).thenReturn(List.of());
-        when(clienteRepository.findById("999")).thenReturn(Optional.empty());
+        when(clienteRepository.findById(999L)).thenReturn(Optional.empty());
 
         assertThrows(ClienteNaoEncontradoException.class, () -> service.recomendar(999L, 10));
     }

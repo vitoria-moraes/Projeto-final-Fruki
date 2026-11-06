@@ -33,7 +33,7 @@ public class ClienteService {
         }
 
         ClienteEntity entity = new ClienteEntity();
-        entity.setCodCliente(dto.codCliente().trim());
+        entity.setCodCliente(dto.codCliente());
         entity.setCnpj(cnpj);
         entity.setNomeFantasia(dto.nomeFantasia().trim());
         entity.setCidade(dto.cidade().trim());

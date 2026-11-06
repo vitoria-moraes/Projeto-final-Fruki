@@ -151,7 +151,7 @@ public class WhatsAppBotService {
         String uf = cliente.getUf() != null ? cliente.getUf().toUpperCase(Locale.ROOT) : "RS";
         String cidade = cliente.getCidade() != null ? cliente.getCidade() : "Porto Alegre";
         // TODO: trocar "TABELA_" + uf pela consulta real à dim_tabela_preco do cliente
-        String token = jwtService.gerarTokenCatalogo(cliente.getCodCliente(), cliente.getNomeFantasia(),
+        String token = jwtService.gerarTokenCatalogo(String.valueOf(cliente.getCodCliente()), cliente.getNomeFantasia(),
                 cidade + " - " + uf, "TABELA_" + uf, cliente.getCnpj());
         return baseUrl + "/catalogo?token=" + token;
     }

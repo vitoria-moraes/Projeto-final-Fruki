@@ -41,7 +41,7 @@ class CompraServiceTest {
     void setUp() {
         service = new CompraService(clienteRepository, pedidoRepository, catalogo);
         cliente = new ClienteEntity();
-        cliente.setCodCliente("41");
+        cliente.setCodCliente(41L);
         cliente.setCnpj("11222333000181");
         cliente.setNomeFantasia("Mercado Central");
     }

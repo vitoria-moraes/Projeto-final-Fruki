@@ -4,14 +4,14 @@ import java.math.BigDecimal;
 
 public class Pedido {
     private String codigoPedido;
-    private String codCliente;
+    private Long codCliente;
     private String produto;
     private Integer quantidade;
     private BigDecimal valorTotal;
 
     public Pedido() {}
 
-    public Pedido(String codigoPedido, String codCliente, String produto, Integer quantidade, BigDecimal valorTotal) {
+    public Pedido(String codigoPedido, Long codCliente, String produto, Integer quantidade, BigDecimal valorTotal) {
         this.codigoPedido = codigoPedido;
         this.codCliente = codCliente;
         this.produto = produto;
@@ -22,8 +22,8 @@ public class Pedido {
     public String getCodigoPedido() { return codigoPedido; }
     public void setCodigoPedido(String codigoPedido) { this.codigoPedido = codigoPedido; }
 
-    public String getCodCliente() { return codCliente; }
-    public void setCodCliente(String codCliente) { this.codCliente = codCliente; }
+    public Long getCodCliente() { return codCliente; }
+    public void setCodCliente(Long codCliente) { this.codCliente = codCliente; }
 
     public String getProduto() { return produto; }
     public void setProduto(String produto) { this.produto = produto; }

@@ -31,14 +31,14 @@ class ClienteServiceTest {
     @Test
     @DisplayName("cadastra cliente com CNPJ válido e normaliza os campos")
     void cadastraCliente() {
-        ClienteRequestDTO dto = new ClienteRequestDTO("41", "11.222.333/0001-81",
+        ClienteRequestDTO dto = new ClienteRequestDTO(41L, "11.222.333/0001-81",
                 " Mercado Central ", "Porto Alegre", "rs", null);
         when(repository.findByCnpj("11222333000181")).thenReturn(Optional.empty());
         when(repository.save(any(ClienteEntity.class))).thenAnswer(inv -> inv.getArgument(0));
 
         ClienteResponseDTO resposta = service.criar(dto);
 
-        assertEquals("41", resposta.codCliente());
+        assertEquals(41L, resposta.codCliente());
         assertEquals("11222333000181", resposta.cnpj());
         assertEquals("Mercado Central", resposta.nomeFantasia());
         assertEquals("RS", resposta.uf());
@@ -47,14 +47,14 @@ class ClienteServiceTest {
     @Test
     @DisplayName("rejeita CNPJ inválido")
     void rejeitaCnpjInvalido() {
-        ClienteRequestDTO dto = new ClienteRequestDTO("42", "123", "Loja", "Lajeado", "RS", null);
+        ClienteRequestDTO dto = new ClienteRequestDTO(42L, "123", "Loja", "Lajeado", "RS", null);
         assertThrows(IllegalArgumentException.class, () -> service.criar(dto));
     }
 
     @Test
     @DisplayName("409 quando o CNPJ já existe")
     void rejeitaDuplicado() {
-        ClienteRequestDTO dto = new ClienteRequestDTO("41", "11222333000181",
+        ClienteRequestDTO dto = new ClienteRequestDTO(41L, "11222333000181",
                 "Mercado", "Porto Alegre", "RS", null);
         when(repository.findByCnpj("11222333000181")).thenReturn(Optional.of(new ClienteEntity()));
 

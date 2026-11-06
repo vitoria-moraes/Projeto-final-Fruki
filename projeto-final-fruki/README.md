@@ -150,9 +150,9 @@ Detalhes, pesos configuráveis e limitações em [`docs/RECOMENDADOR.md`](docs/R
 
 | Tabela | Uso |
 |---|---|
-| `cliente` | cadastro do lojista (`cod_cliente` PK, `cnpj`, `nome_fantasia`, `cidade`, `uf`) |
+| `cliente` | cadastro do lojista (`cod_cliente` bigint PK, `cnpj`, `nome_fantasia`, `cidade`, `uf`) |
 | `tabela_preco` | catálogo/preço (`id` PK, `cod_produto`, `nome_produto`, `preco_base`) |
-| `fato_vendas` | compras/pedidos (`id` PK, `cod_cliente`, `data_pedido`, `valor_total`, `status`, `resumo_itens`) |
+| `fato_vendas` | compras/pedidos (`id` PK, `cod_cliente` bigint, `data_pedido`, `valor_total`, `status`, `resumo_itens`) |
 | Gold (Databricks) | `id_cliente`, `cod_item`, `total_quantidade_comprada`, `valor_total_gasto`, `ultima_data_compra`, `frequencia_pedidos`, `score_recomendacao` |
 
 > O schema real pode variar. Antes de rodar a ingestão, confira
