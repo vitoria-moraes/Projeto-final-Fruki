@@ -47,8 +47,8 @@ export default function Header({ userName, region, onProfileClick, cartCount = 0
             className="flex max-w-64 items-center gap-3 rounded-xl border border-transparent px-2 py-1 text-left transition hover:border-emerald-100 hover:bg-emerald-50"
           >
             <div className="hidden min-w-0 text-right sm:block">
-              <p className="truncate text-sm font-extrabold leading-5 text-[#064b2b]">{userName || 'Minha conta'}</p>
-              <p className="truncate text-xs font-medium text-slate-500">{region || 'Cliente Pede Fruki'}</p>
+              <p className="truncate text-[17px] font-bold leading-6 text-[#064b2b]">{userName || 'Minha conta'}</p>
+              <p className="truncate text-[15px] font-medium leading-5 text-slate-500">{region || 'Cliente Pede Fruki'}</p>
             </div>
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-800">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

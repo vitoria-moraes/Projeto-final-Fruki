@@ -67,13 +67,7 @@ function contextLabel(context) {
 function recommendationProduct(item) {
   const product = productFromApi(item);
   if (!product) return null;
-  return {
-    ...product,
-    score: item.score,
-    posicao: item.posicao,
-    motivos: item.motivos || [],
-    detail: item.detalhe,
-  };
+  return { ...product };
 }
 
 export default function Catalogo() {
@@ -314,7 +308,7 @@ export default function Catalogo() {
         <section className="w-full max-w-xl rounded-[2rem] border border-white/40 bg-white/95 p-10 text-center shadow-2xl backdrop-blur">
           <img src="/images/brand/logo-fruki.svg" alt="Pede Fruki" className="mx-auto mb-6 h-16" />
           <span className="fruki-kicker text-emerald-700">Catálogo B2B</span>
-          <h1 className="mt-3 text-3xl font-black text-[#064b2b]">Acesse pelo link do atendimento</h1>
+          <h1 className="mt-3 text-3xl font-bold text-[#064b2b]">Acesse pelo link do atendimento</h1>
           <p className="mt-3 text-base leading-7 text-slate-600">O catálogo personalizado precisa do link JWT enviado pelo bot do Pede Fruki para carregar sua tabela de preços e suas sugestões.</p>
           <a href="mailto:contato@fruki.com.br" className="fruki-btn-primary mt-7 inline-flex">Falar com o atendimento</a>
         </section>
@@ -338,7 +332,7 @@ export default function Catalogo() {
           <div className="relative grid items-center gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(300px,.75fr)]">
             <div>
               <p className="fruki-kicker text-lime-200">Abastecimento B2B · Pede Fruki</p>
-              <h1 className="mt-4 max-w-3xl text-3xl font-black leading-[1.05] tracking-tight sm:text-5xl">
+              <h1 className="mt-4 max-w-3xl text-3xl font-bold leading-[1.05] tracking-tight sm:text-5xl">
                 Todo o portfólio Fruki,
                 <span className="block text-lime-200">do jeito que a sua loja precisa.</span>
               </h1>
@@ -398,9 +392,9 @@ export default function Catalogo() {
         <section id="recomendacoes" className="fruki-section mt-8 rounded-[1.75rem] p-5 shadow-sm sm:p-7">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="fruki-kicker text-emerald-700">Motor de recomendação</p>
-              <h2 className="mt-2 text-2xl font-black text-[#064b2b] sm:text-3xl">Feito para {clientName}</h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Sugestões escolhidas para o perfil da sua loja, com os preços da tabela e os motivos de cada indicação.</p>
+              <p className="text-[17px] font-semibold uppercase tracking-wide text-emerald-700">Recomendação perfeita para sua loja</p>
+              <h2 className="mt-2 text-2xl font-bold text-[#064b2b] sm:text-3xl">Feito para {clientName}</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Sugestões escolhidas para o perfil da sua loja, com os preços da tabela.</p>
             </div>
             <span className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-bold uppercase tracking-wide text-emerald-800">
               Perfil: {region || 'personalizado'}
@@ -423,7 +417,6 @@ export default function Catalogo() {
                   product={product}
                   quantity={cartItems[product.codItem]?.quantity || 0}
                   onUpdateQuantity={handleUpdateQuantity}
-                  recommended
                 />
               ))}
             </div>
@@ -435,7 +428,7 @@ export default function Catalogo() {
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center">
               <div>
                 <span className="rounded-full bg-amber-200 px-3 py-1 text-[11px] font-black uppercase tracking-wide text-amber-950">Combo personalizado · {clientName}</span>
-                <h2 className="mt-3 text-2xl font-black text-[#173b25] sm:text-3xl">Reposição pronta para o seu mix</h2>
+                <h2 className="mt-3 text-2xl font-bold text-[#173b25] sm:text-3xl">Reposição pronta para o seu mix</h2>
                 <p className="mt-2 max-w-xl text-sm leading-6 text-slate-700">Reúne os itens recomendados para a sua loja. O valor soma o preço unitário pelo número de unidades de cada fardo, sem desconto aplicado.</p>
                 <p className="mt-4 text-2xl font-black text-emerald-800">{formatMoney(comboPrice)} <span className="text-xs font-semibold text-slate-500">soma dos 3 itens</span></p>
                 <button type="button" onClick={addCombo} className="fruki-btn-primary mt-4">Adicionar combo ao pedido</button>
@@ -458,8 +451,8 @@ export default function Catalogo() {
           <div className="fruki-toolbar mt-5 rounded-2xl border border-white/15 bg-white/10 p-3 backdrop-blur">
             <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
               <SearchBar value={searchTerm} onChange={setSearchTerm} onClear={() => setSearchTerm('')} />
-              <label className="flex items-center gap-2 rounded-xl border border-white/30 bg-white px-3 text-sm font-semibold text-slate-700">
-                <span className="shrink-0 text-xs uppercase tracking-wide text-slate-500">Ordenar</span>
+              <label className="flex items-center gap-2 rounded-xl border border-white/30 bg-white px-3 text-sm font-bold text-slate-700">
+                <span className="shrink-0 text-xs font-bold uppercase tracking-wide text-slate-500">Ordenar</span>
                 <select value={sortBy} onChange={(event) => setSortBy(event.target.value)} className="w-full bg-transparent py-3 outline-none">
                   <option value="relevancia">Destaques primeiro</option>
                   <option value="nome">Nome (A–Z)</option>
@@ -473,7 +466,7 @@ export default function Catalogo() {
 
           <CategoryFilter categories={categories} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
 
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 text-sm font-semibold text-white/90">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 text-sm font-bold text-white/90">
             <span>
               {loadingProducts && !apiProducts.length
                 ? 'Montando o catálogo completo…'
@@ -499,7 +492,7 @@ export default function Catalogo() {
           ) : (
             <div className="rounded-[1.5rem] bg-white p-10 text-center shadow-sm">
               <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-emerald-50 text-3xl">🔎</div>
-              <h3 className="mt-4 text-xl font-black text-[#064b2b]">Nenhum produto encontrado</h3>
+              <h3 className="mt-4 text-xl font-bold text-[#064b2b]">Nenhum produto encontrado</h3>
               <p className="mt-2 text-sm text-slate-600">Tente outro termo ou remova os filtros para ver o portfólio completo.</p>
               <button type="button" onClick={clearFilters} className="fruki-btn-primary mt-5">Ver todos os produtos</button>
             </div>
@@ -537,8 +530,8 @@ export default function Catalogo() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="fruki-kicker text-emerald-800">Perfil identificado</p>
-                <h2 className="mt-1 text-3xl font-black text-[#064b2b]">{clientName}</h2>
-                <p className="mt-1 text-base font-medium text-slate-700">{cnpjCliente} · {region || 'Cliente Pede Fruki'}</p>
+                <h2 className="mt-1 text-3xl font-bold text-[#064b2b]">{clientName}</h2>
+                <p className="mt-1 text-[17px] font-medium leading-6 text-slate-700">{cnpjCliente} · {region || 'Cliente Pede Fruki'}</p>
               </div>
               <button type="button" onClick={() => setProfileOpen(false)} aria-label="Fechar perfil" className="rounded-full bg-white px-3 py-1 text-2xl text-slate-600 shadow">×</button>
             </div>
@@ -555,7 +548,7 @@ export default function Catalogo() {
             </div>
 
             <section className="mt-7">
-              <h3 className="text-lg font-extrabold text-[#064b2b]">Últimas compras</h3>
+              <h3 className="text-lg font-bold text-[#064b2b]">Últimas compras</h3>
               <p className="mt-1 text-sm text-slate-500">Pedidos registrados para este CNPJ.</p>
               {historyLoading && <p className="mt-4 rounded-xl bg-white p-4 text-sm text-slate-500">Carregando histórico…</p>}
               {historyError && <p role="alert" className="mt-4 rounded-xl bg-amber-50 p-4 text-sm text-amber-900">Histórico indisponível: {historyError}</p>}

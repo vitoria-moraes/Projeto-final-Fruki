@@ -38,16 +38,17 @@
       position: relative;
       z-index: 1;
       display: flex;
+      width: 100%;
       min-height: 100svh;
       align-items: center;
       justify-content: center;
-      padding: 28px 16px;
+      padding: 0;
     }
 
     .phone {
       position: relative;
-      width: min(390px, 92vw, calc((100vh - 56px) * 0.5058));
-      width: min(390px, 92vw, calc((100svh - 56px) * 0.5058));
+      width: min(100vw, calc(100vh * 0.5058));
+      width: min(100vw, calc(100svh * 0.5058));
       aspect-ratio: 2180 / 4310;
       filter: drop-shadow(0 30px 46px rgba(0, 28, 15, .42));
     }
@@ -180,10 +181,6 @@
       font-size: 13px;
       font-weight: 850;
     }
-    .link-preview { display: block; margin-top: 7px; padding: 11px; border-radius: 10px; background: #e8f5e6; color: #0a5330; text-decoration: none; overflow-wrap: anywhere; }
-    .link-preview strong { display: block; margin-bottom: 3px; font-size: 13px; }
-    .link-preview span { font-size: 11px; text-decoration: underline; }
-
     .home { width: 95px; height: 4px; margin: 6px auto; flex: none; border-radius: 8px; background: #161616; }
 
     .tools {
@@ -224,8 +221,8 @@
     @keyframes pop { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 
     @media (max-width: 460px) {
-      .stage { padding: 16px 10px; }
-      .phone { width: min(390px, 96vw, calc((100vh - 32px) * 0.5058)); width: min(390px, 96vw, calc((100svh - 32px) * 0.5058)); }
+      .stage { padding: 0; }
+      .phone { width: min(100vw, calc(100vh * 0.5058)); width: min(100vw, calc(100svh * 0.5058)); }
       .tools { right: 10px; top: 10px; }
       .tools button { padding: 8px 10px; font-size: 12px; }
     }
@@ -287,15 +284,15 @@
         bubble(`Olá, ${data.nome}! 🎉 Separei sugestões com bom potencial de venda para sua loja.`); await wait(500);
 
         const items = data.recomendacoes?.itens || [];
-        const list = items.map((item) => `<li><strong>${encode(item.nome)}</strong><br><span class="reasons">${encode((item.motivos || []).join(' · '))}</span></li>`).join('');
+        const list = items.map((item) => {
+          const motivos = (item.motivos || []).filter((motivo) => !/sazonalidade/i.test(motivo));
+          return `<li><strong>${encode(item.nome)}</strong>${motivos.length ? `<br><span class="reasons">${encode(motivos.join(' · '))}</span>` : ''}</li>`;
+        }).join('');
         bubble(`<strong>💡 Sugestões para ${encode(data.nome)}</strong><ul class="items">${list || '<li>Novas sugestões estarão disponíveis em breve.</li>'}</ul>`, 'bot', true);
         await wait(700);
 
         const destaques = items.slice(0, 3).map((item) => encode(item.nome)).join(' · ');
-        bubble(`<div class="offer-card"><div class="offer-art"><div class="offer-kicker">✨ Seleção especial Pede Fruki</div><div class="offer-title">Mais giro para a sua loja!</div><p class="offer-copy">Sugestões escolhidas para o perfil da ${encode(data.nome)}.</p></div><div class="offer-products">🥤 <strong>Para conhecer:</strong><br>${destaques || 'Confira as novidades do catálogo.'}<br><br>Monte seus fardos e veja os preços no catálogo.</div><a class="offer-action" href="${encode(data.catalogoUrl)}">Ver ofertas para minha loja&nbsp; →</a></div>`, 'bot', true);
-        await wait(450);
-        bubble(`📦 Seu catálogo personalizado está pronto, ${encode(data.nome)}! Toque no link para escolher os produtos e montar seus fardos.`);
-        bubble(`<a class="link-preview" href="${encode(data.catalogoUrl)}"><strong>🥤 Catálogo Pede Fruki</strong><span>Abrir catálogo e fazer pedido →</span></a>`, 'bot', true);
+        bubble(`<div class="offer-card"><div class="offer-art"><div class="offer-kicker">✨ Seleção especial Pede Fruki</div><div class="offer-title">Mais giro para a sua loja!</div><p class="offer-copy">Sugestões escolhidas para o perfil da ${encode(data.nome)}.</p></div><div class="offer-products">🥤 <strong>Para conhecer:</strong><br>${destaques || 'Confira as novidades do catálogo.'}<br><br>Monte seus fardos e veja os preços no catálogo.</div><a class="offer-action" href="${encode(data.catalogoUrl)}">Abrir catálogo e fazer pedido&nbsp; →</a></div>`, 'bot', true);
       } catch (error) {
         document.querySelector('#error').textContent = `Não foi possível carregar a conversa: ${error.message}. Confira se o Spring Boot está rodando.`;
       } finally {

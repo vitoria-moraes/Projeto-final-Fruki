@@ -3,7 +3,7 @@ export default function CategoryFilter({ categories = [], selectedCategory, onCa
     <section className="w-full py-5" aria-label="Filtrar por categoria">
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <h3 className="text-base font-extrabold text-white">Categorias</h3>
+          <h3 className="text-base font-bold text-white">Categorias</h3>
           <p className="mt-1 text-xs font-medium text-white/65">Toque em uma categoria para filtrar o portfólio.</p>
         </div>
         <span className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11px] font-bold text-white/85">
