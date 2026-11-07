@@ -2,7 +2,7 @@
 
 > **Versão:** 1.0 (guia de uso e estudo)
 > **Data:** 2026-11-05
-> **Status:** backend e painel de testes prontos; 41 testes automatizados verdes.
+> **Status:** backend, painel de testes e catálogo React prontos; 44 testes automatizados verdes (4 ignorados).
 > **Este documento substitui o antigo `PLANEJAMENTO.md`.** A fase de planejamento
 > terminou; aqui está o que existe, como rodar, como usar na tela e o que está congelado.
 > **Público:** as duas pessoas do grupo e o mentor.
@@ -48,6 +48,7 @@ Thymeleaf, JWT no catálogo, WhatsApp (Evolution API), H2 nos testes de JPA.
 | GET | `/api/v1/contexto/mensagem?cidade=` | texto sazonal para o bot |
 | POST | `/api/v1/webhook/whatsapp` | webhook da Evolution API |
 | POST | `/mock/whatsapp/enviar-mensagem` | simula o bot sem WhatsApp |
+| GET | `/mock/demo` | payload de demonstração com cliente, recomendações, compras e link do catálogo |
 | GET | `/catalogo?token=` | catálogo web (JWT) |
 
 Erros seguem `ProblemDetail` (400/404/405/409/503/500).
@@ -56,9 +57,10 @@ Erros seguem `ProblemDetail` (400/404/405/409/503/500).
 
 | URL | O que é | Precisa de JWT? |
 |---|---|---|
+| `/mock-whatsapp.html` | **simulação visual do WhatsApp** com a moldura do iPhone, conversa do bot e link para o catálogo | não |
 | `/painel.html` | **console de testes** com 11 abas | não |
 | `/demo-recomendacoes.html` | demo simples de recomendação/contexto/indicadores | não |
-| `/catalogo?token=...` | catálogo B2B (Thymeleaf) | sim |
+| `/catalogo?token=...` | catálogo B2B (React + Thymeleaf) | sim |
 
 O painel é a forma mais completa de ver o sistema funcionando. Ele chama a API real e
 mostra status HTTP, corpo e erros.
@@ -120,7 +122,7 @@ O `env.local.ps1` está no `.gitignore`. **Nunca** coloque token no `application
 .\mvnw.cmd test
 ```
 
-Esperado: **41 testes, 0 falhas, 4 ignorados**. Os 4 ignorados são integrações que
+Esperado: **44 testes, 0 falhas, 4 ignorados**. Os 4 ignorados são integrações que
 exigem Supabase/JWT no ambiente; com o `env.local.ps1` carregado eles também rodam.
 
 ### 3.4 Subir a aplicação
@@ -223,7 +225,11 @@ CNPJ existente + `codItem` (ex.: `00001`) + quantidade + data → **Registrar co
 2. Envie um CNPJ da base.
 3. Teste `catalogo`, `recomendação`, `tabela de precos`, `menu`, `sair`.
 
-A sessão fica em memória no servidor; reiniciar a aplicação zera.
+Para ver a **conversa com a moldura do iPhone**, abra
+**http://localhost:8080/mock-whatsapp.html**. O botão **Reproduzir conversa** refaz a
+simulação e o cartão verde final abre o catálogo com o token do lojista.
+
+A sessão do bot fica em memória no servidor; reiniciar a aplicação zera.
 
 ### 4.11 Erros
 
@@ -241,8 +247,10 @@ Botões disparam 404, 400, 409, 401 e 400 de validação. Confira o `ProblemDeta
 5. Indicadores.
 6. Cadastrar um cliente (201) e repetir (409).
 7. Registrar compra e finalizar pedido (201).
-8. WhatsApp: `oi` → CNPJ → `recomendação`.
-9. Erros: 404/400/401 com ProblemDetail.
+8. WhatsApp visual: abrir `/mock-whatsapp.html`, reproduzir a conversa e clicar em
+   **Abrir catálogo e fazer pedido**.
+9. Catálogo: buscar `guarana`, filtrar por categoria, adicionar fardos e revisar o pedido.
+10. Erros: 404/400/401 com ProblemDetail.
 
 ---
 
@@ -272,7 +280,7 @@ Estes contratos foram fechados; mudá-los quebra o painel, os testes ou o front:
 | 1 | `cliente.cod_cliente` é `Long`, mas `fato_vendas.cod_cliente` é `String`? | as tabelas podem ter tipos diferentes; a `cliente` é BIGINT e a `fato_vendas` foi criada como texto | `ClienteEntity`, `PedidoEntity`, `docs/SCHEMA.md` | "Confira os tipos reais e me diga se preciso alinhar as duas entidades" |
 | 2 | De onde vem a categoria do produto? | `tabela_preco` não tem coluna de categoria | `CategoriaProduto.fromNome` | "Explique a heurística e como adicionar uma categoria nova" |
 | 3 | Por que a margem é um "proxy"? | não há margem real na base | `CategoriaProduto.getMargemProxy` | "Como trocar o proxy por margem real?" |
-| 4 | Por que o catálogo `/catalogo` ainda é mock? | o front real depende da Julliane; o painel cobre os testes | `catalogo.html`, `docs/INTEGRACAO_FRONT.md` | "Como integrar o catálogo à API sem quebrar o layout?" |
+| 4 | Como o catálogo React se integra à API? | o catálogo consome `/produtos`, `/recomendacoes` e `/pedidos`, com catálogo local de fallback | `frontend/src/pages/Catalogo.jsx`, `frontend/src/data/catalogBuilder.js`, `docs/INTEGRACAO_FRONT.md` | "Explique o fluxo de dados e o fallback do catálogo" |
 | 5 | Por que não há cache nem autenticação na API? | decisão de MVP; o JWT protege só o catálogo | `SecurityConfig`, `application.yml` | "Quais os riscos e como evoluir?" |
 | 6 | Por que o pipeline não está versionado? | depende dos notebooks/schema da Vitória | `databricks/fruki_dados` | "O que falta para versionar o job?" |
 | 7 | Como funciona o cold start? | cliente sem histórico precisa de resposta | `RecomendadorV2Service`, `RecomendacaoService` | "Explique o fluxo e os limites" |
@@ -280,9 +288,8 @@ Estes contratos foram fechados; mudá-los quebra o painel, os testes ou o front:
 | 9 | Por que 4 testes são ignorados? | exigem Supabase/JWT no ambiente | `@EnabledIfEnvironmentVariable` | "Como rodar a suíte completa?" |
 | 10 | O que fazer se a Gold tiver outro nome/colunas? | ambiente pode variar | `application.yml`, `RecomendacaoRepository` | "Me guie no ajuste sem quebrar o contrato" |
 
-**O que ainda não está pronto (não fingir que está):** catálogo real consumindo a API,
-pipeline Databricks versionado, autenticação da API, cache distribuído e análise da
-recomendação com dados reais.
+**O que ainda não está pronto (não fingir que está):** pipeline Databricks versionado,
+autenticação da API, cache distribuído e análise da recomendação com dados reais.
 
 ---
 
@@ -340,6 +347,7 @@ REGRAS
 | Sintoma | Causa provável | Onde olhar |
 |---|---|---|
 | Chip `API offline` | app não está rodando ou porta ≠ 8080 | terminal/IntelliJ; `server.port` |
+| `password authentication failed for user "postgres"` | senha do Supabase no `env.local.ps1` não confere | Supabase → Connect/Reset database password; o app sobe e usa o catálogo demonstrativo |
 | 503 em `/recomendacoes` | Databricks: host, token, warehouse, tabela/colunas | log do `RecomendacaoRepository`; `Caused by` |
 | 404 em `/recomendacoes/{id}` | cliente não existe **e** Gold vazia | `select * from cliente where cod_cliente=...` |
 | `preco: null` | `cod_item` ≠ `cod_produto` | `CatalogoService`; `tabela_preco` |
@@ -357,7 +365,7 @@ REGRAS
 - [ ] Sei consultar uma recomendação e explicar `score`, `motivos` e `detalhe`.
 - [ ] Sei comparar dois perfis regionais no contexto.
 - [ ] Sei cadastrar cliente, comprar e fechar pedido.
-- [ ] Sei simular o WhatsApp.
+- [ ] Sei abrir o mock visual do WhatsApp e o catálogo pelo link do bot.
 - [ ] Sei provocar e ler um `ProblemDetail`.
 - [ ] Sei rodar os testes e interpretar os 4 ignorados.
 - [ ] Sei apontar o que ainda não está pronto.
@@ -381,6 +389,9 @@ curl.exe -s "http://localhost:8080/api/v1/recomendacoes/2001?limite=5" | Convert
 
 # lista de CNPJs
 curl.exe -s "http://localhost:8080/api/v1/clientes?limite=500" | ConvertFrom-Json | Select-Object -First 5
+
+# link do catálogo gerado pelo mock do bot
+(Invoke-RestMethod http://localhost:8080/mock/demo).catalogoUrl
 
 # script de smoke test (app rodando)
 .\scripts\testar-api.ps1
