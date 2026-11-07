@@ -55,6 +55,7 @@
     .frame {
       position: absolute;
       inset: 0;
+      z-index: 3;
       width: 100%;
       height: 100%;
       object-fit: contain;
@@ -62,28 +63,28 @@
       user-select: none;
     }
 
-    /* A tela ocupa toda a área útil do vidro: encosta na ilha preta no topo e na borda inferior. */
+    /* Full-bleed: o verde preenche todo o vidro e a moldura por cima recorta a ilha preta. */
     .screen {
       position: absolute;
-      left: 6.06%;
-      right: 7.06%;
-      top: 7.1%;
-      bottom: 2.51%;
+      left: 3.5%;
+      right: 4.5%;
+      top: 2.4%;
+      bottom: 1.5%;
       z-index: 1;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      border-radius: 10% / 4.6%;
-      background: #ece8df;
-      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .06);
+      border-radius: 0;
+      background: #08745a;
+      box-shadow: none;
     }
 
     .status {
       display: flex;
       flex: none;
-      height: 35px;
+      height: 44px;
       justify-content: space-between;
-      padding: 8px 22px 0;
+      padding: 16px 22px 0;
       background: #08745a;
       color: #fff;
       font-size: 12px;
@@ -94,7 +95,7 @@
       flex: none;
       align-items: center;
       gap: 10px;
-      padding: 8px 15px 12px;
+      padding: 8px 20px 12px;
       background: #08745a;
       color: #fff;
     }
@@ -115,7 +116,7 @@
     .chat {
       flex: 1;
       overflow: auto;
-      padding: 12px;
+      padding: 14px 20px;
       background-color: #ece8df;
       background-image: radial-gradient(#cbd3c2 .7px, transparent .7px);
       background-size: 14px 14px;
@@ -181,7 +182,7 @@
       font-size: 13px;
       font-weight: 850;
     }
-    .home { width: 95px; height: 4px; margin: 6px auto; flex: none; border-radius: 8px; background: #161616; }
+    .home { width: 95px; height: 4px; margin: 6px auto 12px; flex: none; border-radius: 8px; background: #161616; }
 
     .tools {
       position: fixed;
@@ -236,7 +237,7 @@
 
   <main class="stage">
     <div class="phone" aria-label="Simulação de conversa do WhatsApp Pede Fruki">
-      <img class="frame" src="/images/brand/iphone-frame-transparent.png" alt="">
+      <img class="frame" src="/images/brand/iphone-frame-overlay.png" alt="">
       <section class="screen">
         <div class="status"><span>9:41</span><span>●●● Wi-Fi 100%</span></div>
         <header class="head">
